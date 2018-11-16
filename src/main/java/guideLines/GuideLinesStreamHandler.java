@@ -11,25 +11,31 @@
      the specific language governing permissions and limitations under the License.
 */
 
-package main.java.colorpicker;
+package main.java.guideLines;
 
 import com.amazon.ask.Skill;
 import com.amazon.ask.SkillStreamHandler;
 import com.amazon.ask.Skills;
-import main.java.colorpicker.handlers.FallbackIntentHandler;
-import main.java.colorpicker.handlers.HelpIntentHandler;
-import main.java.colorpicker.handlers.LaunchRequestHandler;
-import main.java.colorpicker.handlers.SessionEndedRequestHandler;
-import main.java.colorpicker.handlers.WhatsMyColorIntentHandler;
-import main.java.colorpicker.handlers.CancelandStopIntentHandler;
-import main.java.colorpicker.handlers.MyColorIsIntentHandler;
 
-public class ColorPickerStreamHandler extends SkillStreamHandler {
+import main.java.guideLines.handlers.CancelandStopIntentHandler;
+import main.java.guideLines.handlers.FallbackIntentHandler;
+import main.java.guideLines.handlers.HelpIntentHandler;
+import main.java.guideLines.handlers.LaunchRequestHandler;
+import main.java.guideLines.handlers.MyColorIsIntentHandler;
+import main.java.guideLines.handlers.SessionEndedRequestHandler;
+import main.java.guideLines.handlers.WhatsMyColorIntentHandler;
+
+public class GuideLinesStreamHandler extends SkillStreamHandler {
 
     private static Skill getSkill() {
         return Skills.standard()
                 .addRequestHandlers(
-                        new WhatsMyColorIntentHandler(),
+                		//
+                		
+                		//  hier sage ich dem skill was es für intents gibt!
+                        
+                		//
+                		new WhatsMyColorIntentHandler(),
                         new MyColorIsIntentHandler(),
                         new LaunchRequestHandler(),
                         new CancelandStopIntentHandler(),
@@ -41,7 +47,7 @@ public class ColorPickerStreamHandler extends SkillStreamHandler {
                 .build();
     }
 
-    public ColorPickerStreamHandler() {
+    public GuideLinesStreamHandler() {
         super(getSkill());
     }
 
