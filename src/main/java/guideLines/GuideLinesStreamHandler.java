@@ -17,6 +17,7 @@ import com.amazon.ask.Skill;
 import com.amazon.ask.SkillStreamHandler;
 import com.amazon.ask.Skills;
 
+import main.java.guideLines.handlers.BusStatusIntentHandler;
 import main.java.guideLines.handlers.CancelandStopIntentHandler;
 import main.java.guideLines.handlers.FallbackIntentHandler;
 import main.java.guideLines.handlers.HelpIntentHandler;
@@ -35,6 +36,7 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                 		//  hier sage ich dem skill was es für intents gibt!
                         
                 		//
+                		new BusStatusIntentHandler(),
                 		new WhatsMyColorIntentHandler(),
                         new MyColorIsIntentHandler(),
                         new LaunchRequestHandler(),
@@ -43,7 +45,7 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                         new HelpIntentHandler(),
                         new FallbackIntentHandler())
                 // Add your skill id below
-                //.withSkillId("")
+                .withSkillId("amzn1.ask.skill.eef26807-1da3-43a9-868c-9cd15183b4dd")
                 .build();
     }
 

@@ -10,6 +10,6 @@ public class OutputStrings {
 	public static final String WELCOME_EINRICHTUNG = "Willkommen beim GuideLines Einrichtungsassistenten!<break time=\"0.1s\" /> "
 			+ "Die Einrichtung dauert circa fünf Minuten. <break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten?";
 	public static final String WELCOME_EINRICHTUNG_REPROMPT = "Du befindest dich im Hauptmenü des GuideLines Einrichtungsassistenten. "
-			+ "<break time=\\\"0.05s\\\" /> Möchtest du die Einrichtung jetzt starten?";
+			+ "<break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten?";
 
 }
