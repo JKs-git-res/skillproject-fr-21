@@ -1,0 +1,8 @@
+/BusStatusIntentHandler.class
+/CancelandStopIntentHandler.class
+/FallbackIntentHandler.class
+/HelpIntentHandler.class
+/LaunchRequestHandler.class
+/MyColorIsIntentHandler.class
+/SessionEndedRequestHandler.class
+/WhatsMyColorIntentHandler.class
