@@ -1,16 +1,18 @@
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\BusStatusIntentHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\CancelandStopIntentHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\LaunchRequestHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Profile.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\SessionEndedRequestHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\GuideLinesStreamHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\MyColorIsIntentHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Station.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\FallbackIntentHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Schedule.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\HelpIntentHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\FormOfTransport.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Address.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\OutputStrings.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\WhatsMyColorIntentHandler.java
-C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\fullDestinationsException.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\LaunchRequestHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Schedule.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\AddressIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\HelpIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\GuideLinesStreamHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Address.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\CancelandStopIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\YesIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Station.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\FallbackIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\SessionEndedRequestHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Profile.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\BusStatusIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\MyColorIsIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\fullDestinationsException.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\FormOfTransport.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\OutputStrings.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\WhatsMyColorIntentHandler.java

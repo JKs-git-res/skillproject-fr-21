@@ -17,6 +17,7 @@ import com.amazon.ask.Skill;
 import com.amazon.ask.SkillStreamHandler;
 import com.amazon.ask.Skills;
 
+import main.java.guideLines.handlers.AddressIntentHandler;
 import main.java.guideLines.handlers.BusStatusIntentHandler;
 import main.java.guideLines.handlers.CancelandStopIntentHandler;
 import main.java.guideLines.handlers.FallbackIntentHandler;
@@ -25,6 +26,7 @@ import main.java.guideLines.handlers.LaunchRequestHandler;
 import main.java.guideLines.handlers.MyColorIsIntentHandler;
 import main.java.guideLines.handlers.SessionEndedRequestHandler;
 import main.java.guideLines.handlers.WhatsMyColorIntentHandler;
+import main.java.guideLines.handlers.YesIntentHandler;
 
 public class GuideLinesStreamHandler extends SkillStreamHandler {
 
@@ -36,6 +38,8 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                 		//  hier sage ich dem skill was es für intents gibt!
                         
                 		//
+                		new YesIntentHandler(),
+                		new AddressIntentHandler(),
                 		new BusStatusIntentHandler(),
                 		new WhatsMyColorIntentHandler(),
                         new MyColorIsIntentHandler(),
