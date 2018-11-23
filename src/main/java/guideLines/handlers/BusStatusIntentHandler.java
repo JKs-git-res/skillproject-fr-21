@@ -1,7 +1,6 @@
 package main.java.guideLines.handlers;
 
 import static com.amazon.ask.request.Predicates.intentName;
-import static main.java.guideLines.handlers.WhatsMyColorIntentHandler.COLOR_SLOT;
 
 import java.util.Map;
 import java.util.Optional;
