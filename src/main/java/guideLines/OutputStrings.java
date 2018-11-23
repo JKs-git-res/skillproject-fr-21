@@ -7,10 +7,18 @@ package main.java.guideLines;
  */
 public class OutputStrings {
 
-//	public static final String WELCOME_EINRICHTUNG = "Willkommen beim GuideLines Einrichtungsassistenten!<break time=\"0.1s\" /> "
-//			+ "Die Einrichtung dauert circa f�nf Minuten. <break time=\"0.05s\" /> Moechtest du die Einrichtung jetzt starten?";
-	public static final String WELCOME_EINRICHTUNG = "Wo w�rdest du gerne hinfahren?";
-	public static final String WELCOME_EINRICHTUNG_REPROMPT = "Du befindest dich im Hauptmen� des GuideLines Einrichtungsassistenten. "
-			+ "<break time=\"0.05s\" /> M�chtest du die Einrichtung jetzt starten?";
-
+	public static final String WELCOME_EINRICHTUNG = "Willkommen beim GuideLines Einrichtungsassistenten!<break time=\"0.1s\" /> "
+		+ "Die Einrichtung dauert circa fünf Minuten. <break time=\"0.05s\" /> Moechtest du die Einrichtung jetzt starten?";
+	//public static final String WELCOME_EINRICHTUNG_REPROMPT = "Wo würdest du gerne hinfahren?";
+	public static final String WELCOME_EINRICHTUNG_REPROMPT = "Du befindest dich im Hauptmenü des GuideLines Einrichtungsassistenten. "
+			+ "<break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten?";
+	public static final String WELCOME_EINRICHTUNG_CARD = "Willkommen beim GuideLines Einrichtungsassistenten. " + 
+			"Die Einrichtung dauert circa fünf Minuten. Möchtest du die Einrichtung jetzt starten?";
+	public static final String EINRICHTUNG_SAY_HOME_ADDRESS_CARD = "Alles klar! Wir beginnen mit der Einrichtung deiner Privatadresse. "
+			+ "Wenn du weitere Informationen zu den verschiedenen Schritten benötigst sage bitte: "
+			+ " \"Hilfe\". Um zu beginnen nenne mir deine Heimatadresse.";
+	public static final String EINRICHTUNG_SAY_HOME_ADDRESS = "Alles klar! <break time=\"0.05s\" /> Wir beginnen mit der Einrichtung deiner Privatadresse. "
+			+ "<break time=\"0.05s\" /> Wenn du weitere Informationen zu den verschiedenen Schritten benötigst sage bitte: "
+			+ " \"Hilfe\". <break time=\"0.05s\" /> Um zu beginnen nenne mir deine Heimatadresse.";
+	public static final String EINRICHTUNG_SAY_HOME_ADDRESS_REPROMPT = "Bitte nenne mir deine Heimatadresse.";
 }
