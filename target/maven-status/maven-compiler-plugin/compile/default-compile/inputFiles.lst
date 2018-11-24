@@ -1,18 +1,21 @@
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/MyColorIsIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/WhatsMyColorIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/FallbackIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/FormOfTransport.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/GuideLinesStreamHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Station.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/fullDestinationsException.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/AddressIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/HelpIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SessionEndedRequestHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Profile.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/BusStatusIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/CancelandStopIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/OutputStrings.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/YesIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Address.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/LaunchRequestHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Schedule.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\LaunchRequestHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Schedule.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\AddressIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\HelpIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\GuideLinesStreamHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Address.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\AddressResolver.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\CancelandStopIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\YesIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Station.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\FallbackIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\SessionEndedRequestHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Profile.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\BusStatusIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\test\AddressTest.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\MyColorIsIntentHandler.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\fullDestinationsException.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\FormOfTransport.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\OutputStrings.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\exceptions\StreetNotFoundException.java
+D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\WhatsMyColorIntentHandler.java

@@ -1,7 +1,10 @@
 package main.java.guideLines.handlers;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+
+import org.json.JSONException;
 
 import static com.amazon.ask.request.Predicates.intentName;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
@@ -12,13 +15,16 @@ import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Slot;
 
+import main.java.exceptions.StreetNotFoundException;
+import main.java.guideLines.OutputStrings;
+import main.java.guideLines.model.Address;
+
 
 public class AddressIntentHandler implements RequestHandler {
 	
-	public static final String STREET_SLOT = "Street";
-	public static final String NUMBER_SLOT = "Number";
-	public static final String PLZ_SLOT = "PLZ";
-	public static final String CITY_SLOT = "City";
+	public static final String ADDRESS_SLOT = "Address";
+	
+	private AddressResolver ar = new AddressResolver();
 
 	@Override
 	public boolean canHandle(HandlerInput input) {
@@ -32,43 +38,33 @@ public class AddressIntentHandler implements RequestHandler {
         Intent intent = intentRequest.getIntent();
         Map<String, Slot> slots = intent.getSlots();
 
-        Slot streetSlot = slots.get(STREET_SLOT);
-        Slot numberSlot = slots.get(NUMBER_SLOT);
-        Slot plzSlot = slots.get(PLZ_SLOT);
-        Slot citySlot = slots.get(CITY_SLOT);
+        Slot addressSlot = slots.get(ADDRESS_SLOT);
         
-        String street = streetSlot.getValue();
-        String city = citySlot.getValue();
-        String plz = null;
-        String number = null;
-        if (plzSlot != null) {
-        	plz = plzSlot.getValue();
-        }
-        if (numberSlot != null) {
-        	number = numberSlot.getValue();
-        }
-        // do magic with Datenbank
+        String address = addressSlot.getValue();
         
+        Address realAddress = null;        
+        try {
+			realAddress = ar.getAddress(address);
+		} catch (IOException e) {
+			// Unknown exception maybe no connection
+			e.printStackTrace();
+		} catch (StreetNotFoundException e) {
+			// No stret found ask the user for street
+			return input.getResponseBuilder()
+	                .withSpeech(OutputStrings.NO_STREET_PROMPT)
+	                .withSimpleCard("Die adresse ist leider ung¸ltig", address)
+	                .build();
+		} catch (JSONException e) {
+			return input.getResponseBuilder()
+	                .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT)
+	                .withSimpleCard("Die adresse ist leider ung¸ltig", address)
+	                .build();
+		}
         
-        // say confirmation
-        if (plz != null && number != null) {
-        	return input.getResponseBuilder()
-        			.withSpeech("Deine Adresse Straﬂe: " + street + ", Nummer: " + number + " PLZ: " + plz + ", Stadt: " + city + " " + " wurde gespeichert")
-        			.withSimpleCard("Adresse Speichern", "Die Adresse wurde gespeichert!").build();
-    
-        } else if (plz != null && number == null) {
-        	return input.getResponseBuilder()
-    				.withSpeech("Deine Adresse Straﬂe: " + street + ", PLZ: " + plz + ", Stadt: " + city + " " + " wurde gespeichert")
-    				.withSimpleCard("Adresse Speichern", "Die Adresse wurde gespeichert!").build();
-        } else if (plz == null && number != null) {
-        	return input.getResponseBuilder()
-    				.withSpeech("Deine Adresse Straﬂe: " + street + ", Nummer: " + number + ", Stadt: " + city + " " + " wurde gespeichert")
-    				.withSimpleCard("Adresse Speichern", "Die Adresse wurde gespeichert!").build();
-        } else {
-        	return input.getResponseBuilder()
-    				.withSpeech("Deine Adresse Straﬂe: " + street + ", Stadt: " + city + " " + " wurde gespeichert")
-    				.withSimpleCard("Adresse Speichern", "Die Adresse wurde gespeichert!").build();
-        }
+        return input.getResponseBuilder()
+                .withSpeech("Deine Adresse ist: Straﬂe: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
+                .withSimpleCard("Adresse: ", "Straﬂe: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
+                .build();
         
 	}
 

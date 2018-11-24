@@ -33,6 +33,27 @@
       <artifactId>ask-sdk</artifactId>
       <version>2.5.5</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+	<dependency>
+    	<groupId>org.json</groupId>
+    	<artifactId>json</artifactId>
+    	<version>20180813</version>
+	</dependency>
+	<!-- JUnit dependency -->
+	<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    	<artifactId>junit-jupiter-api</artifactId>
+    	<version>5.1.0</version>
+    	<scope>test</scope>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+	<dependency>
+    	<groupId>org.jsoup</groupId>
+    	<artifactId>jsoup</artifactId>
+    	<version>1.8.3</version>
+	</dependency>
+	
+    
   </dependencies>
 
   <build>
