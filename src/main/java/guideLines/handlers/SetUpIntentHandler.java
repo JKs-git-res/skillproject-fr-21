@@ -25,7 +25,9 @@ public class SetUpIntentHandler implements RequestHandler {
 	private Map<String, Slot> slots;
 	@Override
 	public boolean canHandle(HandlerInput input) {
-		return input.matches(intentName("SetUpIntent"));
+            Request req = input.getRequestEnvelope().getRequest();
+		return  input.matches(intentName("SetUpIntent")) &&
+                        req.getType().equals("IntentRequest");
 	}
 	
 	private Address getAddress(String SlotName) {
@@ -55,19 +57,32 @@ public class SetUpIntentHandler implements RequestHandler {
          String value = (String) persistentAttributes.get("key"); //lesen aus DB
          
          
-         
+                
 		IntentRequest req = (IntentRequest) input.getRequestEnvelope().getRequest();
 		Intent intent = req.getIntent();
 		slots = intent.getSlots();
 		Address homeAddress = getAddress("Homeaddress");
 		setAddressName(homeAddress, "NameHome");
+                
+                if(req.getDialogState().equals("STARTED")){
+                }
+                else if(!req.getDialogState().equals("COMPLETED")){
+                }
+                else{
+                }
+                /*
 		Address dest1 = getAddress("DestinationAddressOne");
 		setAddressName(dest1, "NameDestOne");
 		Address dest2 = getAddress("DestinationAddressTwo");
 		setAddressName(dest2, "NameDestTwo");
 		Address dest3 = getAddress("DestinationAddressThree");
 		setAddressName(dest3, "NameDestThree");
-		return null;
+                */
+		return input.getResponseBuilder()
+                        .addDelegateDirective(intent)
+                        .build();
+                        
+                        
 	}
 
 }

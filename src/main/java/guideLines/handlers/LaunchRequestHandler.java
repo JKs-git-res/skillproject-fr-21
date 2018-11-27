@@ -33,7 +33,6 @@ public class LaunchRequestHandler implements RequestHandler {
                 .withSimpleCard("GuideLines", OutputStrings.WELCOME_EINRICHTUNG_CARD)
                 .withSpeech(OutputStrings.WELCOME_EINRICHTUNG)
                 .withReprompt(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT)
-                .withShouldEndSession(false)
                 .build();
     }
 }

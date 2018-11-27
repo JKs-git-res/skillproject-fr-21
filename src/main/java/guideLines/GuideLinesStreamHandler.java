@@ -24,6 +24,8 @@ import main.java.guideLines.handlers.HelpIntentHandler;
 import main.java.guideLines.handlers.LaunchRequestHandler;
 import main.java.guideLines.handlers.MyColorIsIntentHandler;
 import main.java.guideLines.handlers.SessionEndedRequestHandler;
+import main.java.guideLines.handlers.SetUpInProgressIntentHandler;
+import main.java.guideLines.handlers.SetUpIntentHandler;
 import main.java.guideLines.handlers.WhatsMyColorIntentHandler;
 import main.java.guideLines.handlers.YesIntentHandler;
 
@@ -37,6 +39,8 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                     //  hier sage ich dem skill was es fuer intents gibt!
 
                     //
+                    new SetUpIntentHandler(),
+                    new SetUpInProgressIntentHandler(),
                     new BusStatusIntentHandler(),
                     new AddressIntentHandler(),
                     new WhatsMyColorIntentHandler(),
