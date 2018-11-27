@@ -9,8 +9,7 @@
      or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
      the specific language governing permissions and limitations under the License.
-*/
-
+ */
 package main.java.guideLines;
 
 import com.amazon.ask.Skill;
@@ -30,31 +29,32 @@ import main.java.guideLines.handlers.YesIntentHandler;
 
 public class GuideLinesStreamHandler extends SkillStreamHandler {
 
-    private static Skill getSkill() {
-        return Skills.standard()
-                .addRequestHandlers(
-                		//
-                		
-                		//  hier sage ich dem skill was es fuer intents gibt!
-                        
-                		//
-                		new BusStatusIntentHandler(),
-                		new AddressIntentHandler(),
-                		new WhatsMyColorIntentHandler(),
-                        new MyColorIsIntentHandler(),
-                        new YesIntentHandler(),
-                        new LaunchRequestHandler(),
-                        new CancelandStopIntentHandler(),
-                        new SessionEndedRequestHandler(),
-                        new HelpIntentHandler(),
-                        new FallbackIntentHandler())
-                // Add your skill id below
-                .withSkillId("amzn1.ask.skill.eef26807-1da3-43a9-868c-9cd15183b4dd")
-                .build();
-    }
+  private static Skill getSkill() {
+    return Skills.standard()
+            .addRequestHandlers(
+                    //
 
-    public GuideLinesStreamHandler() {
-        super(getSkill());
-    }
+                    //  hier sage ich dem skill was es fuer intents gibt!
+
+                    //
+                    new BusStatusIntentHandler(),
+                    new AddressIntentHandler(),
+                    new WhatsMyColorIntentHandler(),
+                    new MyColorIsIntentHandler(),
+                    new YesIntentHandler(),
+                    new LaunchRequestHandler(),
+                    new CancelandStopIntentHandler(),
+                    new SessionEndedRequestHandler(),
+                    new HelpIntentHandler(),
+                    new FallbackIntentHandler())
+            // Add your skill id below
+            .withTableName("guideLinesData")
+            .withSkillId("amzn1.ask.skill.eef26807-1da3-43a9-868c-9cd15183b4dd")
+            .build();
+  }
+
+  public GuideLinesStreamHandler() {
+    super(getSkill());
+  }
 
 }
