@@ -1,17 +1,25 @@
 package main.java.guideLines.model;
 
 public class Profile {
-	private String userNameID;
-	private String firstName;
+	//private String userNameID;
+	//private String firstName;
 	private Address homeAddress;
 	private Address[] destinationAddresses = new Address[3];
 	
-	Profile(String firstName, String userNameID) {
-		this.firstName = firstName;
-		this.userNameID = userNameID;
+	Profile(Address home, Address... dest) {
+		this.homeAddress = home;
+		try {
+			addDestinationAddress(dest[0]);
+			addDestinationAddress(dest[1]);
+			addDestinationAddress(dest[2]);
+		} catch (fullDestinationsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
         
-        public void setFirstName(String firstName){
+       /*
+        *  public void setFirstName(String firstName){
             this.firstName = firstName;
         }
         public String getFirstName(){
@@ -23,6 +31,8 @@ public class Profile {
         public String getUserNameID(){
             return this.userNameID;
         }
+        
+        */
         public void setHomeAddress(Address homeAddress){
             this.homeAddress = homeAddress;
         }
