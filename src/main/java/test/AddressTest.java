@@ -2,8 +2,6 @@ package main.java.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
-
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 
 import main.java.exceptions.StreetNotFoundException;
