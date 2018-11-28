@@ -8,6 +8,7 @@ install:
 
 
 script:
+  - mvn test
   - mvn org.apache.maven.plugins:maven-assembly-plugin:2.6:assembly -DdescriptorId=jar-with-dependencies package
 
 env:
@@ -15,4 +16,6 @@ env:
     - LANG=de_DE.UTF-8
     - LC_ALL=de_DE.UTF-8
     
-    
+cache:
+  directories:
+  - $HOME/.m2
