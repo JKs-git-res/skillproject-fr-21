@@ -24,7 +24,6 @@ import main.java.guideLines.model.Address;
 public class AddressIntentHandler implements RequestHandler {
 
   public static final String ADDRESS_SLOT = "Address";
-
   private AddressResolver ar = new AddressResolver();
 
   @Override
@@ -53,12 +52,12 @@ public class AddressIntentHandler implements RequestHandler {
       // No stret found ask the user for street
       return input.getResponseBuilder()
               .withSpeech(OutputStrings.NO_STREET_PROMPT)
-              .withSimpleCard("Die adresse ist leider ung¸ltig", address)
+              .withSimpleCard("Die adresse ist leider ung√ºltig", address)
               .build();
     } catch (JSONException e) {
       return input.getResponseBuilder()
               .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT)
-              .withSimpleCard("Die adresse ist leider ung¸ltig", address)
+              .withSimpleCard("Die adresse ist leider ung√ºltig", address)
               .build();
     }
     
@@ -74,8 +73,8 @@ public class AddressIntentHandler implements RequestHandler {
             attributesManager.savePersistentAttributes();
 
     return input.getResponseBuilder()
-            .withSpeech("Deine Adresse ist: Straﬂe: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
-            .withSimpleCard("Adresse: ", "Straﬂe: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
+            .withSpeech("Deine Adresse ist: Stra√üe: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
+            .withSimpleCard("Adresse: ", "Stra√üe: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
             .build();
 
   }
