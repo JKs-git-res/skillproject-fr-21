@@ -1,7 +1,6 @@
 package main.java.test;
 
 import static org.junit.jupiter.api.Assertions.*;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 
 import org.junit.Rule;
@@ -19,20 +18,20 @@ class AddressTest {
 	
 	@Test
 	void AddressTestWithAllData() throws IOException, StreetNotFoundException {
-		Address address = ar.getAddress("lothstraße 64 München");
-		assertEquals("München", address.getCity());
+		Address address = ar.getAddress("LothstraÃŸe 64 MÃ¼nchen");
+		assertEquals("MÃ¼nchen", address.getCity());
 		assertEquals(64, address.gethouseNumber());
-		assertEquals("Lothstraße", address.getStreet());
+		assertEquals("LothstraÃŸe", address.getStreet());
 		assertEquals("80335", address.getPostCode());
 		assertEquals("NT_GgesHsyrnzR3eEhPnUvBpA_2QD", address.getLocationId());
 	}
 	
 	@Test
 	void AddressTestWithoutHouseNumber() throws IOException, StreetNotFoundException {
-		Address address = ar.getAddress("lothstraße München");
-		assertEquals("München", address.getCity());
+		Address address = ar.getAddress("lothstraÃŸe MÃ¼nchen");
+		assertEquals("MÃ¼nchen", address.getCity());
 		assertEquals(-1, address.gethouseNumber());
-		assertEquals("Lothstraße", address.getStreet());
+		assertEquals("LothstraÃŸe", address.getStreet());
 		assertEquals("80335", address.getPostCode());
 		assertEquals("NT_GgesHsyrnzR3eEhPnUvBpA", address.getLocationId());
 	}
@@ -40,13 +39,13 @@ class AddressTest {
 	@Test
 	void AddressTestWithoutStreet() throws IOException, StreetNotFoundException {		
 		assertThrows(StreetNotFoundException.class, ()-> {
-			Address address = ar.getAddress("München");
+			Address address = ar.getAddress("MÃ¼nchen");
 		});
 	}
 	
 	@Test
 	void GetPositionTest() throws IOException {
-		Address address = new Address("Lothstraße","München","NT_GgesHsyrnzR3eEhPnUvBpA_2QD");
+		Address address = new Address("LothstraÃŸe","MÃ¼nchen","NT_GgesHsyrnzR3eEhPnUvBpA_2QD");
 		NearestStationFinder stationFinder = new NearestStationFinder();
 		boolean actual = stationFinder.getPosition(address);
 		assertEquals(true, actual);
@@ -55,7 +54,7 @@ class AddressTest {
 	@Test
 	void FindNearestStationTest() throws IOException {
 		NearestStationFinder nsf = new NearestStationFinder();
-		Address address = new Address("Lothstraße","München","NT_GgesHsyrnzR3eEhPnUvBpA_2QD");
+		Address address = new Address("LothstraÃŸe","MÃ¼nchen","NT_GgesHsyrnzR3eEhPnUvBpA_2QD");
 		Address station = nsf.findNearestStation(address);
 		assertEquals(null, station);
 	}
