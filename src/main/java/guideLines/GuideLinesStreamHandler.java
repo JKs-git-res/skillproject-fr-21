@@ -22,11 +22,9 @@ import main.java.guideLines.handlers.CancelandStopIntentHandler;
 import main.java.guideLines.handlers.FallbackIntentHandler;
 import main.java.guideLines.handlers.HelpIntentHandler;
 import main.java.guideLines.handlers.LaunchRequestHandler;
-import main.java.guideLines.handlers.MyColorIsIntentHandler;
 import main.java.guideLines.handlers.SessionEndedRequestHandler;
 import main.java.guideLines.handlers.SetUpInProgressIntentHandler;
 import main.java.guideLines.handlers.SetUpIntentHandler;
-import main.java.guideLines.handlers.WhatsMyColorIntentHandler;
 import main.java.guideLines.handlers.YesIntentHandler;
 
 public class GuideLinesStreamHandler extends SkillStreamHandler {
@@ -43,8 +41,6 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                     new SetUpInProgressIntentHandler(),
                     new BusStatusIntentHandler(),
                     new AddressIntentHandler(),
-                    new WhatsMyColorIntentHandler(),
-                    new MyColorIsIntentHandler(),
                     new YesIntentHandler(),
                     new LaunchRequestHandler(),
                     new CancelandStopIntentHandler(),
