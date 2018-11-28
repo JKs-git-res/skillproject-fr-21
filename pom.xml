@@ -73,6 +73,7 @@
             <source>1.8</source>
             <target>1.8</target>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
+            <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
       </plugins>
