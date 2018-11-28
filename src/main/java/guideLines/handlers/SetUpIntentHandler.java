@@ -42,14 +42,15 @@ public class SetUpIntentHandler implements RequestHandler {
 		}
 	}
 	private void setAddressName(Address adr, String Slotname) {
-		adr.setName(slots.get(Slotname).getValue());
+		if(adr != null)
+			adr.setName(slots.get(Slotname).getValue());
 	}
 
 	@Override
 	public Optional<Response> handle(HandlerInput input) {
 		 AttributesManager attributesManager = input.getAttributesManager();
          Map<String, Object> persistentAttributes = attributesManager.getPersistentAttributes();
-         persistentAttributes.put("key", "value"); //schreiben in DB
+         
          
          attributesManager.setPersistentAttributes(persistentAttributes);
          attributesManager.savePersistentAttributes(); //nach dem schreiben zum "pushen" in die DB
@@ -57,18 +58,52 @@ public class SetUpIntentHandler implements RequestHandler {
          String value = (String) persistentAttributes.get("key"); //lesen aus DB
          
          
+		
+		Request request = input.getRequestEnvelope().getRequest();
+	    IntentRequest req = (IntentRequest) request;
+	    Intent intent = req.getIntent();
+	    slots = intent.getSlots();
+		
+		
                 
-		IntentRequest req = (IntentRequest) input.getRequestEnvelope().getRequest();
-		Intent intent = req.getIntent();
-		slots = intent.getSlots();
-		Address homeAddress = getAddress("Homeaddress");
-		setAddressName(homeAddress, "NameHome");
-                
+	    
                 if(req.getDialogState().equals("STARTED")){
+                	return input.getResponseBuilder()
+                            .addDelegateDirective(intent)
+                            .build();
                 }
-                else if(!req.getDialogState().equals("COMPLETED")){
+                else if(!req.getDialogState().equals("COMPLETED") 
+                		&& !intent.getConfirmationStatus().getValue().equals("DENIED")){
+                	
+                	boolean adrWasSet = slots.get("Homeaddress").getValue() != null;
+                	boolean nameWasSet = slots.get("NameHome").getValue() != null;
+                	Address adr = null;
+                	if(adrWasSet) {
+                		adr = getAddress("Homeaddress");
+                		return input.getResponseBuilder()
+            					.addDelegateDirective(intent)
+            					.build();
+                	}
+                	
+                	if(adr != null && nameWasSet) {
+                		setAddressName(adr, "NameHome");
+                		persistentAttributes.put("Homeadress", adr); //schreiben in DB
+                		return input.getResponseBuilder()
+                				.addDelegateDirective(intent)
+                				.withSpeech("Der Name wurde gespeichert.")
+                				.withSimpleCard("Name der Heimatadresse gespeichert", "Der Name wurde gespeichert.")
+            					.build();
+                	}	
+                	else 
+                		return input.getResponseBuilder()
+    					.addDelegateDirective(intent)
+    					.build();
                 }
                 else{
+                	return input.getResponseBuilder()
+                			.withSimpleCard("Einrichtung abgeschlossen.","Die Einrichtung ist abgeschlossen.")
+                            .withSpeech("Die Einrichtung ist abgeschlossen.")
+                            .build();
                 }
                 /*
 		Address dest1 = getAddress("DestinationAddressOne");
@@ -78,9 +113,7 @@ public class SetUpIntentHandler implements RequestHandler {
 		Address dest3 = getAddress("DestinationAddressThree");
 		setAddressName(dest3, "NameDestThree");
                 */
-		return input.getResponseBuilder()
-                        .addDelegateDirective(intent)
-                        .build();
+		
                         
                         
 	}

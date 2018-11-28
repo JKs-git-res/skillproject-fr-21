@@ -10,9 +10,9 @@ package main.java.guideLines;
 public class OutputStrings {
 
 	public static final String WELCOME_EINRICHTUNG = "Willkommen beim GuideLines Einrichtungsassistenten!<break time=\"0.1s\" /> "
-			+ "Die Einrichtung dauert circa fünf Minuten. <break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten? Dann sage bitte \"Einrichtung starten\".";
+			+ "Die Einrichtung dauert circa fünf Minuten. <break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten? Dann nenne mir deine Heimatadresse.";
 	public static final String WELCOME_EINRICHTUNG_REPROMPT = "Du befindest dich im Hauptmenü des GuideLines Einrichtungsassistenten. "
-			+ "<break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten? Dann sage bitte \"Einrichtung starten\".";
+			+ "<break time=\"0.05s\" /> Möchtest du die Einrichtung jetzt starten? Dann nenne mir deine Heimatadresse.";
 	public static final String WELCOME_EINRICHTUNG_CARD = "Willkommen beim GuideLines Einrichtungsassistenten. "
 			+ "Die Einrichtung dauert circa fünf Minuten. Möchtest du die Einrichtung jetzt starten?";
 	public static final String EINRICHTUNG_SAY_HOME_ADDRESS_CARD = "Alles klar! Wir beginnen mit der Einrichtung deiner Privatadresse. "

@@ -32,11 +32,6 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
   private static Skill getSkill() {
     return Skills.standard()
             .addRequestHandlers(
-                    //
-
-                    //  hier sage ich dem skill was es fuer intents gibt!
-
-                    //
                     new SetUpIntentHandler(),
                     new SetUpInProgressIntentHandler(),
                     new BusStatusIntentHandler(),
