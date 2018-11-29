@@ -6,12 +6,13 @@
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/AddressIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/HelpIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SetUpInProgressIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/test/AddressTest.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SetUpIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SessionEndedRequestHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/AddressResolver.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Profile.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/BusStatusIntentHandler.java
+/Users/alex/Documents/software_engineering/skillproject-fr-21/src/test/java/guideLines/handlers/AddressTest.java
+/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/PlanMyTripIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/CancelandStopIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/OutputStrings.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/exceptions/StreetNotFoundException.java

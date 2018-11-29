@@ -7,7 +7,6 @@ public class Address {
     private final String locationId;
     private int houseNumber = -1;
     private String postCode = null;
-    private Station nearestStation;
     private FormOfTransport preferedWayOfTransport;
     
     public Address(String street, String city, String locationId) {
@@ -56,11 +55,10 @@ public class Address {
     }
     
     public void setNearestStation(Station nearestStation){
-        this.nearestStation = nearestStation;
     }
     
     public String getFullAddress(){
-        return street + " " + houseNumber + "\n" + postCode + " " + city;
+        return street + " " + houseNumber + " " + postCode + " " + city;
     }
     
     public String getStreet(){
