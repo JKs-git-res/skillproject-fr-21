@@ -103,10 +103,24 @@ public class SetUpIntentHandler implements RequestHandler {
 		Map<String, Object> persistentAttributes = attributesManager.getPersistentAttributes();
 		Address adr = null, destA = null, destB = null, destC = null;
 		String value = (String) persistentAttributes.get("key"); // lesen aus DB
-		Context ctx = (Context)input.getContext().get();
-    	SystemState sys = ctx.getSystem();
-    	String deviceId = sys.getDevice().getDeviceId();
-    	String apiAccessToken = sys.getApiAccessToken();
+		
+		/*
+		 * Dies wird alles benötigt um den aktuellen Standort bestimmen zu können
+		Optional<Object> ctxObj = input.getContext();
+		//System.out.println("input.getContext() -> " + input.getContext());
+		
+		Context ctx;
+		if(ctxObj.isPresent()) {
+			ctx = (Context) ctxObj.get();
+		}
+		
+		
+    		SystemState sys = ctx.getSystem();
+    		String deviceId = sys.getDevice().getDeviceId();
+    		String apiAccessToken = sys.getApiAccessToken();
+    		
+    		*/
+		
 		Request request = input.getRequestEnvelope().getRequest();
 		Session session = input.getRequestEnvelope().getSession();
 		IntentRequest intReq = (IntentRequest) request;
@@ -129,10 +143,13 @@ public class SetUpIntentHandler implements RequestHandler {
 			return input.getResponseBuilder().addDelegateDirective(intent).build();
 			
 		} else if (!intReq.getDialogState().equals("COMPLETED")) {
-			if(HomeAddress_Slot == null) {
+			
+			if(HomeAddress_Slot.getValue() == null) {
 				//Einrichtung Homeaddresse
 				if(yesNo_Slot_Loc.equals("Ja")) {
+					//TODO NOT YET IMPLEMENTED!
 					//User will aktuellen Standort verwenden
+					/*
 					try {
 						adr = getAddressFromLocation(deviceId);
 						slots.put(adr.getFullAddress(), HomeAddress_Slot);
@@ -146,6 +163,7 @@ public class SetUpIntentHandler implements RequestHandler {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 		
 				} else if(yesNo_Slot_Loc.equals("Nein")) {
 					return input.getResponseBuilder()
@@ -160,7 +178,7 @@ public class SetUpIntentHandler implements RequestHandler {
 						.build();
 				
 			}
-			if(NameHome_Slot != null && HomeAddress_Slot != null) {
+			if(NameHome_Slot.getValue() != null && HomeAddress_Slot.getValue() != null) {
 				//Name der HomeAddress wird gesetzt
 				adr.setName(NameHome_Slot.getValue());
 				return input.getResponseBuilder()
