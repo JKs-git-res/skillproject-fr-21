@@ -1,48 +1,21 @@
-<<<<<<< HEAD
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/FallbackIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/FormOfTransport.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/GuideLinesStreamHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Station.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/fullDestinationsException.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/AddressIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/HelpIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SetUpInProgressIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SetUpIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SessionEndedRequestHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/AddressResolver.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Profile.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/BusStatusIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/test/java/guideLines/handlers/AddressTest.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/PlanMyTripIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/CancelandStopIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/OutputStrings.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/exceptions/StreetNotFoundException.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/NearestStationFinder.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/YesIntentHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Address.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/LaunchRequestHandler.java
-/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Schedule.java
-=======
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\LaunchRequestHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Schedule.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\AddressIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\HelpIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\GuideLinesStreamHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\SetUpIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Address.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\AddressResolver.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\CancelandStopIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\YesIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Station.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\FallbackIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\SetUpInProgressIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\SessionEndedRequestHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\Profile.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\BusStatusIntentHandler.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\handlers\NearestStationFinder.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\fullDestinationsException.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\model\FormOfTransport.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\guideLines\OutputStrings.java
-D:\School\Software Engineering\skillproject-fr-21\src\main\java\exceptions\StreetNotFoundException.java
-D:\School\Software Engineering\skillproject-fr-21\src\test\java\guideLines\handlers\AddressTest.java
->>>>>>> 3f94ab9ad62a238612f8b3009d6f95f31887f119
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\AddressIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\SetUpIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\BusStatusIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\CancelandStopIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\LaunchRequestHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Profile.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\SessionEndedRequestHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\GuideLinesStreamHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Station.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\NearestStationFinder.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\PlanMyTripIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\FallbackIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Schedule.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\HelpIntentHandler.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\FormOfTransport.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\Address.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\exceptions\StreetNotFoundException.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\handlers\AddressResolver.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\OutputStrings.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\main\java\guideLines\model\fullDestinationsException.java
+C:\Users\hm-schrein2\skillproject-fr-21\src\test\java\guideLines\handlers\AddressTest.java
