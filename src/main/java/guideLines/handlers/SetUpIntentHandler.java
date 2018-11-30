@@ -160,11 +160,12 @@ public class SetUpIntentHandler implements RequestHandler {
             		&& DestinationB_Name_Slot.getValue() == null) {
             		return input.getResponseBuilder()
             				.addElicitSlotDirective("NameB", intent)
+            				.withSpeech("Wie willst du dein zweites Ziel benennen?")
             				.build();
             }
             
             if(yesNo_Slot_secondDest.getValue() != null 
-            		&& DestinationB_Slot.getValue() != null 
+            		&& DestinationB_Name_Slot.getValue() != null 
             		&& DestinationB_Name_Slot.getValue() == null) {
 		            	return input.getResponseBuilder()
 		                        .addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
