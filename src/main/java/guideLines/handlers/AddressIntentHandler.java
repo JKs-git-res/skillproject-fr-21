@@ -1,5 +1,6 @@
 package main.java.guideLines.handlers;
 
+import main.java.guideLines.model.AddressResolver;
 import com.amazon.ask.attributes.AttributesManager;
 import java.io.IOException;
 import java.util.Map;

@@ -5,18 +5,20 @@ public class Profile {
 	//private String firstName;
 	private Address homeAddress;
 	private Address[] destinationAddresses = new Address[3];
-	
-	Profile(Address home, Address... dest) {
+	private FormOfTransport preferedWayOfTransport;
+	public Profile(Address home, Address destA) {
 		this.homeAddress = home;
 		try {
-			addDestinationAddress(dest[0]);
-			addDestinationAddress(dest[1]);
-			addDestinationAddress(dest[2]);
+			addDestinationAddress(destA);
 		} catch (fullDestinationsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+        
+        public FormOfTransport getPreferedWayOfTransport(){
+            return this.preferedWayOfTransport;
+        }
         
        /*
         *  public void setFirstName(String firstName){
@@ -38,6 +40,10 @@ public class Profile {
         }
         public Address getHomeAddress(){
             return this.homeAddress;
+        }
+        
+        public void addPreferedFormOfTransport(FormOfTransport fot){
+            this.preferedWayOfTransport = fot;
         }
         public void addDestinationAddress(Address newDestination) throws fullDestinationsException{
             if(destinationsFull())

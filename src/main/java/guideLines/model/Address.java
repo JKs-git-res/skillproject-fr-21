@@ -7,7 +7,7 @@ public class Address {
     private final String locationId;
     private int houseNumber = -1;
     private String postCode = null;
-    private FormOfTransport preferedWayOfTransport;
+    
     
     public Address(String street, String city, String locationId) {
     	this.city = city;
@@ -46,13 +46,7 @@ public class Address {
         return this.name;
     }
     
-    public void setFormOfTransport(FormOfTransport preferedWayOfTransport){
-        this.preferedWayOfTransport = preferedWayOfTransport;
-    }
-    
-    public FormOfTransport getFormOfTransport(){
-        return this.preferedWayOfTransport;
-    }
+  
     
     public void setNearestStation(Station nearestStation){
     }

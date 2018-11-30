@@ -1,4 +1,4 @@
-package main.java.guideLines.handlers;
+package main.java.guideLines.model;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,5 +1,6 @@
-package main.java.guideLines.handlers;
+package main.java.guideLines.model;
 
+import main.java.guideLines.model.AddressResolver;
 import java.io.IOException;
 
 import org.json.JSONArray;
