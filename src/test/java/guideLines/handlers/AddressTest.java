@@ -12,7 +12,7 @@ import main.java.guideLines.model.Address;
 class AddressTest {
 
 	private AddressResolver ar = new AddressResolver();
-	
+	/*
 	
 	@Test
 	void AddressTestWithAllData() throws IOException, StreetNotFoundException {
@@ -56,6 +56,8 @@ class AddressTest {
 		Address station = nsf.findNearestStation(address);
 		assertEquals(null, station);
 	}
+	
+	*/
 
 	
 	
