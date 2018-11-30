@@ -155,6 +155,14 @@ public class SetUpIntentHandler implements RequestHandler {
                         .withSpeech("Wie lautet deine zweite Zieladresse?")
                         .build();
             }
+            if(yesNo_Slot_secondDest.getValue() != null
+            		&& yesNo_Slot_secondDest.getValue().equals("Ja")
+            		&& DestinationB_Name_Slot.getValue() == null) {
+            		return input.getResponseBuilder()
+            				.addElicitSlotDirective("NameB", intent)
+            				.build();
+            }
+            
             if(yesNo_Slot_secondDest.getValue() != null 
             		&& DestinationB_Slot.getValue() != null 
             		&& DestinationB_Name_Slot.getValue() == null) {
