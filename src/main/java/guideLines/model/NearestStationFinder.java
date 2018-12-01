@@ -2,8 +2,11 @@ package main.java.guideLines.model;
 
 import main.java.guideLines.model.AddressResolver;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +21,7 @@ public class NearestStationFinder {
 	private Double longitude = null;
 	String jsonResponse = null;
 
-	public Address findNearestStation(Address address) throws IOException {
+	public Station findNearestStation(Address address) throws IOException, JSONException {
 		if (getPosition(address)) {
 			Document doc = Jsoup.connect("https://places.cit.api.here.com/places/v1/browse/pt-stops?"
 					+ "app_id=" + AddressResolver.app_id
@@ -39,9 +42,42 @@ public class NearestStationFinder {
 			}
 			JSONObject response = new JSONObject(jsonResponse);
 			JSONArray results = response.getJSONObject("results").getJSONArray("items");
-			String closestStation = results.getJSONObject(0).getString("title");
+			JSONObject firstResult = results.getJSONObject(0);
 			
-			System.out.println(closestStation);			
+			String closestStation = firstResult.getString("title");
+			closestStation = GermanEncodingConverter.convert(closestStation);
+			
+			JSONObject transitLines = firstResult.getJSONObject("transitLines");
+			JSONObject lines = transitLines.getJSONObject("lines");
+			
+			Iterator<String> keys = lines.keys();
+			HashMap<String,FormOfTransport> transportWays = new HashMap<>();
+			
+			while(keys.hasNext()) {
+			    String key = keys.next();
+			    if (lines.get(key) instanceof JSONObject) {
+			    	String mode = ((JSONObject) lines.get(key)).getJSONObject("category").getString("title");
+			    	String lineName = ((JSONObject) lines.get(key)).getString("name");
+			    	switch (mode) {
+			    	case "Tram":
+			    	case "Trolley" :
+			    		transportWays.put(lineName, FormOfTransport.TRAM);
+			    		break;
+			    	case "Bus" :
+			    		transportWays.put(lineName, FormOfTransport.BUS);
+			    		break;
+			    	case "Suburban Rail" : 
+			    		transportWays.put(lineName, FormOfTransport.SBAHN);
+			    		break;
+			    	case "Subway" :
+			    		transportWays.put(lineName, FormOfTransport.UBAHN);
+			    		break;
+			    	}
+			    }
+			}
+			
+			Station nextStation = new Station(closestStation, transportWays);
+			return nextStation;
 		}
 		return null;
 	}

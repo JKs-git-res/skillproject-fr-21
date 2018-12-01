@@ -19,6 +19,7 @@ public class AddressResolver {
 	public static final String app_id = "ZQc2T7A0egItevgCF9iE";
 	public static final String app_code = "Lu6ioGBqcHULGjLLFMiDeQ";
 	
+	
 	public String getResponseFromURL(String link) throws IOException {
 		URL url = new URL(link);
 		URLConnection con = url.openConnection();

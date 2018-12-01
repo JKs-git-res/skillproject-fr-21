@@ -52,12 +52,12 @@ public class AddressIntentHandler implements RequestHandler {
     } catch (StreetNotFoundException e) {
       // No stret found ask the user for street
       return input.getResponseBuilder()
-              .withSpeech(OutputStrings.NO_STREET_PROMPT)
+              .withSpeech(OutputStrings.NO_STREET_PROMPT.toString())
               .withSimpleCard("Die adresse ist leider ungültig", address)
               .build();
     } catch (JSONException e) {
       return input.getResponseBuilder()
-              .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT)
+              .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT.toString())
               .withSimpleCard("Die adresse ist leider ungültig", address)
               .build();
     }
