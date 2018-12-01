@@ -28,7 +28,6 @@ public class HouseNumberConverter {
 		copy = resolveSmallNumbers(copy);
 		
 		int returnVal = value;
-		System.out.println(returnVal);
 		value = 0;
 		
 		return returnVal;
