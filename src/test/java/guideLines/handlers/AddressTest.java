@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import main.java.exceptions.StreetNotFoundException;
 import main.java.guideLines.model.AddressResolver;
-import main.java.guideLines.model.NearestStationFinder;
-import main.java.guideLines.model.Station;
 import main.java.guideLines.model.Address;
 
 class AddressTest {
@@ -41,24 +39,4 @@ class AddressTest {
 			Address address = ar.getAddress("München");
 		});
 	}
-	
-	@Test
-	void GetPositionTest() throws IOException {
-		Address address = new Address("Lothstraße","München","NT_GgesHsyrnzR3eEhPnUvBpA_2QD");
-		NearestStationFinder stationFinder = new NearestStationFinder();
-		boolean actual = stationFinder.getPosition(address);
-		assertEquals(true, actual);
-	}
-	
-	@Test
-	void FindNearestStationTest() throws IOException {
-		NearestStationFinder nsf = new NearestStationFinder();
-		Address address = new Address("Bayerstraße","München","NT_IIphYQLPRrVnLxhhHePqsB_4A");
-		Station station = nsf.findNearestStation(address);
-		assertEquals(station.getName(), "Hauptbahnhof");
-	}
-
-	
-	
-
 }
