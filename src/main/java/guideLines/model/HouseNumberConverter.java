@@ -3,6 +3,7 @@ package main.java.guideLines.model;
 public class HouseNumberConverter {
 	
 	private int value = 0;
+	private StringBuilder adressWithoutNumber = new StringBuilder();
 	
 	/**
 	 * Translates the user input (words) into integer values. Used in this application for housenumbers
@@ -28,11 +29,28 @@ public class HouseNumberConverter {
 		copy = resolveSmallNumbers(copy);
 		
 		int returnVal = value;
+		adressWithoutNumber.append(copy).append(" ").append(value);
 		value = 0;
 		
 		return returnVal;
 	}
 	
+	/**
+	 * Formats the given address to a form that Here API can process
+	 * For example: 
+	 *              If input is "Lothstraße vierundsechzig München"
+	 *              the output will be:
+	 *              "Lothstraße München 64"
+	 *              The Here API can process the house number even if it is at the end
+	 * @param address
+	 *              The address to be formated
+	 * @return
+	 *              The address in a Here API ready form
+	 */
+	public String getAdressHereAPIFormatted(String address) {
+		getHouseNumber(address);
+		return adressWithoutNumber.toString();
+	}
 	
 	private String resolveSmallNumbers(String input) {
 		String copy = input;

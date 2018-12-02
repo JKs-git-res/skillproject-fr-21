@@ -50,6 +50,13 @@ class HouseNumberConverterTest {
 		assertEquals(0, result);
 	}
 	
+	@Test
+	void HereApiReadyAddressFormTest() {
+		String adresse1 = "Lothstraße vierundsechzig München";
+		String result = hnc.getAdressHereAPIFormatted(adresse1);
+		assertEquals("Lothstraße  München 64", result);
+	}
+	
 	
 
 }
