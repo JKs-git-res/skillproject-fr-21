@@ -23,4 +23,4 @@ zu finden.
 
 
 ## Fachklassenmodell (Analyseklassenmodell)
-![FachklassenmodellV3](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/GuideLines/FachklassenV3.png)
+![FachklassenmodellV3](https://user-images.githubusercontent.com/35468278/48474074-1120c280-e7fa-11e8-937d-9a1174bf9a71.png)
