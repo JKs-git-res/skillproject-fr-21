@@ -40,7 +40,7 @@ public class AddressResolver {
 	 * @throws StreetNotFoundException If the street was not found in the user input
 	 * @throws JSONException if the whole input was wrong
 	 */
-	public Address getAddress(String address) throws IOException, StreetNotFoundException {
+	public Address getAddress(String address) throws IOException, JSONException {
 		String encodedAddress = URLEncoder.encode(address, "UTF-8");
 		String response = getResponseFromURL("http://autocomplete.geocoder.api.here.com/6.2/suggest.json?query="
 				+ encodedAddress
@@ -53,12 +53,7 @@ public class AddressResolver {
 		String locationId = firstSuggestion.getString("locationId");
 		String city = addressJson.getString("city");
 		String street = null;
-		try {
-			street = addressJson.getString("street");
-		} catch (JSONException e) {
-			throw new StreetNotFoundException();
-		}
-		
+		street = addressJson.getString("street");
 		String postalCode = addressJson.getString("postalCode");
 		Integer houseNumber;
 		try {

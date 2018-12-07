@@ -35,6 +35,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import main.java.exceptions.StreetNotFoundException;
+import main.java.guideLines.OutputStrings;
+import main.java.guideLines.StatusAttributes;
 import main.java.guideLines.model.Address;
 import main.java.guideLines.model.FormOfTransport;
 import main.java.guideLines.model.Profile;
@@ -43,6 +45,10 @@ import main.java.guideLines.model.fullDestinationsException;
 public class SetUpIntentHandler implements RequestHandler {
 
     private Map<String, Slot> slots;
+    private AttributesManager attributesManager;
+    private Map<String, Object> persistentAttributes;
+    private Address homeAddress = null, destinationA = null, destinationB = null, destinationC = null;
+    private Slot FormOfTransport_Slot;
 
     @Override
     public boolean canHandle(HandlerInput input) {
@@ -50,7 +56,64 @@ public class SetUpIntentHandler implements RequestHandler {
         return input.matches(intentName("SetUpIntent")) && req.getType().equals("IntentRequest");
     }
 
-    
+    private Optional<Response> invalidAddress(HandlerInput input, String slot) {
+        return input.getResponseBuilder()
+                .addElicitSlotDirective(slot, ((IntentRequest) input.getRequestEnvelope().getRequest()).getIntent())
+                .withSpeech(OutputStrings.EINRICHTUNG_INVALID_ADDRESS.toString())
+                .withSimpleCard("Adresse ungültig", OutputStrings.EINRICHTUNG_INVALID_ADDRESS.toString())
+                .build();
+    }
+
+    private void saveProfileToDataBase(Profile profile) throws JsonProcessingException {
+        String ProfileJSON = new ObjectMapper().writeValueAsString(profile);
+        persistentAttributes.put("UserProfile", ProfileJSON); // schreiben in DB
+        attributesManager.setPersistentAttributes(persistentAttributes);
+        attributesManager.savePersistentAttributes(); // nach dem schreiben zum "pushen" in die DB
+
+    }
+
+    private Address resolveAddress(Slot slot) {
+        try {
+            return new AddressResolver().getAddress(slot.getValue());
+        } catch (IOException ex) {
+            return null;
+        } catch (JSONException ex) {
+            return null;
+        }
+    }
+
+    private Optional<Response> setUpComplete(HandlerInput input) {
+        Profile userProfile = new Profile(homeAddress, destinationA, destinationB, destinationC);
+
+        switch (FormOfTransport_Slot.getResolutions()
+        		.getResolutionsPerAuthority().get(0).getValues().get(0)
+        		.getValue().getName()) {
+            case ("Bus"):
+                userProfile.addPreferedFormOfTransport(FormOfTransport.BUS);
+                break;
+            case ("UBahn"):
+                userProfile.addPreferedFormOfTransport(FormOfTransport.UBAHN);
+                break;
+            case ("SBahn"):
+                userProfile.addPreferedFormOfTransport(FormOfTransport.SBAHN);
+                break;
+            case ("Tram"):
+                userProfile.addPreferedFormOfTransport(FormOfTransport.TRAM);
+                break;
+            default:
+                break;
+
+        }
+        try {
+            saveProfileToDataBase(userProfile);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(SetUpIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return input.getResponseBuilder()
+                .withSpeech(OutputStrings.EINRICHTUNG_END.toString())
+                .withSimpleCard("Einrichtung abgeschlossen", OutputStrings.EINRICHTUNG_END.toString())
+                .build();
+    }
 
     private Address getAddressFromLocation(String deviceId) throws IOException, JSONException, StreetNotFoundException {
         Address adr;
@@ -79,11 +142,12 @@ public class SetUpIntentHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
+        Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
 
         List<String> permissions = new ArrayList<String>();
         permissions.add("read::alexa:device:all:address");
-        AttributesManager attributesManager = input.getAttributesManager();
-        Map<String, Object> persistentAttributes = attributesManager.getPersistentAttributes();
+        attributesManager = input.getAttributesManager();
+        persistentAttributes = attributesManager.getPersistentAttributes();
         Address adr = null, destA = null, destB = null, destC = null;
         //String value = (String) persistentAttributes.get("key"); // lesen aus DB
 
@@ -97,6 +161,7 @@ public class SetUpIntentHandler implements RequestHandler {
         IntentRequest intReq = (IntentRequest) request;
         Intent intent = intReq.getIntent();
         slots = intent.getSlots();
+        FormOfTransport_Slot = slots.get("FormOfTransport");
         Slot HomeAddress_Slot = slots.get("Homeaddress"),
                 NameHome_Slot = slots.get("NameHome"),
                 yesNo_Slot_Loc = slots.get("YesNoSlot_Location"),
@@ -107,185 +172,181 @@ public class SetUpIntentHandler implements RequestHandler {
                 DestinationC_Slot = slots.get("DestinationC"),
                 DestinationA_Name_Slot = slots.get("NameA"),
                 DestinationB_Name_Slot = slots.get("NameB"),
-                DestinationC_Name_Slot = slots.get("NameC"),
-                FormOfTransport_Slot = slots.get("FormOfTransport");
+                DestinationC_Name_Slot = slots.get("NameC");
 
         if (intReq.getDialogState().getValue().equals("STARTED")) {
-
+            //Anfang des Dialogs. Als erstes wird geprüft, ob der aktuelle Standort verwendet werden soll
+            sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_LOCATION_SET.toString());
             return input.getResponseBuilder()
-                    //.withAskForPermissionsConsentCard(permissions)
-                    .addDelegateDirective(intent)
+                    .addElicitSlotDirective("YesNoSlot_Location", intent)
+                    .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
+                    .withSimpleCard("Aktuellen Standort verwenden?", OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
                     .build();
 
-        } else if (!intReq.getDialogState().getValue().equals("COMPLETED")) {
-            if (yesNo_Slot_Loc != null &&
-                    yesNo_Slot_Loc.getValue().equals("Ja")) {
-                //TODO Not Yet implemented
-                /*
-                Optional<Object> ctxObj = input.getContext();
-		
-		Context ctx;
-		ctx = (Context) ctxObj.get();
-    		SystemState sys = ctx.getSystem();
-    		String deviceId = sys.getDevice().getDeviceId();
-    		String apiAccessToken = sys.getApiAccessToken();
-                //User will aktuellen Standort verwenden
-		try {
-                    adr = getAddressFromLocation(deviceId);
-                    slots.put(adr.getFullAddress(), HomeAddress_Slot);
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (StreetNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                 */
+        } else {
 
-            }
-            if (yesNo_Slot_secondDest.getValue() != null 
-                    &&yesNo_Slot_secondDest.getValue().equals("Ja")
-                    && DestinationB_Slot.getValue() == null) {
-                //falls zweites Ziel eingerichtet werden soll
-                return input.getResponseBuilder()
-                        .addElicitSlotDirective("DestinationB", intent)
-                        .withSpeech("Wie lautet deine zweite Zieladresse?")
-                        .build();
-            }
-            if(yesNo_Slot_secondDest.getValue() != null 
-                    &&yesNo_Slot_secondDest.getValue().equals("Ja")
-                    &&DestinationB_Name_Slot.getValue() == null
-                    &&DestinationB_Slot.getValue() != null) {
-            		return input.getResponseBuilder()	
-            		.addElicitSlotDirective("NameB", intent)
-                .withSpeech("Wie willst du diese Adresse benennen?")
-                .build();
-            }
-           if(DestinationB_Slot.getValue() != null 
-        		   && DestinationB_Name_Slot != null
-        		   &&yesNo_Slot_thirdDest != null
-        		   &&yesNo_Slot_thirdDest.getValue() == null) {
-        	   return input.getResponseBuilder()	
-               		.addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
-                   .withSpeech("Willst du ein drittes Ziel hinzufügen?")
-                   .build();
-           }
-           if(yesNo_Slot_thirdDest!= null 
-        		   &&yesNo_Slot_thirdDest.getValue() != null 
-        		   && yesNo_Slot_thirdDest.getValue().equals("Ja")
-        		   && DestinationC_Slot.getValue() == null) {
-        	   return input.getResponseBuilder()	
-                  		.addElicitSlotDirective("DestinationC", intent)
-                      .withSpeech("Wie lautet dein drittes Ziel?")
-                      .build();
-           }
-           if(yesNo_Slot_thirdDest != null 
-        		   &&yesNo_Slot_thirdDest.getValue() != null 
-                   &&yesNo_Slot_thirdDest.getValue().equals("Ja")
-                   &&DestinationC_Name_Slot.getValue() == null
-                   &&DestinationC_Slot.getValue() != null) {
-           		return input.getResponseBuilder()	
-           		.addElicitSlotDirective("NameC", intent)
-               .withSpeech("Wie willst du diese Adresse benennen?")
-               .build();
-           }
-           
-               
-            if (yesNo_Slot_thirdDest != null 
-                    && (yesNo_Slot_thirdDest.getValue().equals("Ja")
-                     && DestinationC_Slot.getValue() == null) ) {
-                // falls drittes ziel eingerichtet werden soll 
-                // (nur wenn zweites Ziel bereits eingerichtet ist)
-                return input.getResponseBuilder()
-                        .addElicitSlotDirective("DestinationC", intent)
-                        .withSpeech("Wie lautet deine dritte Zieladresse?")
-                        .addElicitSlotDirective("NameC", intent)
-                        .withSpeech("Wie willst du diese Adresse benennen?")
-                        .build();
-            }
+            switch ((String) sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString())) {
 
-            return input.getResponseBuilder()
-                    .addDelegateDirective(intent)
-                    .build();
+                case "000": //hier wird nach der Heimatadresse gefragt
+                    sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_HOMEADDRESS_SET.toString());
+                    if (yesNo_Slot_Loc.getResolutions()
+                    		.getResolutionsPerAuthority()
+                    		.get(0).getValues().get(0).getValue()
+                    		.getName().equals("Nein")) {
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("Homeaddress", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_HOMEADDRESS.toString())
+                                .withSimpleCard("Heimatadresse angeben", OutputStrings.EINRICHTUNG_HOMEADDRESS.toString())
+                                .build();
+                    } else {
+                        //TODO Falls der aktuelle Standort verwendet werden soll
+                        /*
+                                            Optional<Object> ctxObj = input.getContext();
 
-        } else /* wird nur ausgeführt, wenn dialog sate = COMPLETED */ {
-            Profile UserProfile = null;
-            try {
+                                            Context ctx;
+                                            ctx = (Context) ctxObj.get();
+                                            SystemState sys = ctx.getSystem();
+                                            String deviceId = sys.getDevice().getDeviceId();
+                                            String apiAccessToken = sys.getApiAccessToken();
+                                            //User will aktuellen Standort verwenden
+                                            try {
+                                                adr = getAddressFromLocation(deviceId);
+                                                slots.put(adr.getFullAddress(), HomeAddress_Slot);
+                                            } catch (JSONException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            } catch (StreetNotFoundException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            }
+                         */
+                    }
 
-                Address homeAddress = new AddressResolver()
-                        .getAddress(HomeAddress_Slot.getValue());
-                homeAddress.setName(NameHome_Slot.getValue());
+                case "001": //hier wird nach dem Namen der Heimatadresse gefragt
+                    homeAddress = resolveAddress(HomeAddress_Slot);
+                    if (homeAddress == null) {
+                        return invalidAddress(input, "Homeaddress");
+                    } else {
+                        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_NAME_HOME_SET.toString());
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("NameHome", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_NAMEHOME.toString())
+                                .withSimpleCard("Heimatadresse benennen", OutputStrings.EINRICHTUNG_NAMEHOME.toString())
+                                .build();
+                    }
 
-                Address destinationA = new AddressResolver()
-                        .getAddress(DestinationA_Slot.getValue());
-                destinationA.setName(DestinationA_Name_Slot.getValue());
-                
-                UserProfile = new Profile(homeAddress, destinationA);
-                
-                switch (FormOfTransport_Slot.getValue()) {
-                    case ("Bus"):
-                        UserProfile.addPreferedFormOfTransport(FormOfTransport.BUS);
-                        break;
-                    case ("UBahn"):
-                        UserProfile.addPreferedFormOfTransport(FormOfTransport.UBAHN);
-                        break;
-                    case ("SBahn"):
-                        UserProfile.addPreferedFormOfTransport(FormOfTransport.SBAHN);
-                        break;
-                    case ("Tram"):
-                        UserProfile.addPreferedFormOfTransport(FormOfTransport.TRAM);
-                        break;
-                    default:
-                        break;
+                case "002": //hier wird nach der ersten Zieladresse gefragt
+                    homeAddress.setName(NameHome_Slot.getValue());
+                    sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_DESTINATION_A_SET.toString());
+                    return input.getResponseBuilder()
+                            .addElicitSlotDirective("DestinationA", intent)
+                            .withSpeech(OutputStrings.EINRICHTUNG_DEST_A.toString())
+                            .withSimpleCard("Zieladresse benennen", OutputStrings.EINRICHTUNG_DEST_A.toString())
+                            .build();
 
-                }
-                
+                case "003": //hier wird nach dem Namen der ersten Zieladresse gefragt
+                    destinationA = resolveAddress(DestinationA_Slot);
+                    if (destinationA == null) {
+                        return invalidAddress(input, "DestinationA");
+                    } else {
+                        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_NAME_A_SET.toString());
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("NameA", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_NAME_A.toString())
+                                .withSimpleCard("Heimatadresse benennen", OutputStrings.EINRICHTUNG_NAME_A.toString())
+                                .build();
+                    }
 
-                if (yesNo_Slot_secondDest.getValue().equals("Ja")) {
+                case "004": //hier wird nach dem Lieblingstransportmittel gefragt
+                    destinationA.setName(DestinationA_Name_Slot.getValue());
+                    sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_FORM_OF_TRANSPORT_SET.toString());
+                    return input.getResponseBuilder()
+                            .addElicitSlotDirective("FormOfTransport", intent)
+                            .withSpeech(OutputStrings.EINRICHTUNG_FORM_OF_TRANSPORT.toString())
+                            .withSimpleCard("Lieblingstransportmittel angeben", OutputStrings.EINRICHTUNG_FORM_OF_TRANSPORT.toString())
+                            .build();
 
-                    Address destinationB = new AddressResolver()
-                            .getAddress(DestinationB_Slot.getValue());
+                case "005": // und so weiter...
+                    sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_WANT_SECOND_DEST_SET.toString());
+                    return input.getResponseBuilder()
+                            .addElicitSlotDirective("YesNoSlot_wantSecondDest", intent)
+                            .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST.toString())
+                            .withSimpleCard("Zweites Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST.toString())
+                            .build();
+
+                case "006":
+                    if (yesNo_Slot_secondDest.getResolutions()
+                    		.getResolutionsPerAuthority().get(0).getValues().get(0)
+                    		.getValue().getName().equals("Ja")) {
+                        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_DESTINATION_B_SET.toString());
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("DestinationB", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_DEST_B.toString())
+                                .withSimpleCard("Zweites Ziel angeben", OutputStrings.EINRICHTUNG_DEST_B.toString())
+                                .build();
+                    } else {
+                        return setUpComplete(input);
+                    }
+
+                case "007":
+                    destinationB = resolveAddress(DestinationB_Slot);
+                    if (destinationB == null) {
+                        return invalidAddress(input, "DestinationB");
+                    } else {
+                        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_NAME_B_SET.toString());
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("NameB", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_NAME_B.toString())
+                                .withSimpleCard("Zweites Ziel benennen", OutputStrings.EINRICHTUNG_NAME_B.toString())
+                                .build();
+                    }
+
+                case "008":
                     destinationB.setName(DestinationB_Name_Slot.getValue());
-                    UserProfile.addDestinationAddress(destinationB);
-                }
-                if (yesNo_Slot_thirdDest.getValue().equals("ja")) {
+                    sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_WANT_THIRD_DEST_SET.toString());
+                    return input.getResponseBuilder()
+                            .addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
+                            .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
+                            .withSimpleCard("Drittes Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
+                            .build();
 
-                    Address destinationC = new AddressResolver()
-                            .getAddress(DestinationC_Slot.getValue());
+                case "009":
+                    if (yesNo_Slot_thirdDest.getResolutions()
+                    		.getResolutionsPerAuthority().get(0).getValues().get(0)
+                    		.getValue().getName().equals("Ja")) {
+                        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_DESTINATION_C_SET.toString());
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("DestinationC", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_DEST_C.toString())
+                                .withSimpleCard("Drittes Ziel angeben", OutputStrings.EINRICHTUNG_DEST_C.toString())
+                                .build();
+                    } else {
+                        return setUpComplete(input);
+                    }
+                case "010":
+                    destinationC = resolveAddress(DestinationC_Slot);
+                    if (destinationC == null) {
+                        return invalidAddress(input, "DestinationC");
+                    } else {
+                        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_NAME_C_SET.toString());
+                        return input.getResponseBuilder()
+                                .addElicitSlotDirective("NameC", intent)
+                                .withSpeech(OutputStrings.EINRICHTUNG_NAME_C.toString())
+                                .withSimpleCard("Drittes Ziel benennen", OutputStrings.EINRICHTUNG_NAME_C.toString())
+                                .build();
+                    }
+                case "011":
                     destinationC.setName(DestinationC_Name_Slot.getValue());
-                    UserProfile.addDestinationAddress(destinationC);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(SetUpIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (StreetNotFoundException ex) {
-                Logger.getLogger(SetUpIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (fullDestinationsException ex) {
-                Logger.getLogger(SetUpIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                // adresse in json-String umwandeln und in DB speichern
-                String ProfileJSON = new ObjectMapper().writeValueAsString(UserProfile);
-                persistentAttributes.put("UserProfile", ProfileJSON); // schreiben in DB
-                attributesManager.setPersistentAttributes(persistentAttributes);
-                attributesManager.savePersistentAttributes(); // nach dem schreiben zum "pushen" in die DB
+                    return setUpComplete(input);
+                default:
 
-                // wiederherstellen der Adresse aus DB
-                // Address recovered = new ObjectMapper().readValue((String)
-                // persistentAttributes.get("UserProfile"), Profile.class);
-            } catch (JsonProcessingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
-
-            return input.getResponseBuilder()
-                    .withSpeech("Vielen Dank. Die Einrichtung ist erfolgreich abgeschlossen.")
-                    .withSimpleCard("Einrichtung abgeschlossen!",
-                            "Vielen Dank. Die Einrichtung ist erfolgreich abgeschlossen.")
-                    .withShouldEndSession(false).build();
+           
         }
+        return null;
 
     }
 

@@ -3,6 +3,7 @@
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/FormOfTransport.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Station.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/fullDestinationsException.java
+/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/VerifyAddressIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/SetUpIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/AddressResolver.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/GermanEncodingConverter.java
@@ -21,6 +22,7 @@
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/AddressIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/HelpIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/test/java/guideLines/handlers/GermanEncodingConverterTest.java
+/Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/StatusAttributes.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Profile.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/handlers/CancelandStopIntentHandler.java
 /Users/alex/Documents/software_engineering/skillproject-fr-21/src/main/java/guideLines/model/Schedule.java

@@ -6,10 +6,13 @@ public class Profile {
 	private Address homeAddress;
 	private Address[] destinationAddresses = new Address[3];
 	private FormOfTransport preferedWayOfTransport;
-	public Profile(Address home, Address destA) {
+	public Profile(Address home, Address destA, Address destB, Address destC) {
 		this.homeAddress = home;
 		try {
 			addDestinationAddress(destA);
+                                                       addDestinationAddress(destB);
+                                                       addDestinationAddress(destC);
+                        
 		} catch (fullDestinationsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
