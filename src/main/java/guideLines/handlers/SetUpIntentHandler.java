@@ -146,19 +146,54 @@ public class SetUpIntentHandler implements RequestHandler {
                  */
 
             }
-            if ((yesNo_Slot_secondDest.getValue() != null 
-                    &&yesNo_Slot_secondDest.getValue().equals("Ja"))
+            if (yesNo_Slot_secondDest.getValue() != null 
+                    &&yesNo_Slot_secondDest.getValue().equals("Ja")
                     && DestinationB_Slot.getValue() == null) {
                 //falls zweites Ziel eingerichtet werden soll
                 return input.getResponseBuilder()
                         .addElicitSlotDirective("DestinationB", intent)
                         .withSpeech("Wie lautet deine zweite Zieladresse?")
-                        .addElicitSlotDirective("NameB", intent)
-                        .withSpeech("Wie willst du diese Adresse benennen?")
-                        .addElicitSlotDirective("YesNoSlot_wantThridDest", intent)
-                        .withSpeech("Möchtest du ein drittes Ziel hinzufügen?")
                         .build();
             }
+            if(yesNo_Slot_secondDest.getValue() != null 
+                    &&yesNo_Slot_secondDest.getValue().equals("Ja")
+                    &&DestinationB_Name_Slot.getValue() == null
+                    &&DestinationB_Slot.getValue() != null) {
+            		return input.getResponseBuilder()	
+            		.addElicitSlotDirective("NameB", intent)
+                .withSpeech("Wie willst du diese Adresse benennen?")
+                .build();
+            }
+           if(DestinationB_Slot.getValue() != null 
+        		   && DestinationB_Name_Slot != null
+        		   &&yesNo_Slot_thirdDest != null
+        		   &&yesNo_Slot_thirdDest.getValue() == null) {
+        	   return input.getResponseBuilder()	
+               		.addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
+                   .withSpeech("Willst du ein drittes Ziel hinzufügen?")
+                   .build();
+           }
+           if(yesNo_Slot_thirdDest!= null 
+        		   &&yesNo_Slot_thirdDest.getValue() != null 
+        		   && yesNo_Slot_thirdDest.getValue().equals("Ja")
+        		   && DestinationC_Slot.getValue() == null) {
+        	   return input.getResponseBuilder()	
+                  		.addElicitSlotDirective("DestinationC", intent)
+                      .withSpeech("Wie lautet dein drittes Ziel?")
+                      .build();
+           }
+           if(yesNo_Slot_thirdDest != null 
+        		   &&yesNo_Slot_thirdDest.getValue() != null 
+                   &&yesNo_Slot_thirdDest.getValue().equals("Ja")
+                   &&DestinationC_Name_Slot.getValue() == null
+                   &&DestinationC_Slot.getValue() != null) {
+           		return input.getResponseBuilder()	
+           		.addElicitSlotDirective("NameC", intent)
+               .withSpeech("Wie willst du diese Adresse benennen?")
+               .build();
+           }
+           
+               
             if (yesNo_Slot_thirdDest != null 
                     && (yesNo_Slot_thirdDest.getValue().equals("Ja")
                      && DestinationC_Slot.getValue() == null) ) {
