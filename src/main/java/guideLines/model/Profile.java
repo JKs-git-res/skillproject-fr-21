@@ -1,5 +1,7 @@
 package main.java.guideLines.model;
 
+import main.java.exceptions.FullDestinationsException;
+
 public class Profile {
 	//private String userNameID;
 	//private String firstName;
@@ -13,7 +15,7 @@ public class Profile {
                                                        addDestinationAddress(destB);
                                                        addDestinationAddress(destC);
                         
-		} catch (fullDestinationsException e) {
+		} catch (FullDestinationsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -48,9 +50,9 @@ public class Profile {
         public void addPreferedFormOfTransport(FormOfTransport fot){
             this.preferedWayOfTransport = fot;
         }
-        public void addDestinationAddress(Address newDestination) throws fullDestinationsException{
+        public void addDestinationAddress(Address newDestination) throws FullDestinationsException{
             if(destinationsFull())
-                throw new fullDestinationsException();
+                throw new FullDestinationsException();
             else {
                 for(int i = 0; i<3 ; i++){
                     if(destinationAddresses[i] == null){

@@ -34,13 +34,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.java.exceptions.FullDestinationsException;
 import main.java.exceptions.StreetNotFoundException;
 import main.java.guideLines.OutputStrings;
 import main.java.guideLines.StatusAttributes;
 import main.java.guideLines.model.Address;
 import main.java.guideLines.model.FormOfTransport;
 import main.java.guideLines.model.Profile;
-import main.java.guideLines.model.fullDestinationsException;
 
 public class SetUpIntentHandler implements RequestHandler {
 
@@ -79,6 +79,8 @@ public class SetUpIntentHandler implements RequestHandler {
             return null;
         } catch (JSONException ex) {
             return null;
+        } catch (StreetNotFoundException ex) {
+        	return null;
         }
     }
 

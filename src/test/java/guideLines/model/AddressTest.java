@@ -1,4 +1,4 @@
-package test.java.guideLines.handlers;
+package test.java.guideLines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
@@ -32,8 +32,7 @@ class AddressTest {
 		assertEquals("80335", address.getPostCode());
 		assertEquals("NT_GgesHsyrnzR3eEhPnUvBpA", address.getLocationId());
 	}
-	/*
-	 Test hat nicht funktioniert.
+	
 	@Test
 	void AddressTestWithoutStreet() throws IOException, StreetNotFoundException {		
 		assertThrows(StreetNotFoundException.class, ()-> {
@@ -41,5 +40,11 @@ class AddressTest {
 		});
 		
 	}
-	*/
+	
+	@Test
+	void TestRandomLocation() throws IOException, StreetNotFoundException {
+		Address address = ar.getAddress("Olympiapark München");
+		assertEquals("Am Olympiapark", address.getStreet());
+	}
+	
 }
