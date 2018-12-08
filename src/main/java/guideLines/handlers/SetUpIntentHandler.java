@@ -40,6 +40,7 @@ import main.java.guideLines.OutputStrings;
 import main.java.guideLines.StatusAttributes;
 import main.java.guideLines.model.Address;
 import main.java.guideLines.model.FormOfTransport;
+import main.java.guideLines.model.HouseNumberConverter;
 import main.java.guideLines.model.Profile;
 
 public class SetUpIntentHandler implements RequestHandler {
@@ -72,9 +73,14 @@ public class SetUpIntentHandler implements RequestHandler {
 
     }
 
+    /*
+     * ich nehme hier die erste Adresse. Bitte anpassen damit es auch für mehrere funktioniert. Unten auch!!!!!
+     * Noch zusätzlich formatiere ich die den String vom Slot [slot.getValue()] damit man den Integer Wert hat und nicht Wörter (hnc)
+     */
     private Address resolveAddress(Slot slot) {
         try {
-            return new AddressResolver().getAddress(slot.getValue());
+        	HouseNumberConverter hnc = new HouseNumberConverter();
+            return new AddressResolver().getAddressList(hnc.getAdressHereAPIFormatted(slot.getValue())).get(0);
         } catch (IOException ex) {
             return null;
         } catch (JSONException ex) {
@@ -131,11 +137,14 @@ public class SetUpIntentHandler implements RequestHandler {
             }
             String jsonText = sb.toString();
             JSONObject json = new JSONObject(jsonText);
+            /*
+             * Hier nehme ich wieder die erste Adresse !!!
+             */
             adr = new AddressResolver()
-                    .getAddress(json.get("addressLine1") + " "
+                    .getAddressList(json.get("addressLine1") + " "
                             + json.get("addressLine2") + " "
                             + json.get("addressLine3") + " "
-                            + json.get("city"));
+                            + json.get("city")).get(0);
             return adr;
         } finally {
             is.close();

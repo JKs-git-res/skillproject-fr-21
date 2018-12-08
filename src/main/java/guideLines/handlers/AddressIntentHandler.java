@@ -16,6 +16,8 @@ import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Slot;
+
+import java.util.ArrayList;
 import java.util.Collections;
 
 import main.java.exceptions.StreetNotFoundException;
@@ -43,9 +45,12 @@ public class AddressIntentHandler implements RequestHandler {
 
     String address = addressSlot.getValue();
 
-    Address realAddress = null;
+    /*
+     * realAddress ist jetzt ne Liste von Adressen ich nehme unten nur das erste Ergebnis
+     */
+    ArrayList<Address> realAddress = null;
     try {
-      realAddress = ar.getAddress(address);
+      realAddress = ar.getAddressList(address);
     } catch (IOException e) {
       // Unknown exception maybe no connection
       e.printStackTrace();
@@ -73,9 +78,12 @@ public class AddressIntentHandler implements RequestHandler {
             attributesManager.setPersistentAttributes(persistentAttributes);
             attributesManager.savePersistentAttributes();
 
+            /*
+             * hier nehme ich nur die erste Adresse[realAddress.get(0)], bitte anpassen wenn's mehr als eine Adresse gibt
+             */
     return input.getResponseBuilder()
-            .withSpeech("Deine Adresse ist: Straße: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
-            .withSimpleCard("Adresse: ", "Straße: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
+            .withSpeech("Deine Adresse ist: Straße: " + realAddress.get(0).getStreet() + " und Stadt: " + realAddress.get(0).getCity())
+            .withSimpleCard("Adresse: ", "Straße: " + realAddress.get(0).getStreet() + " und Stadt: " + realAddress.get(0).getCity())
             .build();
 
   }
