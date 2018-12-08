@@ -38,7 +38,7 @@ class AddressTest {
 	@Test
 	void AddressTestWithoutStreet() throws IOException, StreetNotFoundException {		
 		assertThrows(StreetNotFoundException.class, ()-> {
-			ArrayList<Address> address = ar.getAddressList("München");
+			ar.getAddressList("München");
 		});
 		
 	}

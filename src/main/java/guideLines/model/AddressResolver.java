@@ -20,7 +20,15 @@ public class AddressResolver {
 	public static final String app_id = "ZQc2T7A0egItevgCF9iE";
 	public static final String app_code = "Lu6ioGBqcHULGjLLFMiDeQ";
 	
-	
+	/**
+	 * Sends a HTTP GET request to the given URL and returns the result as a String
+	 * @param link
+	 * 			URL to send the GET request to
+	 * @return
+	 * 			The response body of the GET request as a String
+	 * @throws IOException
+	 * 			If there was a connection problem
+	 */
 	public String getResponseFromURL(String link) throws IOException {
 		URL url = new URL(link);
 		URLConnection con = url.openConnection();
@@ -42,10 +50,8 @@ public class AddressResolver {
 	 *              If the connection fails
 	 * @throws JSONException
 	 *              If the response JSON was not in the expected form
-	 * @throws StreetNotFoundException
-	 *              If the street was not in the input or couldn't be found
 	 */
-	public ArrayList<Address> getAddressList(String address) throws IOException, JSONException, StreetNotFoundException {
+	public ArrayList<Address> getAddressList(String address) throws IOException, JSONException {
 		String encodedAddress = URLEncoder.encode(address, "UTF-8");
 		String response = getResponseFromURL("http://autocomplete.geocoder.api.here.com/6.2/suggest.json?query="
 				+ encodedAddress
@@ -55,12 +61,30 @@ public class AddressResolver {
 		JSONArray suggestions = json.getJSONArray("suggestions");
 		ArrayList<Address> addressList = new ArrayList<>();
 		for (int i=0; i<suggestions.length(); i++) {
-			addressList.add(getAddress(suggestions.getJSONObject(i)));
+			Address addr;
+			try {
+				addr = getAddress(suggestions.getJSONObject(i));
+			} catch (StreetNotFoundException e) {
+				addr = null;
+			}
+			if (addr != null) {
+				addressList.add(addr);
+			}
 		}
 		
 		return addressList;
 	}
 	
+	/**
+	 * Returns the address as an {@link Address} object
+	 * from a suggestion in form of a {@link JSONObject} from Here API
+	 * @param suggestion
+	 * 				The {@link JSONObject} of a suggestion from Here API
+	 * @return
+	 * 				An {@link Address} object from the suggestion
+	 * @throws StreetNotFoundException
+	 * 				If the Street was not found.
+	 */
 	private Address getAddress(JSONObject suggestion) throws StreetNotFoundException {
 		JSONObject addressJson = suggestion.getJSONObject("address");
 		String locationId = suggestion.getString("locationId");

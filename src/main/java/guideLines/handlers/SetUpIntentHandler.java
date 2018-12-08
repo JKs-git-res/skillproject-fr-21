@@ -85,9 +85,11 @@ public class SetUpIntentHandler implements RequestHandler {
             return null;
         } catch (JSONException ex) {
             return null;
-        } catch (StreetNotFoundException ex) {
-        	return null;
         }
+        /* Hier habe ich ein bisschen geändert weil AddressResolver keine StreetNotFoundException mehr 
+        wirft sondern wenn's keine Straße gefunden wird in der Adresse, dann füge ich sie nicht mehr hinzu
+        siehe AddressResolver:70.
+       */
     }
 
     private Optional<Response> setUpComplete(HandlerInput input) {
