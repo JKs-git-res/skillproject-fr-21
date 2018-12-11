@@ -16,9 +16,10 @@ import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Slot;
+
+import java.util.ArrayList;
 import java.util.Collections;
 
-import main.java.exceptions.StreetNotFoundException;
 import main.java.guideLines.OutputStrings;
 import main.java.guideLines.model.Address;
 
@@ -43,24 +44,34 @@ public class AddressIntentHandler implements RequestHandler {
 
     String address = addressSlot.getValue();
 
-    Address realAddress = null;
+    /*
+     * realAddress ist jetzt ne Liste von Adressen ich nehme unten nur das erste Ergebnis
+     */
+    ArrayList<Address> realAddress = null;
     try {
-      realAddress = ar.getAddress(address);
+      realAddress = ar.getAddressList(address);
     } catch (IOException e) {
       // Unknown exception maybe no connection
       e.printStackTrace();
-    } catch (StreetNotFoundException e) {
-      // No stret found ask the user for street
-      return input.getResponseBuilder()
-              .withSpeech(OutputStrings.NO_STREET_PROMPT)
-              .withSimpleCard("Die adresse ist leider ungültig", address)
-              .build();
     } catch (JSONException e) {
       return input.getResponseBuilder()
-              .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT)
+              .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT.toString())
               .withSimpleCard("Die adresse ist leider ungültig", address)
               .build();
     }
+    
+    /* Hier habe ich ein bisschen geändert weil AddressResolver keine StreetNotFoundException mehr 
+     wirft sondern wenn's keine Straße gefunden wird in der Adresse, dann füge ich sie nicht mehr hinzu
+     siehe AddressResolver:70. Also um zu prüfen ob's keine Straße gefunden wurde muss man das so machen:
+    */
+    if (realAddress.size() == 0) {
+    	// No stret found ask the user for street
+        return input.getResponseBuilder()
+                .withSpeech(OutputStrings.NO_STREET_PROMPT.toString())
+                .withSimpleCard("Die adresse ist leider ungültig", address)
+                .build();
+    }
+    
     
     input.getAttributesManager().setSessionAttributes(Collections.singletonMap("adresse", "Alex ist ein spasst"));
     
@@ -73,9 +84,12 @@ public class AddressIntentHandler implements RequestHandler {
             attributesManager.setPersistentAttributes(persistentAttributes);
             attributesManager.savePersistentAttributes();
 
+            /*
+             * hier nehme ich nur die erste Adresse[realAddress.get(0)], bitte anpassen wenn's mehr als eine Adresse gibt
+             */
     return input.getResponseBuilder()
-            .withSpeech("Deine Adresse ist: Straße: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
-            .withSimpleCard("Adresse: ", "Straße: " + realAddress.getStreet() + " und Stadt: " + realAddress.getCity())
+            .withSpeech("Deine Adresse ist: Straße: " + realAddress.get(0).getStreet() + " und Stadt: " + realAddress.get(0).getCity())
+            .withSimpleCard("Adresse: ", "Straße: " + realAddress.get(0).getStreet() + " und Stadt: " + realAddress.get(0).getCity())
             .build();
 
   }

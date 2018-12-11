@@ -1,8 +1,9 @@
 package main.java.guideLines.model;
 
 public enum FormOfTransport {
-	UBAHN, 
+	    UBAHN, 
         SBAHN, 
         TRAM, 
-        BUS
+        BUS;
+
 }
