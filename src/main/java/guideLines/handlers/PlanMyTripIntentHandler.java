@@ -20,7 +20,7 @@ public class PlanMyTripIntentHandler implements RequestHandler
 	@Override
 	public Optional<Response> handle(HandlerInput arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 

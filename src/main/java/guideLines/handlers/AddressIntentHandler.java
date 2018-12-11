@@ -53,6 +53,7 @@ public class AddressIntentHandler implements RequestHandler {
     } catch (IOException e) {
       // Unknown exception maybe no connection
       e.printStackTrace();
+      return Optional.empty();
     } catch (JSONException e) {
       return input.getResponseBuilder()
               .withSpeech(OutputStrings.WRONG_ADDRESS_PROMPT.toString())
