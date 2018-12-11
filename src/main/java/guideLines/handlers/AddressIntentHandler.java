@@ -51,8 +51,6 @@ public class AddressIntentHandler implements RequestHandler {
     try {
       realAddress = ar.getAddressList(address);
     } catch (IOException e) {
-      // Unknown exception maybe no connection
-      e.printStackTrace();
       return Optional.empty();
     } catch (JSONException e) {
       return input.getResponseBuilder()
@@ -60,34 +58,33 @@ public class AddressIntentHandler implements RequestHandler {
               .withSimpleCard("Die adresse ist leider ungültig", address)
               .build();
     }
-    
+
     /* Hier habe ich ein bisschen geändert weil AddressResolver keine StreetNotFoundException mehr 
      wirft sondern wenn's keine Straße gefunden wird in der Adresse, dann füge ich sie nicht mehr hinzu
      siehe AddressResolver:70. Also um zu prüfen ob's keine Straße gefunden wurde muss man das so machen:
-    */
+     */
     if (realAddress.size() == 0) {
-    	// No stret found ask the user for street
-        return input.getResponseBuilder()
-                .withSpeech(OutputStrings.NO_STREET_PROMPT.toString())
-                .withSimpleCard("Die adresse ist leider ungültig", address)
-                .build();
+      // No stret found ask the user for street
+      return input.getResponseBuilder()
+              .withSpeech(OutputStrings.NO_STREET_PROMPT.toString())
+              .withSimpleCard("Die adresse ist leider ungültig", address)
+              .build();
     }
-    
-    
-    input.getAttributesManager().setSessionAttributes(Collections.singletonMap("adresse", "Alex ist ein spasst"));
-    
-    //store persistent
-            AttributesManager attributesManager = input.getAttributesManager();
-            Map<String, Object> persistentAttributes = attributesManager.getPersistentAttributes();
-            persistentAttributes.put("adresse", "Alex ist ein spasst");
-            persistentAttributes.put("adresseeeee", "Alex ist ein spasst");
-            persistentAttributes.put("adresseesssdee", "Alex ist ein spasst");
-            attributesManager.setPersistentAttributes(persistentAttributes);
-            attributesManager.savePersistentAttributes();
 
-            /*
+    input.getAttributesManager().setSessionAttributes(Collections.singletonMap("adresse", "Alex ist ein spasst"));
+
+    //store persistent
+    AttributesManager attributesManager = input.getAttributesManager();
+    Map<String, Object> persistentAttributes = attributesManager.getPersistentAttributes();
+    persistentAttributes.put("adresse", "Alex ist ein spasst");
+    persistentAttributes.put("adresseeeee", "Alex ist ein spasst");
+    persistentAttributes.put("adresseesssdee", "Alex ist ein spasst");
+    attributesManager.setPersistentAttributes(persistentAttributes);
+    attributesManager.savePersistentAttributes();
+
+    /*
              * hier nehme ich nur die erste Adresse[realAddress.get(0)], bitte anpassen wenn's mehr als eine Adresse gibt
-             */
+     */
     return input.getResponseBuilder()
             .withSpeech("Deine Adresse ist: Straße: " + realAddress.get(0).getStreet() + " und Stadt: " + realAddress.get(0).getCity())
             .withSimpleCard("Adresse: ", "Straße: " + realAddress.get(0).getStreet() + " und Stadt: " + realAddress.get(0).getCity())
