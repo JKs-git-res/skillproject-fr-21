@@ -4,7 +4,7 @@
   <groupId>fr21</groupId>
   <artifactId>GuideLines</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <name>GuideLines</name>
   <url>http://developer.amazon.com/ask</url>
   <licenses>
