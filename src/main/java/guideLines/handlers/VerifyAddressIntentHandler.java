@@ -23,7 +23,7 @@ public class VerifyAddressIntentHandler implements RequestHandler{
 	@Override
 	public Optional<Response> handle(HandlerInput input) {
             
-		return null;
+		return Optional.empty();
 	}
 
 }
