@@ -1,5 +1,9 @@
 package main.java.guideLines.model;
 
+import java.io.IOException;
+
+import main.java.exceptions.NoFormOfTransportException;
+
 public class Address {
     private String name;
     private final String street;
@@ -7,19 +11,23 @@ public class Address {
     private final String locationId;
     private int houseNumber = -1;
     private String postCode = null;
-    
+    private Station nearestStation;
     
     public Address(String street, String city, String locationId) {
     	this.city = city;
     	this.street = street;
     	this.locationId = locationId;
+    	setStation();
     }
+    
+   
     
     public Address(String street, String city, String locationId, int houseNumber) {
     	this.street = street;
     	this.city = city;
     	this.houseNumber = houseNumber;
     	this.locationId = locationId;
+    	setStation();
     }
     
     public Address(String street, String city, String locationId, int houseNumber, String postCode) {
@@ -28,6 +36,7 @@ public class Address {
     	this.houseNumber = houseNumber;
     	this.postCode = postCode;
     	this.locationId = locationId;
+    	setStation();
     }
     
     public Address(String street, String city, String locationId, String postCode) {
@@ -35,9 +44,24 @@ public class Address {
     	this.city = city;
     	this.postCode = postCode;
     	this.locationId = locationId;
+    	setStation();
     }
     
+    public Station getStation() {
+    		return this.nearestStation;
+    }
     
+    private void setStation() {
+    	try {
+			nearestStation = new NearbyStationFinder().findNearestStation(this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoFormOfTransportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     public void setName(String name){
         this.name = name;
     }

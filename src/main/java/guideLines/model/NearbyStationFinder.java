@@ -18,7 +18,7 @@ public class NearbyStationFinder {
 	private Double latitude = null;
 	private Double longitude = null;
 	private final int radius = 2000; // Radius to look for stations
-	private final int max = 3;       // Maximum amout of stations included in the response
+	private final int max = 3;       // Maximum amount of stations included in the response
 
 	/**
 	 * Returns the nearest station in the radius

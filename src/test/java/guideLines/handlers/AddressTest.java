@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import main.java.exceptions.StreetNotFoundException;
 import main.java.guideLines.model.AddressResolver;
-import main.java.guideLines.model.NearestStationFinder;
+import main.java.guideLines.model.NearbyStationFinder;
 import main.java.guideLines.model.Address;
 
 class AddressTest {
