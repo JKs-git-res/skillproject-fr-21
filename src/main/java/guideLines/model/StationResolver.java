@@ -26,6 +26,8 @@ public class StationResolver {
 	private final int max = 10;
 	private String name = null;
 	private String city = null;
+	private double latitude;
+	private double longitude;
 	
 	/**
 	 * Returns the station from a String
@@ -67,7 +69,7 @@ public class StationResolver {
 		if (lines.size() == 0) {
 			throw new NoFormOfTransportException();
 		}
-		return new Station(name, stationId, city, lines);
+		return new Station(name, stationId, city, lines, latitude, longitude);
 	}
 	
 	/**
@@ -146,6 +148,8 @@ public class StationResolver {
 		JSONObject firstResult = stations.getJSONObject(0); // Most of the cases the first result is the best
 		this.name = firstResult.getString("name");
 		this.city = firstResult.getString("city");
+		latitude = firstResult.getDouble("y");
+		longitude = firstResult.getDouble("x");
 		return firstResult.getString("id");
 	}
 	

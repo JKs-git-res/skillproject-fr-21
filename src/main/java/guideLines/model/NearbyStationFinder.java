@@ -65,8 +65,10 @@ public class NearbyStationFinder {
 		String name = firstResult.getString("name");
 		String id = firstResult.getString("id");
 		String city = firstResult.getString("city");
+		double latitude = firstResult.getDouble("y");
+		double longitude = firstResult.getDouble("x");
 		
-		return new Station(name, id, city, lines);
+		return new Station(name, id, city, lines, latitude, longitude);
 	}
 	
 	/**

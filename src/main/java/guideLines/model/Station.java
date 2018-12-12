@@ -8,6 +8,8 @@ public class Station {
   private final HashMap<String, FormOfTransport> lines;
   private final String id;
   private final String city;
+  private final double latitude;
+  private final double longitude;
 
   /**
    * Station object. It represents a station from Here API.
@@ -17,11 +19,13 @@ public class Station {
    * @param lines A HashMap with all the public transportation names and the
    * form of transport defined in {@link FormOfTransport}
    */
-  public Station(String name, String id, String city, HashMap<String, FormOfTransport> lines) {
+  public Station(String name, String id, String city, HashMap<String, FormOfTransport> lines, double latitude, double longitude) {
     this.name = name;
     this.lines = lines;
     this.id = id;
     this.city = city;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
   public String getName() {
@@ -38,6 +42,14 @@ public class Station {
 
   public String getCity() {
     return city;
+  }
+  
+  public double getLatitude() {
+	  return latitude;
+  }
+  
+  public double getLongitude() {
+	  return longitude;
   }
 
 }
