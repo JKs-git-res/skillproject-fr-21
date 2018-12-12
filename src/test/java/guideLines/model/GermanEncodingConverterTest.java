@@ -1,4 +1,4 @@
-package test.java.guideLines.handlers;
+package test.java.guideLines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 

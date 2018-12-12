@@ -15,7 +15,7 @@ class AddressTest {
 	
 	@Test
 	void AddressTestWithAllData() throws IOException, StreetNotFoundException {
-		Address address = ar.getAddress("Lothstraße 64 München");
+		Address address = ar.getAddressList("Lothstraße 64 München").get(0);
 		assertEquals("München", address.getCity());
 		assertEquals(64, address.gethouseNumber());
 		assertEquals("Lothstraße", address.getStreet());
@@ -25,21 +25,18 @@ class AddressTest {
 	
 	@Test
 	void AddressTestWithoutHouseNumber() throws IOException, StreetNotFoundException {
-		Address address = ar.getAddress("lothstraße München");
+		Address address = ar.getAddressList("lothstraße München").get(0);
 		assertEquals("München", address.getCity());
 		assertEquals(-1, address.gethouseNumber());
 		assertEquals("Lothstraße", address.getStreet());
 		assertEquals("80335", address.getPostCode());
 		assertEquals("NT_GgesHsyrnzR3eEhPnUvBpA", address.getLocationId());
 	}
-	/*
-	 Test hat nicht funktioniert.
+	
 	@Test
 	void AddressTestWithoutStreet() throws IOException, StreetNotFoundException {		
 		assertThrows(StreetNotFoundException.class, ()-> {
-			Address address = ar.getAddress("München");
+			Address address = ar.getAddressList("München").get(0);
 		});
-		
 	}
-	*/
 }
