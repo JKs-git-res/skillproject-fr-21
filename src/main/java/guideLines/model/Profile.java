@@ -1,21 +1,16 @@
 package main.java.guideLines.model;
 
-import main.java.exceptions.FullDestinationsException;
-
 public class Profile {
 	//private String userNameID;
 	//private String firstName;
 	private Address homeAddress;
 	private Address[] destinationAddresses = new Address[3];
 	private FormOfTransport preferedWayOfTransport;
-	public Profile(Address home, Address destA, Address destB, Address destC) {
+	public Profile(Address home, Address destA) {
 		this.homeAddress = home;
 		try {
 			addDestinationAddress(destA);
-                                                       addDestinationAddress(destB);
-                                                       addDestinationAddress(destC);
-                        
-		} catch (FullDestinationsException e) {
+		} catch (fullDestinationsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -50,9 +45,9 @@ public class Profile {
         public void addPreferedFormOfTransport(FormOfTransport fot){
             this.preferedWayOfTransport = fot;
         }
-        public void addDestinationAddress(Address newDestination) throws FullDestinationsException{
+        public void addDestinationAddress(Address newDestination) throws fullDestinationsException{
             if(destinationsFull())
-                throw new FullDestinationsException();
+                throw new fullDestinationsException();
             else {
                 for(int i = 0; i<3 ; i++){
                     if(destinationAddresses[i] == null){
@@ -67,15 +62,6 @@ public class Profile {
         public void removeDestinationAddress(Address toRemove){
             for(int i = 0; i<3 ; i++)
                 destinationAddresses[i] = destinationAddresses[i].equals(toRemove)? null : destinationAddresses[i];
-        }
-
-        public Address findByName(String addressName){
-            for(int i = 0; i<3;i++){
-                if(destinationAddresses[i].getName().equals(addressName)){
-                    return destinationAddresses[i];
-                }
-            }
-            return null;
         }
         
         private boolean destinationsFull(){

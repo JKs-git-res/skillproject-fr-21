@@ -7,20 +7,12 @@ public class Address {
     private final String locationId;
     private int houseNumber = -1;
     private String postCode = null;
-    private Station nearestStation;
     
     
     public Address(String street, String city, String locationId) {
     	this.city = city;
     	this.street = street;
     	this.locationId = locationId;
-    }
-
-    public Station getNearestStation(){
-        return this.nearestStation;
-    }
-    public void setNearestStation(Station nearestStation){
-        this.nearestStation = nearestStation;
     }
     
     public Address(String street, String city, String locationId, int houseNumber) {
@@ -54,7 +46,11 @@ public class Address {
         return this.name;
     }
     
-
+  
+    
+    public void setNearestStation(Station nearestStation){
+    }
+    
     public String getFullAddress(){
         return street + " " + houseNumber + " " + postCode + " " + city;
     }

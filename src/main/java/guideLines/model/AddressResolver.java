@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -20,15 +19,6 @@ public class AddressResolver {
 	public static final String app_id = "ZQc2T7A0egItevgCF9iE";
 	public static final String app_code = "Lu6ioGBqcHULGjLLFMiDeQ";
 	
-	/**
-	 * Sends a HTTP GET request to the given URL and returns the result as a String
-	 * @param link
-	 * 			URL to send the GET request to
-	 * @return
-	 * 			The response body of the GET request as a String
-	 * @throws IOException
-	 * 			If there was a connection problem
-	 */
 	public String getResponseFromURL(String link) throws IOException {
 		URL url = new URL(link);
 		URLConnection con = url.openConnection();
@@ -40,18 +30,16 @@ public class AddressResolver {
 	}
 	
 	/**
-	 * Returns a list with all posible addresses based on the input
+	 * Resolves the address from the user to a correct address (if the address was wrong)
+	 * It sends a get request to the here api and then it takes the first suggestion (usually the most aqurate)
 	 * @param address
-	 * 				The input address. All the suggesstions are based on this input
-	 * @return
-	 *              An ArrayList<Address> with all possible addresses based on input
-	 *              An empty ArrayList<Address> [.size() == 0] if the input was wrong
-	 * @throws IOException
-	 *              If the connection fails
-	 * @throws JSONException
-	 *              If the response JSON was not in the expected form
+	 * 				  the address to be resolved
+	 * @return the correct address from here API
+	 * @throws IOException If there was a problem with the connection
+	 * @throws StreetNotFoundException If the street was not found in the user input
+	 * @throws JSONException if the whole input was wrong
 	 */
-	public ArrayList<Address> getAddressList(String address) throws IOException, JSONException {
+	public Address getAddress(String address) throws IOException, StreetNotFoundException {
 		String encodedAddress = URLEncoder.encode(address, "UTF-8");
 		String response = getResponseFromURL("http://autocomplete.geocoder.api.here.com/6.2/suggest.json?query="
 				+ encodedAddress
@@ -59,35 +47,9 @@ public class AddressResolver {
 				+ "&app_code=" + app_code);
 		JSONObject json = new JSONObject(response);
 		JSONArray suggestions = json.getJSONArray("suggestions");
-		ArrayList<Address> addressList = new ArrayList<>();
-		for (int i=0; i<suggestions.length(); i++) {
-			Address addr;
-			try {
-				addr = getAddress(suggestions.getJSONObject(i));
-			} catch (StreetNotFoundException e) {
-				addr = null;
-			}
-			if (addr != null) {
-				addressList.add(addr);
-			}
-		}
-		
-		return addressList;
-	}
-	
-	/**
-	 * Returns the address as an {@link Address} object
-	 * from a suggestion in form of a {@link JSONObject} from Here API
-	 * @param suggestion
-	 * 				The {@link JSONObject} of a suggestion from Here API
-	 * @return
-	 * 				An {@link Address} object from the suggestion
-	 * @throws StreetNotFoundException
-	 * 				If the Street was not found.
-	 */
-	private Address getAddress(JSONObject suggestion) throws StreetNotFoundException {
-		JSONObject addressJson = suggestion.getJSONObject("address");
-		String locationId = suggestion.getString("locationId");
+		JSONObject firstSuggestion = suggestions.getJSONObject(0);
+		JSONObject addressJson = firstSuggestion.getJSONObject("address");
+		String locationId = firstSuggestion.getString("locationId");
 		String city = addressJson.getString("city");
 		String street = null;
 		try {
@@ -113,5 +75,7 @@ public class AddressResolver {
 		}
 		return new Address(street, city, locationId, houseNumber, postalCode);
 	}
+	
+//	getNearbyStation
 
 }

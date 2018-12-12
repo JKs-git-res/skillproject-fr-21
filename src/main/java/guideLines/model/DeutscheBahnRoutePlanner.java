@@ -1,9 +1,13 @@
 package main.java.guideLines.model;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -42,8 +46,32 @@ public class DeutscheBahnRoutePlanner {
 				+ "&rtMode=DB-HYBRID"
 				+ "&externRequest=yes"
 				+ "&HWAI=JS%21js%3Dyes%21ajax%3Dyes%21").get();
-		Elements table = doc.getElementsByClass("station");
-		System.out.println(table);
+		Element firstResult = doc.getElementsByClass("boxShadow").get(0);
+		Elements plan = doc.getElementsByTag("script");
+		System.out.println("starting");
+		StringBuilder output = new StringBuilder();
+		ArrayList<String> stations = new ArrayList<>();
+		for (Element e: plan) {
+			if (e.toString().contains("var verbindung =")) {
+				output.append(e.toString());
+				output.append("------------------------------------------------done--------------------------------------------------------");
+				String[] arr = e.toString().split(";");
+				for (String s: arr) {
+					if (s.startsWith("tmpDiv.innerHTML")) {
+						String station = s.replaceAll("tmpDiv.innerHTML =", "").replaceAll("\"", "");
+						stations.add(station);
+					}
+				}
+				break;
+			}
+		}
+//		writeUsingOutputStream(output.toString());
+		writeUsingOutputStream(doc.toString());
+		for (int i=2; i<stations.size(); i++) {
+			System.out.println(stations.get(i) + " -> " + stations.get(i+1));
+			i++;
+		}
+		System.out.println("done");
 	}
 	
 	private String getDateFormated() throws UnsupportedEncodingException {
@@ -55,5 +83,21 @@ public class DeutscheBahnRoutePlanner {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 		return URLEncoder.encode(simpleDateFormat.format(new Date()).toString(), "UTF-8");
 	}
+	
+	private static void writeUsingOutputStream(String data) {
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(new File("C:/Users/Benny/Desktop/something.html"));
+            os.write(data.getBytes(), 0, data.length());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

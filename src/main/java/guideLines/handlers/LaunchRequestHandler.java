@@ -33,9 +33,9 @@ public class LaunchRequestHandler implements RequestHandler {
     @Override
     public Optional<Response> handle(HandlerInput input) {
         return input.getResponseBuilder()
-                .withSimpleCard("GuideLines", OutputStrings.WELCOME_EINRICHTUNG_CARD.toString())
-                .withSpeech(OutputStrings.WELCOME_EINRICHTUNG.toString())
-                .withReprompt(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT.toString())
+                .withSimpleCard("GuideLines", OutputStrings.WELCOME_EINRICHTUNG_CARD)
+                .withSpeech(OutputStrings.WELCOME_EINRICHTUNG)
+                .withReprompt(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT)
                 .build();
     }
 }
