@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import main.java.guideLines.model.Address;
 import main.java.guideLines.model.AddressResolver;
 import main.java.guideLines.model.Profile;
+import main.java.guideLines.model.RouteCalculator;
 
 public class PlanMyTripIntentHandler implements RequestHandler
 {
@@ -111,12 +112,32 @@ public class PlanMyTripIntentHandler implements RequestHandler
 
         } else if(!isEmpty(abfahrtszeit_slot)){
 		    Abfahrtszeit = resolveTime(abfahrtszeit_slot.getValue());
+        } else {
+        		Abfahrtszeit = new Date();
         }
+        String routeInfo = "";
+        try {
+			routeInfo =  	new RouteCalculator().getRoute(TripStart.getStation(), TripDestination.getStation());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
+        if(!isEmpty(fragewort_slot)){
+            if(fragewort_slot.getValue().equals("Wie")){
+           
+            }
+            else if(fragewort_slot.getValue().equals("Wann")) {}
 
 
+        }
 
-		return null;
+
+        return input.getResponseBuilder()
+        		.withSpeech(routeInfo)
+        		.withSimpleCard("Routeninformation", routeInfo)
+        		.withShouldEndSession(true)
+        		.build();
 	}
 
 

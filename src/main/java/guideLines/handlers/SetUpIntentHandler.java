@@ -132,6 +132,7 @@ public class SetUpIntentHandler implements RequestHandler {
         return input.getResponseBuilder()
                 .withSpeech(OutputStrings.EINRICHTUNG_END.toString())
                 .withSimpleCard("Einrichtung abgeschlossen", OutputStrings.EINRICHTUNG_END.toString())
+                .withShouldEndSession(false)
                 .build();
     }
 
@@ -196,9 +197,9 @@ public class SetUpIntentHandler implements RequestHandler {
 
         if (intReq.getDialogState().getValue().equals("STARTED")) {
             //Anfang des Dialogs. Als erstes wird geprüft, ob der aktuelle Standort verwendet werden soll
-            sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_LOCATION_SET);
+            sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_LOCATION_SET.toString());
             return input.getResponseBuilder()
-                    .addElicitSlotDirective("DestinationB", intent)
+                    .addElicitSlotDirective("YesNoSlot_Location", intent)
                     .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
                     .withSimpleCard("Aktuellen Standort verwenden?", OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
                     .build();
@@ -209,7 +210,7 @@ public class SetUpIntentHandler implements RequestHandler {
 
                 case "000": //hier wird nach der Heimatadresse gefragt
                     sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_HOMEADDRESS_SET.toString());
-                    if (yesNo_Slot_Loc.getValue().equals("Nein")) {
+                    if (yesNo_Slot_Loc.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName().equals("Nein")) {
                         return input.getResponseBuilder()
                                 .addElicitSlotDirective("Homeaddress", intent)
                                 .withSpeech(OutputStrings.EINRICHTUNG_HOMEADDRESS.toString())
@@ -295,7 +296,7 @@ public class SetUpIntentHandler implements RequestHandler {
                             .build();
 
                 case "006":
-                    if (yesNo_Slot_secondDest.getValue().equals("Ja")) {
+                    if (yesNo_Slot_secondDest.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName().equals("Ja")) {
                         sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_DESTINATION_B_SET.toString());
                         return input.getResponseBuilder()
                                 .addElicitSlotDirective("DestinationB", intent)
@@ -329,7 +330,7 @@ public class SetUpIntentHandler implements RequestHandler {
                             .build();
 
                 case "009":
-                    if (yesNo_Slot_thirdDest.getValue().equals("Ja")) {
+                    if (yesNo_Slot_thirdDest.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName().equals("Ja")) {
                         sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_DESTINATION_C_SET.toString());
                         return input.getResponseBuilder()
                                 .addElicitSlotDirective("DestinationC", intent)
