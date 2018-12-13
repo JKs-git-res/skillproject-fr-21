@@ -27,7 +27,19 @@ public enum OutputStrings {
                   EINRICHTUNG_NAME_C("Wie willst du diese Adresse benennen?"),
                   EINRICHTUNG_END("Vielen Dank. Die Einrichtung ist erfolgreich abgeschlossen."),
 	WRONG_ADDRESS_PROMPT("Die Adresse ist leider falsch. Kannst du sie mir bitte nochmal sagen?"),
-	NO_STREET_PROMPT("Ich brauche von dir die komplette Adresse. Ich brauche mindestens die Stadt und die Straße. Bitte sag mir nochmal deine Adresse.");
+	NO_STREET_PROMPT("Ich brauche von dir die komplette Adresse. Ich brauche mindestens die Stadt und die Straße. Bitte sag mir nochmal deine Adresse."),
+	EINRICHTUNG_HELP0("Möchtest du mir die Erlaubnis geben deinen Aktuellen Standort zu ermitteln?"),
+	EINRICHTUNG_HELP1("Bitte gebe mir deine Heimatdresse im format: Straße, Hausnummer dann die Stadt an."),
+	EINRICHTUNG_HELP2("Bitte geben sie einen Namen für ihre Heimatadresse an um das Aufrufen dieser Heimatadresse zu vereinfachen."),
+	EINRICHTUNG_HELP3("Bitte geben sie ihre erste Zieladresse an die sie speichern möchten."),
+	EINRICHTUNG_HELP4("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen"),
+	EINRICHTUNG_HELP5("Wählen sie bitte einen der zu verfügung stehenende Öffentlichenverkehrsmittel:Bus,Tram,UBahn,Sbahn."),
+	EINRICHTUNG_HELP6("Möchten sie eine zweite Zieladresse einrichten?"),
+	EINRICHTUNG_HELP7("Bitte geben sie ihre zweite Zieladresse an die sie speichern möchten."),
+	EINRICHTUNG_HELP8("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen"),
+	EINRICHTUNG_HELP9("Möchten sie eine zweite Zieladresse einrichten?"),
+	EINRICHTUNG_HELP10("Bitte geben sie ihre dritte Zieladresse an die sie speichern möchten."),
+	EINRICHTUNG_HELP11("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen");
 	
 	private final String text;
 	

@@ -1,1 +1,0 @@
-INDEX VERSION 1.130+C:\Users\hm-schrein2\skillproject-fr-21\.metadata\.plugins\org.eclipse.jdt.core

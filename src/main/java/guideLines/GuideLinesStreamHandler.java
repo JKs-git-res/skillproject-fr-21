@@ -16,8 +16,6 @@ import com.amazon.ask.Skill;
 import com.amazon.ask.SkillStreamHandler;
 import com.amazon.ask.Skills;
 
-import main.java.guideLines.handlers.AddressIntentHandler;
-import main.java.guideLines.handlers.BusStatusIntentHandler;
 import main.java.guideLines.handlers.CancelandStopIntentHandler;
 import main.java.guideLines.handlers.FallbackIntentHandler;
 import main.java.guideLines.handlers.HelpIntentHandler;
@@ -33,8 +31,6 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
             .addRequestHandlers(
                     new SetUpIntentHandler(),
                     new PlanMyTripIntentHandler(),
-                    new BusStatusIntentHandler(),
-                    new AddressIntentHandler(),
                     new LaunchRequestHandler(),
                     new CancelandStopIntentHandler(),
                     new SessionEndedRequestHandler(),
