@@ -16,26 +16,132 @@ package main.java.guideLines.handlers;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.Response;
+import com.amazon.ask.model.Session;
 
+import main.java.guideLines.OutputStrings;
+import main.java.guideLines.StatusAttributes;
+
+import java.util.Map;
 import java.util.Optional;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
 public class HelpIntentHandler implements RequestHandler {
+ 	String speech = "";
+	String reprompt = "";
+	SetUpIntentHandler handler = new SetUpIntentHandler();
+	public String session;
+	
     @Override
     public boolean canHandle(HandlerInput input) {
-        return input.matches(intentName("AMAZON.HelpIntent"));
+    	     return input.matches(intentName("AMAZON.HelpIntent"));
     }
+	
 
+	
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        String speechText = "Du kannst mir Deine Lieblingsfarbe sagen. Sage zum Beispiel, meine Lieblingsfarbe ist rot.";
-        String repromptText = "Bitte sage mir Deine Lieblingsfarbe.";
-        return input.getResponseBuilder()
-                .withSimpleCard("ColorSession", speechText)
-                .withSpeech(speechText)
-                .withReprompt(repromptText)
+    	
+    	Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
+    	session = (String) sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString());
+    	
+    	switch(session){
+    	
+    	case"start":
+    		
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("1")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"000":
+    		
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Möchtest du mir die Erlaubnis geben deinen Aktuellen Standort zu ermitteln?")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"001":
+    		
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte gebe mir deine Heimatdresse im format: Straße, Hausnummer dann die Stadt an.")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"002":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie einen Namen für ihre Heimatadresse an um das Aufrufen dieser Heimatadresse zu vereinfachen.")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"003":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie ihre erste Zieladresse an die sie speichern möchten.")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"004":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"005":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Wählen sie bitte einen der zu verfügung stehenende Öffentlichenverkehrsmittel:Bus,Tram,UBahn,Sbahn.")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"006":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Möchten sie eine zweite Zieladresse einrichten?")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"007":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie ihre zweite Zieladresse an die sie speichern möchten.")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"008":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"009":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Möchten sie eine zweite Zieladresse einrichten?")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"010":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie ihre dritte Zieladresse an die sie speichern möchten.")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"011":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen")
+                    .withShouldEndSession(false)
+                    .build();
+    	case"Done":
+            return input.getResponseBuilder()
+                    .withSimpleCard("Information:", speech)
+                    .withSpeech("14")
+                    .withShouldEndSession(false)
+                    .build();
+    	}
+    	speech = "Leider konnte keine Hilfe Option gefunden werden";
+		return input.getResponseBuilder()
+                .withSimpleCard("Information:", speech)
+                .withSpeech("Deine Freundinn Benis Mum wird angerufen!")
                 .withShouldEndSession(false)
                 .build();
+
+
     }
 }
