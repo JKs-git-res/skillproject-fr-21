@@ -133,7 +133,7 @@ public class SetUpIntentHandlerTest {
 
     private IntentRequest mockRequest(String requestName, Slot[] slots,DialogState state){
         Map <String, Slot> slotMap = new HashMap<>();
-        for(int i = 0; i< slots.length(); i++)
+        for(int i = 0; i< slots.length; i++)
             slotMap.put(slots[i].getName(),slots[i]);
 
         return IntentRequest.builder()

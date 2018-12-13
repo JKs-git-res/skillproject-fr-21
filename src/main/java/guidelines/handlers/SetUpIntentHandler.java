@@ -44,10 +44,10 @@ public class SetUpIntentHandler implements RequestHandler {
     private Address homeAddress = null, destinationA = null, destinationB = null, destinationC = null;
     private FormOfTransport formOfTransport = null;
     private Slot FormOfTransport_Slot;
-    private Profile UserProfile;
+    private Profile userProfile;
 
     public Profile getUserProfile(){
-        return UserProfile;
+        return userProfile;
     }
 
 
@@ -107,7 +107,7 @@ public class SetUpIntentHandler implements RequestHandler {
     }
 
     private Optional<Response> setUpComplete(HandlerInput input) {
-        UserProfile = new Profile(homeAddress, destinationA, destinationB, destinationC);
+        userProfile = new Profile(homeAddress, destinationA, destinationB, destinationC);
 
         switch (FormOfTransport_Slot.getValue()) {
             case ("Bus"):
