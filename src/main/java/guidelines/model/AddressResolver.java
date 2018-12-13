@@ -7,13 +7,11 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import guidelines.exceptions.StreetNotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import guidelines.exceptions.StreetNotFoundException;
-import guidelines.model.Address;
 
 public class AddressResolver {
 	

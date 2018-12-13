@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import guidelines.model.AddressResolver;
-import guidelines.model.Address;
 import org.json.JSONException;
 
 class AddressTest {

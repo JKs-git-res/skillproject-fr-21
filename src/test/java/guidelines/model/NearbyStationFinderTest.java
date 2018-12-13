@@ -6,9 +6,6 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import guidelines.exceptions.NoFormOfTransportException;
-import guidelines.model.Address;
-import guidelines.model.NearbyStationFinder;
-import guidelines.model.Station;
 
 class NearbyStationFinderTest {
 

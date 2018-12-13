@@ -13,10 +13,10 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guidelines.model.RouteCalculator;
 import guidelines.model.Address;
 import guidelines.model.AddressResolver;
 import guidelines.model.Profile;
-import guidelines.model.RouteCalculator;
 
 public class PlanMyTripIntentHandler implements RequestHandler
 {
@@ -113,7 +113,7 @@ public class PlanMyTripIntentHandler implements RequestHandler
         }
         String routeInfo = "";
         try {
-			routeInfo =  	new RouteCalculator().getRoute(TripStart.getStation(), TripDestination.getStation());
+			routeInfo =  new RouteCalculator().getRoute(TripStart.getStation(), TripDestination.getStation());
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 

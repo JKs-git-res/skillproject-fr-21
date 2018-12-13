@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import guidelines.model.HouseNumberConverter;
-
 class HouseNumberConverterTest {
 
 	private HouseNumberConverter hnc = new HouseNumberConverter();

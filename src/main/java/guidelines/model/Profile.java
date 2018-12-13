@@ -1,6 +1,7 @@
 package guidelines.model;
  import guidelines.exceptions.FullDestinationsException;
- public class Profile {
+
+public class Profile {
 	//private String userNameID;
 	//private String firstName;
 	private Address homeAddress;
@@ -43,6 +44,12 @@ package guidelines.model;
         }
         public Address getHomeAddress(){
             return this.homeAddress;
+        }
+        public Address getDestination(int i) {
+            if(i <= 3)
+                return this.destinationAddresses[i];
+            else
+                return null;
         }
         
         public void addPreferedFormOfTransport(FormOfTransport fot){

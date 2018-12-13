@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Optional;
 
+import guidelines.exceptions.StreetNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import guidelines.exceptions.StreetNotFoundException;
 import guidelines.model.*;
 import guidelines.OutputStrings;
 import guidelines.StatusAttributes;
@@ -42,13 +42,22 @@ public class SetUpIntentHandler implements RequestHandler {
     private AttributesManager attributesManager;
     private Map<String, Object> persistentAttributes;
     private Address homeAddress = null, destinationA = null, destinationB = null, destinationC = null;
+    private FormOfTransport formOfTransport = null;
     private Slot FormOfTransport_Slot;
+    private Profile UserProfile;
+
+    public Profile getUserProfile(){
+        return UserProfile;
+    }
+
+
 
     @Override
     public boolean canHandle(HandlerInput input) {
         Request req = input.getRequestEnvelope().getRequest();
         return input.matches(intentName("SetUpIntent")) && req.getType().equals("IntentRequest");
     }
+
 
     private Optional<Response> invalidAddress(HandlerInput input, String slot) {
         return input.getResponseBuilder()
@@ -58,7 +67,7 @@ public class SetUpIntentHandler implements RequestHandler {
                 .build();
     }
 
-    private void saveProfileToDataBase(Profile profile) throws JsonProcessingException {
+    public void saveProfileToDataBase(Profile profile) throws JsonProcessingException {
         String ProfileJSON = new ObjectMapper().writeValueAsString(profile);
         persistentAttributes.put("UserProfile", ProfileJSON); // schreiben in DB
         attributesManager.setPersistentAttributes(persistentAttributes);
@@ -98,7 +107,7 @@ public class SetUpIntentHandler implements RequestHandler {
     }
 
     private Optional<Response> setUpComplete(HandlerInput input) {
-        Profile userProfile = new Profile(homeAddress, destinationA, destinationB, destinationC);
+        UserProfile = new Profile(homeAddress, destinationA, destinationB, destinationC);
 
         switch (FormOfTransport_Slot.getValue()) {
             case ("Bus"):
@@ -193,6 +202,7 @@ public class SetUpIntentHandler implements RequestHandler {
             return input.getResponseBuilder()
                     .addElicitSlotDirective("YesNoSlot_Location", intent)
                     .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
+                    .withShouldEndSession(false)
                     .withSimpleCard("Aktuellen Standort verwenden?", OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
                     .build();
 
@@ -205,6 +215,7 @@ public class SetUpIntentHandler implements RequestHandler {
                     if (yesNo_Slot_Loc.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName().equals("Nein")) {
                         return input.getResponseBuilder()
                                 .addElicitSlotDirective("Homeaddress", intent)
+                                .withShouldEndSession(false)
                                 .withSpeech(OutputStrings.EINRICHTUNG_HOMEADDRESS.toString())
                                 .withSimpleCard("Heimatadresse angeben", OutputStrings.EINRICHTUNG_HOMEADDRESS.toString())
                                 .build();

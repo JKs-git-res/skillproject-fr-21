@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import guidelines.exceptions.NoFormOfTransportException;
 import guidelines.exceptions.StationNotFoundException;
-import guidelines.model.Station;
-import guidelines.model.StationResolver;
 
 class StationResolverTest {
 
