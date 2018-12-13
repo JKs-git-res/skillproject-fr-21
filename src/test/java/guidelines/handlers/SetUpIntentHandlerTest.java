@@ -248,7 +248,6 @@ public class SetUpIntentHandlerTest {
         assertEquals(profileToTest.getDestination(2).getFullAddress(), profileValues[6]);
         assertEquals(profileToTest.getDestination(2).getName(),profileValues[7]);
         assertEquals(profileToTest.getPreferedWayOfTransport(),FormOfTransport.BUS);
-
     }
 
 }

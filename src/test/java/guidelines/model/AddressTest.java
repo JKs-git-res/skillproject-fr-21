@@ -1,11 +1,11 @@
 package guidelines.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.Test;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.json.JSONException;
 
 class AddressTest {
@@ -33,12 +33,9 @@ class AddressTest {
 		assertEquals("NT_GgesHsyrnzR3eEhPnUvBpA", address.get(0).getLocationId());
 	}
 	
-	@Test
+	@Test(expected = JSONException.class)
 	void AddressTestWithoutStreet() throws IOException {		
-		assertThrows(JSONException.class, ()-> {
-			ar.getAddressList("München");
-		});
-		
+		ar.getAddressList("München");
 	}
 	
 	@Test
