@@ -1,5 +1,5 @@
-package main.java.guideLines.model;
- import main.java.exceptions.FullDestinationsException;
+package guideLines.model;
+ import guideLines.exceptions.FullDestinationsException;
  public class Profile {
 	//private String userNameID;
 	//private String firstName;

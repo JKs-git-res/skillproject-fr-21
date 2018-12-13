@@ -1,4 +1,4 @@
-package main.java.guideLines;
+package guideLines;
 
 public enum StatusAttributes {
 	

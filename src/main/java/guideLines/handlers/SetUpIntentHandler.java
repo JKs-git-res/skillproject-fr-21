@@ -1,6 +1,6 @@
-package main.java.guideLines.handlers;
+package guideLines.handlers;
 
-import main.java.guideLines.model.AddressResolver;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,13 +31,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import main.java.exceptions.StreetNotFoundException;
-import main.java.guideLines.OutputStrings;
-import main.java.guideLines.StatusAttributes;
-import main.java.guideLines.model.Address;
-import main.java.guideLines.model.FormOfTransport;
-import main.java.guideLines.model.HouseNumberConverter;
-import main.java.guideLines.model.Profile;
+import guideLines.exceptions.StreetNotFoundException;
+import guideLines.OutputStrings;
+import guideLines.StatusAttributes;
+import guideLines.model.*;
 
 public class SetUpIntentHandler implements RequestHandler {
 

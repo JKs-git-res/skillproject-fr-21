@@ -1,5 +1,4 @@
-package main.java.guideLines.handlers;
-
+package guideLines.handlers;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
@@ -14,10 +13,10 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import main.java.guideLines.model.Address;
-import main.java.guideLines.model.AddressResolver;
-import main.java.guideLines.model.Profile;
-import main.java.guideLines.model.RouteCalculator;
+import guideLines.model.Address;
+import guideLines.model.AddressResolver;
+import guideLines.model.Profile;
+import guideLines.model.RouteCalculator;
 
 public class PlanMyTripIntentHandler implements RequestHandler
 {

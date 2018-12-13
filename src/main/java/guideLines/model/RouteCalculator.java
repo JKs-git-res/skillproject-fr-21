@@ -1,4 +1,4 @@
-package main.java.guideLines.model;
+package guideLines.model;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

@@ -1,4 +1,4 @@
-package main.java.guideLines;
+package guideLines;
 
 /**
  * In dieser Klasse befinden sich alle Strings, die von Alexa ausgegeben werden.

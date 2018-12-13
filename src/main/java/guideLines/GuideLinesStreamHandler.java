@@ -10,19 +10,12 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
      the specific language governing permissions and limitations under the License.
  */
-package main.java.guideLines;
+package guideLines;
 
 import com.amazon.ask.Skill;
 import com.amazon.ask.SkillStreamHandler;
 import com.amazon.ask.Skills;
-
-import main.java.guideLines.handlers.CancelandStopIntentHandler;
-import main.java.guideLines.handlers.FallbackIntentHandler;
-import main.java.guideLines.handlers.HelpIntentHandler;
-import main.java.guideLines.handlers.LaunchRequestHandler;
-import main.java.guideLines.handlers.PlanMyTripIntentHandler;
-import main.java.guideLines.handlers.SessionEndedRequestHandler;
-import main.java.guideLines.handlers.SetUpIntentHandler;
+import guideLines.handlers.*;
 
 public class GuideLinesStreamHandler extends SkillStreamHandler {
 
@@ -32,8 +25,6 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                     new SetUpIntentHandler(),
                     new PlanMyTripIntentHandler(),
                     new LaunchRequestHandler(),
-                    new CancelandStopIntentHandler(),
-                    new SessionEndedRequestHandler(),
                     new HelpIntentHandler(),
                     new FallbackIntentHandler())
             // Add your skill id below

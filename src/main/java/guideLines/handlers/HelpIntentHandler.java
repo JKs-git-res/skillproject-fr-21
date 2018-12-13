@@ -12,14 +12,14 @@
      the specific language governing permissions and limitations under the License.
 */
 
-package main.java.guideLines.handlers;
+package guideLines.handlers;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.Response;
 
-import main.java.guideLines.OutputStrings;
-import main.java.guideLines.StatusAttributes;
+import guideLines.OutputStrings;
+import guideLines.StatusAttributes;
 
 import java.util.Map;
 import java.util.Optional;

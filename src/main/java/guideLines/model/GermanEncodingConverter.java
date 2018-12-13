@@ -1,4 +1,4 @@
-package main.java.guideLines.model;
+package guideLines.model;
 
 public class GermanEncodingConverter {
 	

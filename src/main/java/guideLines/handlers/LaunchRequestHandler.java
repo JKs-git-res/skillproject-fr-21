@@ -11,8 +11,8 @@
      the specific language governing permissions and limitations under the License.
 */
 
-package main.java.guideLines.handlers;
-import main.java.guideLines.OutputStrings;
+package guideLines.handlers;
+import guideLines.OutputStrings;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.LaunchRequest;
