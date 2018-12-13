@@ -1,10 +1,12 @@
 package guidelines.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+
 
 import guidelines.exceptions.NoFormOfTransportException;
 import guidelines.exceptions.StationNotFoundException;
@@ -20,11 +22,9 @@ class StationResolverTest {
 		assertEquals("München", station.getCity());
 	}
 	
-	@Test
-	void NotAStationTest() throws IOException, StationNotFoundException {
-		assertThrows(StationNotFoundException.class, ()-> {
-			sr.getStation("NichtEineStation");
-		});
+	@Test(expected = StationNotFoundException.class)
+	void NotAStationTest() throws IOException, StationNotFoundException, NoFormOfTransportException {
+		sr.getStation("NichtEineStation");
 	}
 
 	@Test

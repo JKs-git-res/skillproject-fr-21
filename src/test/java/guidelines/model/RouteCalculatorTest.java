@@ -1,16 +1,14 @@
 package guidelines.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 import org.json.JSONException;
-import org.junit.jupiter.api.Test;
 
-import guidelines.model.FormOfTransport;
-import guidelines.model.RouteCalculator;
-import guidelines.model.Station;
 /**
  * Da die Outputs sich ständig ändern teste ich nur ob der String leer ist oder nicht.
  * @author Benny
