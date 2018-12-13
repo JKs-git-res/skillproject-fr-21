@@ -14,37 +14,37 @@ public class Address {
     private Station nearestStation;
     
     public Address(String street, String city, String locationId) {
-    	this.city = city;
-    	this.street = street;
-    	this.locationId = locationId;
-    	setStation();
+	    	this.city = city;
+	    	this.street = street;
+	    	this.locationId = locationId;
+	    	setStation();
     }
     
    
     
     public Address(String street, String city, String locationId, int houseNumber) {
-    	this.street = street;
-    	this.city = city;
-    	this.houseNumber = houseNumber;
-    	this.locationId = locationId;
-    	setStation();
+	    	this.street = street;
+	    	this.city = city;
+	    	this.houseNumber = houseNumber;
+	    	this.locationId = locationId;
+	    	setStation();
     }
     
     public Address(String street, String city, String locationId, int houseNumber, String postCode) {
-    	this.street = street;
-    	this.city = city;
-    	this.houseNumber = houseNumber;
-    	this.postCode = postCode;
-    	this.locationId = locationId;
-    	setStation();
+	    	this.street = street;
+	    	this.city = city;
+	    	this.houseNumber = houseNumber;
+	    	this.postCode = postCode;
+	    	this.locationId = locationId;
+	    	setStation();
     }
     
     public Address(String street, String city, String locationId, String postCode) {
-    	this.street = street;
-    	this.city = city;
-    	this.postCode = postCode;
-    	this.locationId = locationId;
-    	setStation();
+	    	this.street = street;
+	    	this.city = city;
+	    	this.postCode = postCode;
+	    	this.locationId = locationId;
+	    	setStation();
     }
     
     public Station getStation() {
@@ -71,9 +71,6 @@ public class Address {
     }
     
   
-    
-    public void setNearestStation(Station nearestStation){
-    }
     
     public String getFullAddress(){
         return street + " " + houseNumber + " " + postCode + " " + city;

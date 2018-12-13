@@ -89,7 +89,8 @@ public class PlanMyTripIntentHandler implements RequestHandler
                 fragewort_slot = slots.get("Fragewort");
 
         try {
-            userProfile = new ObjectMapper().readValue((String)persistentAttributes.get("UserProfile"),Profile.class);
+        	String JSONStringProfile = (String)persistentAttributes.get("UserProfile");
+            userProfile = new ObjectMapper().readValue(JSONStringProfile,Profile.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,7 +118,7 @@ public class PlanMyTripIntentHandler implements RequestHandler
         }
         String routeInfo = "";
         try {
-			routeInfo =  	new RouteCalculator().getRoute(TripStart.getStation(), TripDestination.getStation());
+			routeInfo = new RouteCalculator().getRoute(TripStart.getStation(), TripDestination.getStation());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

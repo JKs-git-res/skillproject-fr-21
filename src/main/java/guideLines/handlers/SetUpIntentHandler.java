@@ -48,7 +48,7 @@ public class SetUpIntentHandler implements RequestHandler {
     private Map<String, Slot> slots;
     private AttributesManager attributesManager;
     private Map<String, Object> persistentAttributes;
-    private Address homeAddress = null, destinationA = null, destinationB = null, destinationC = null;
+    private Address homeAddress , destinationA , destinationB , destinationC;
     private Slot FormOfTransport_Slot;
 
     @Override
@@ -96,7 +96,10 @@ public class SetUpIntentHandler implements RequestHandler {
         	 */
         	 HouseNumberConverter hnc = new HouseNumberConverter();
              ArrayList<Address> addresses = new AddressResolver().getAddressList(hnc.getAdressHereAPIFormatted(slot.getValue()));
-            return addresses.get(0);
+             if(addresses.size() > 0)
+            	 	return addresses.get(0);
+             else
+            	 	return null;
         } catch (IOException ex) {
             return null;
         } catch (JSONException ex) {
@@ -107,7 +110,7 @@ public class SetUpIntentHandler implements RequestHandler {
     private Optional<Response> setUpComplete(HandlerInput input) {
         Profile userProfile = new Profile(homeAddress, destinationA, destinationB, destinationC);
 
-        switch (FormOfTransport_Slot.getValue()) {
+        switch (FormOfTransport_Slot.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName()) {
             case ("Bus"):
                 userProfile.addPreferedFormOfTransport(FormOfTransport.BUS);
                 break;
@@ -169,14 +172,7 @@ public class SetUpIntentHandler implements RequestHandler {
         permissions.add("read::alexa:device:all:address");
         attributesManager = input.getAttributesManager();
         persistentAttributes = attributesManager.getPersistentAttributes();
-        Address adr = null, destA = null, destB = null, destC = null;
-        //String value = (String) persistentAttributes.get("key"); // lesen aus DB
 
-        /*
-		 * Dies wird alles benÃ¶tigt um den aktuellen Standort bestimmen zu kÃ¶nnen
-		
-    		
-         */
         Request request = input.getRequestEnvelope().getRequest();
         Session session = input.getRequestEnvelope().getSession();
         IntentRequest intReq = (IntentRequest) request;
@@ -324,7 +320,7 @@ public class SetUpIntentHandler implements RequestHandler {
                     destinationB.setName(DestinationB_Name_Slot.getValue());
                     sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_WANT_THIRD_DEST_SET.toString());
                     return input.getResponseBuilder()
-                            .addElicitSlotDirective("YesNoSlot_wantThridDest", intent)
+                            .addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
                             .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
                             .withSimpleCard("Drittes Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
                             .build();
