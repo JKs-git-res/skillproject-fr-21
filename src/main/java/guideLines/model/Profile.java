@@ -14,8 +14,8 @@ package main.java.guideLines.model;
                                                        addDestinationAddress(destC);
                         
 		} catch (FullDestinationsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+                  // TODO Auto-generated catch block
+
 		}
 	}
         

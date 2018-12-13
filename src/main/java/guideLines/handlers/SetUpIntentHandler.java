@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -19,14 +18,12 @@ import static com.amazon.ask.request.Predicates.intentName;
 import com.amazon.ask.attributes.AttributesManager;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
-import com.amazon.ask.model.Context;
 import com.amazon.ask.model.Intent;
 import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Session;
 import com.amazon.ask.model.Slot;
-import com.amazon.ask.model.interfaces.system.SystemState;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -41,7 +38,6 @@ import main.java.guideLines.model.Address;
 import main.java.guideLines.model.FormOfTransport;
 import main.java.guideLines.model.HouseNumberConverter;
 import main.java.guideLines.model.Profile;
-import main.java.guideLines.model.fullDestinationsException;
 
 public class SetUpIntentHandler implements RequestHandler {
 
@@ -144,8 +140,7 @@ public class SetUpIntentHandler implements RequestHandler {
         StringBuilder result = new StringBuilder();
         URL url = new URL("http://api.amazonalexa.com/v1/devices/" + deviceId + "/settings/address");
         InputStream is = url.openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        try (BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")))){
             StringBuilder sb = new StringBuilder();
             int cp;
             while ((cp = rd.read()) != -1) {
@@ -356,7 +351,7 @@ public class SetUpIntentHandler implements RequestHandler {
             }
            
         }
-        return null;
+        return Optional.empty();
 
     }
 

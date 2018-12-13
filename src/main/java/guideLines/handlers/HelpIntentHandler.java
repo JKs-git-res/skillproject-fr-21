@@ -17,7 +17,6 @@ package main.java.guideLines.handlers;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.Response;
-import com.amazon.ask.model.Session;
 
 import main.java.guideLines.OutputStrings;
 import main.java.guideLines.StatusAttributes;
@@ -31,7 +30,7 @@ public class HelpIntentHandler implements RequestHandler {
  	String speech = "";
 	String reprompt = "";
 	SetUpIntentHandler handler = new SetUpIntentHandler();
-	public String session;
+	private String session;
 	
     @Override
     public boolean canHandle(HandlerInput input) {

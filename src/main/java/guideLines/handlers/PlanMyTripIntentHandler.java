@@ -62,7 +62,6 @@ public class PlanMyTripIntentHandler implements RequestHandler
                     return format.parse(timeString);
             }
         } catch (ParseException e) {
-                e.printStackTrace();
                 return null;
             }
 
@@ -92,7 +91,6 @@ public class PlanMyTripIntentHandler implements RequestHandler
         	String JSONStringProfile = (String)persistentAttributes.get("UserProfile");
             userProfile = new ObjectMapper().readValue(JSONStringProfile,Profile.class);
         } catch (IOException e) {
-            e.printStackTrace();
         }
 
         if(isEmpty(start_slot)){
@@ -105,7 +103,6 @@ public class PlanMyTripIntentHandler implements RequestHandler
             try {
                 TripDestination = new AddressResolver().getAddressList(ziel_slot.getValue()).get(0);
             } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         if(!isEmpty(ankunftszeit_slot)){
@@ -120,8 +117,8 @@ public class PlanMyTripIntentHandler implements RequestHandler
         try {
 			routeInfo = new RouteCalculator().getRoute(TripStart.getStation(), TripDestination.getStation());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+          // TODO Auto-generated catch block
+
 		}
         
         if(!isEmpty(fragewort_slot)){

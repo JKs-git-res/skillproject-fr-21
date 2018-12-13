@@ -29,6 +29,7 @@ bower_components
 dist/
 build/
 target/
+bin/
 
 # Serverless generated files
 .serverless/
@@ -92,3 +93,11 @@ $RECYCLE.BIN/
 
 # Java
 *.class
+
+# Eclipse
+*.classpath
+*.project
+*.factorypath
+*.checkstyle
+*.metadata
+*.settings
