@@ -1,4 +1,4 @@
-package test.java.guideLines.handlers;
+package guidelines.handlers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;

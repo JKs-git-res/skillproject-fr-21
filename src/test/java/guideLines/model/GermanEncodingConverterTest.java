@@ -1,10 +1,10 @@
-package test.java.guideLines.model;
+package guidelines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.guideLines.model.GermanEncodingConverter;
+import guidelines.model.GermanEncodingConverter;
 
 class GermanEncodingConverterTest {
 

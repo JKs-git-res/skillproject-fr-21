@@ -11,13 +11,15 @@
      the specific language governing permissions and limitations under the License.
 */
 
-package guideLines.handlers;
-import guideLines.OutputStrings;
+package guidelines.handlers;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.LaunchRequest;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.interfaces.system.SystemState;
+
+import guidelines.OutputStrings;
+
 import com.amazon.ask.model.Context;
 
 

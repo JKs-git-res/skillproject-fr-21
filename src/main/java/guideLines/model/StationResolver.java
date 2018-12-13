@@ -1,4 +1,4 @@
-package guideLines.model;
+package guidelines.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import guideLines.exceptions.*;
+import guidelines.exceptions.*;
 
 public class StationResolver {
 	private final double munichLatitude = 48.13642;

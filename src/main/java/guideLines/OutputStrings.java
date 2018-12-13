@@ -1,4 +1,4 @@
-package guideLines;
+package guidelines;
 
 /**
  * In dieser Klasse befinden sich alle Strings, die von Alexa ausgegeben werden.

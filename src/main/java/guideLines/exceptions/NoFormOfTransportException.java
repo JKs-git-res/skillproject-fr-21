@@ -1,4 +1,4 @@
-package guideLines.exceptions;
+package guidelines.exceptions;
 
 public class NoFormOfTransportException extends Exception {
 

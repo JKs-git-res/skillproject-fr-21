@@ -1,5 +1,5 @@
-package guideLines.model;
- import guideLines.exceptions.FullDestinationsException;
+package guidelines.model;
+ import guidelines.exceptions.FullDestinationsException;
  public class Profile {
 	//private String userNameID;
 	//private String firstName;

@@ -1,4 +1,4 @@
-package test.java.guideLines.model;
+package guidelines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.guideLines.model.FormOfTransport;
-import main.java.guideLines.model.RouteCalculator;
-import main.java.guideLines.model.Station;
+import guidelines.model.FormOfTransport;
+import guidelines.model.RouteCalculator;
+import guidelines.model.Station;
 
 class RouteCalculatorTest {
 	

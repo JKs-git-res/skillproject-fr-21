@@ -1,4 +1,4 @@
-package guideLines.handlers;
+package guidelines.handlers;
 
 
 import java.io.BufferedReader;
@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import guideLines.exceptions.StreetNotFoundException;
-import guideLines.OutputStrings;
-import guideLines.StatusAttributes;
-import guideLines.model.*;
+import guidelines.exceptions.StreetNotFoundException;
+import guidelines.model.*;
+import guidelines.OutputStrings;
+import guidelines.StatusAttributes;
 
 public class SetUpIntentHandler implements RequestHandler {
 

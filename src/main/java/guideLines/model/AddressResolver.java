@@ -1,4 +1,4 @@
-package guideLines.model;
+package guidelines.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import guideLines.exceptions.StreetNotFoundException;
-import guideLines.model.Address;
+import guidelines.exceptions.StreetNotFoundException;
+import guidelines.model.Address;
 
 public class AddressResolver {
 	

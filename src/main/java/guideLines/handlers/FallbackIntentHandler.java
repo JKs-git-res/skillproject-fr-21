@@ -1,4 +1,4 @@
-package guideLines.handlers;
+package guidelines.handlers;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;

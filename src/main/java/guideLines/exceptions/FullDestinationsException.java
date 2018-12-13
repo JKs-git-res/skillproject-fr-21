@@ -1,5 +1,5 @@
 
-package guideLines.exceptions;
+package guidelines.exceptions;
 
 public class FullDestinationsException extends Exception {
 

@@ -1,4 +1,4 @@
-package test.java.guideLines.model;
+package guidelines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.guideLines.model.AddressResolver;
-import main.java.guideLines.model.Address;
+import guidelines.model.AddressResolver;
+import guidelines.model.Address;
 import org.json.JSONException;
 
 class AddressTest {

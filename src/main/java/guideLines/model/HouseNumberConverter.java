@@ -1,4 +1,4 @@
-package guideLines.model;
+package guidelines.model;
 
 public class HouseNumberConverter {
 	

@@ -1,14 +1,14 @@
-package test.java.guideLines.model;
+package guidelines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-import main.java.exceptions.NoFormOfTransportException;
-import main.java.guideLines.model.Address;
-import main.java.guideLines.model.NearbyStationFinder;
-import main.java.guideLines.model.Station;
+import guidelines.exceptions.NoFormOfTransportException;
+import guidelines.model.Address;
+import guidelines.model.NearbyStationFinder;
+import guidelines.model.Station;
 
 class NearbyStationFinderTest {
 

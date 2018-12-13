@@ -1,4 +1,4 @@
-package guideLines;
+package guidelines;
 
 public enum StatusAttributes {
 	

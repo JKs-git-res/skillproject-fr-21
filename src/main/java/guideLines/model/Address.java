@@ -1,8 +1,8 @@
-package guideLines.model;
+package guidelines.model;
 
 import java.io.IOException;
 
-import guideLines.exceptions.NoFormOfTransportException;
+import guidelines.exceptions.NoFormOfTransportException;
 
 public class Address {
     private String name;

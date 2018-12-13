@@ -1,4 +1,4 @@
-package test.java.guideLines.model;
+package guidelines.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,10 +6,10 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.exceptions.NoFormOfTransportException;
-import main.java.exceptions.StationNotFoundException;
-import main.java.guideLines.model.Station;
-import main.java.guideLines.model.StationResolver;
+import guidelines.exceptions.NoFormOfTransportException;
+import guidelines.exceptions.StationNotFoundException;
+import guidelines.model.Station;
+import guidelines.model.StationResolver;
 
 class StationResolverTest {
 
