@@ -1,3 +1,4 @@
+
 /*
      Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
@@ -47,91 +48,78 @@ public class HelpIntentHandler implements RequestHandler {
     	
     	switch(session){
     	
-    	case"start":
-    		
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech("1")
-                    .withShouldEndSession(false)
-                    .build();
     	case"000":
     		
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Möchtest du mir die Erlaubnis geben deinen Aktuellen Standort zu ermitteln?")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP0.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"001":
     		
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte gebe mir deine Heimatdresse im format: Straße, Hausnummer dann die Stadt an.")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP1.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"002":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie einen Namen für ihre Heimatadresse an um das Aufrufen dieser Heimatadresse zu vereinfachen.")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP2.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"003":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie ihre erste Zieladresse an die sie speichern möchten.")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP3.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"004":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP4.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"005":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Wählen sie bitte einen der zu verfügung stehenende Öffentlichenverkehrsmittel:Bus,Tram,UBahn,Sbahn.")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP5.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"006":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Möchten sie eine zweite Zieladresse einrichten?")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP6.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"007":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie ihre zweite Zieladresse an die sie speichern möchten.")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP7.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"008":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP8.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"009":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Möchten sie eine zweite Zieladresse einrichten?")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP9.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"010":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie ihre dritte Zieladresse an die sie speichern möchten.")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP10.toString())
                     .withShouldEndSession(false)
                     .build();
     	case"011":
             return input.getResponseBuilder()
                     .withSimpleCard("Information:", speech)
-                    .withSpeech("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen")
-                    .withShouldEndSession(false)
-                    .build();
-    	case"Done":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech("14")
+                    .withSpeech(OutputStrings.EINRICHTUNG_HELP11.toString())
                     .withShouldEndSession(false)
                     .build();
     	}
@@ -145,3 +133,6 @@ public class HelpIntentHandler implements RequestHandler {
 
     }
 }
+
+
+
