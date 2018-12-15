@@ -41,7 +41,10 @@ public class SetUpIntentHandler implements RequestHandler {
     private Map<String, Slot> slots;
     private AttributesManager attributesManager;
     private Map<String, Object> persistentAttributes;
-    private Address homeAddress = null, destinationA = null, destinationB = null, destinationC = null;
+    private Address homeAddress = null;
+    private Address destinationA = null;
+    private Address destinationB = null;
+    private Address destinationC = null;
     private FormOfTransport formOfTransport = null;
     private Slot FormOfTransport_Slot;
     private Profile userProfile;

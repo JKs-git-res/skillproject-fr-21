@@ -50,6 +50,58 @@ public class AddressResolver {
 	 *              If the response JSON was not in the expected form
 	 */
 	public ArrayList<Address> getAddressList(String address) throws IOException, JSONException {
+		ArrayList<Address> addressList = getAddresses(address);
+		if (addressList.isEmpty()) { // Maybe it was a place and not an exact address
+			String encodedAddress = URLEncoder.encode(address, "UTF-8");
+			addressList = searchForPlacesInMunich(encodedAddress);
+		}
+		return addressList;
+	}
+	
+	
+	/**
+	 * Finds a place in Munich based on the user input
+	 * @param place
+	 * 				The user input for that place
+	 * @return
+	 * 				The address of the place or an empty ArrayList if the place couldn't be found
+	 * @throws IOException
+	 * 				If there was a problem with the connection
+	 */
+	private  ArrayList<Address> searchForPlacesInMunich(String place) throws IOException {
+		final double munichLatitude = 48.13642;
+		final double munichLongitude = 11.57755;
+		String response = getResponseFromURL("https://places.cit.api.here.com/places/v1/autosuggest"
+				+ "?app_id=" + app_id
+				+ "&app_code=" + app_code
+				+ "&at=" + munichLatitude + "%2C" + munichLongitude
+				+ "&q=" + place
+				+ "&callback=");
+		response = response.substring(1);
+		response = response.substring(0, response.length()-2);
+		JSONArray results = new JSONObject(response).getJSONArray("results");
+		JSONObject firstResult;
+		try {
+			firstResult = results.getJSONObject(0);
+		} catch (JSONException e) {
+			return new ArrayList<>();
+		}
+		String address = firstResult.getString("vicinity");
+		address = address.replaceAll("<br>|<\\/br>|<b>|<\\/br>|<br\\/>|<b\\/>", " ");
+		ArrayList<Address> addressList = getAddresses(address);
+		return addressList;
+	}
+	
+	/**
+	 * Gets the addresses based on the user input/vicinity of a place.
+	 * @param address
+	 * 					The user input/vicinity of a place
+	 * @return
+	 * 					A list with all addresses
+	 * @throws IOException
+	 * 					If there was a problem with the connection
+	 */
+	private ArrayList<Address> getAddresses(String address) throws IOException {
 		String encodedAddress = URLEncoder.encode(address, "UTF-8");
 		String response = getResponseFromURL("http://autocomplete.geocoder.api.here.com/6.2/suggest.json?query="
 				+ encodedAddress
@@ -69,7 +121,6 @@ public class AddressResolver {
 				addressList.add(addr);
 			}
 		}
-		
 		return addressList;
 	}
 	

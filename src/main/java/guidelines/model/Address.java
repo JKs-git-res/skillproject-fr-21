@@ -71,7 +71,8 @@ public class Address {
     
   
     
-    public void setNearestStation(Station nearestStation){
+    public void setNearestStation(Station nearestStation) {
+    	this.nearestStation = nearestStation;
     }
     
     public String getFullAddress(){

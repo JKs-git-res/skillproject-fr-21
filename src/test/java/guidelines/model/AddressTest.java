@@ -15,12 +15,21 @@ public class AddressTest {
 	
 	@Test
 	public void AddressTestWithAllData() throws IOException {
-		ArrayList<Address> address = ar.getAddressList("Lothstraße 64 München");
+		ArrayList<Address> address = ar.getAddressList("Lothstraße 64");
 		assertEquals("München", address.get(0).getCity());
 		assertEquals(64, address.get(0).gethouseNumber());
 		assertEquals("Lothstraße", address.get(0).getStreet());
 		assertEquals("80335", address.get(0).getPostCode());
 		assertEquals("NT_GgesHsyrnzR3eEhPnUvBpA_2QD", address.get(0).getLocationId());
+	}
+	
+	@Test
+	public void LeierkastenTest() throws IOException {
+		ArrayList<Address> address = ar.getAddressList("Leierkasten");
+		assertEquals(2, address.size());
+		assertEquals(address.get(0).getStreet(), "Ingolstädter Straße");
+		assertEquals(address.get(0).getCity(), "München");
+		assertEquals(address.get(0).gethouseNumber(), 38);
 	}
 	
 	@Test
@@ -52,7 +61,7 @@ public class AddressTest {
 	
 	@Test
 	public void TestNotValidAddress() throws IOException {
-		ArrayList<Address> address = ar.getAddressList("Irgendwo");
+		ArrayList<Address> address = ar.getAddressList("SoEinSchwachsinn");
 		assertEquals(0,address.size());
 	}
 	
