@@ -9,10 +9,10 @@ import org.junit.Test;
 
 import guidelines.exceptions.NoFormOfTransportException;
 
-class NearbyStationFinderTest {
+public class NearbyStationFinderTest {
 
 	@Test
-	void FindNearbyStationTest() throws IOException, NoFormOfTransportException {
+	public void FindNearbyStationTest() throws IOException, NoFormOfTransportException {
 		NearbyStationFinder nsf = new NearbyStationFinder();
 		Address address = new Address("Bayerstraße","München","NT_IIphYQLPRrVnLxhhHePqsB_4A");
 		Station station = nsf.findNearestStation(address);
@@ -22,7 +22,7 @@ class NearbyStationFinderTest {
 	}
 	
 	@Test
-	void NoNearestStationFoundTest() throws IOException, NoFormOfTransportException {
+	public void NoNearestStationFoundTest() throws IOException, NoFormOfTransportException {
 		NearbyStationFinder nsf = new NearbyStationFinder();
 		Address address = new Address("Wood River", "Saskatchewan", "NT_VPrVIZNQ8Zh5X3WZupItXC");
 		Station station = nsf.findNearestStation(address);
@@ -30,7 +30,7 @@ class NearbyStationFinderTest {
 	}
 	
 	@Test
-	void WrongLocationIdTest() throws IOException, NoFormOfTransportException {
+	public void WrongLocationIdTest() throws IOException, NoFormOfTransportException {
 		NearbyStationFinder nsf = new NearbyStationFinder();
 		Address address = new Address("Wood River", "Saskatchewan", "NotAValidId");
 		Station station = nsf.findNearestStation(address);
