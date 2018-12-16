@@ -173,7 +173,7 @@ public class RouteCalculator {
 				minutes = minutes.replaceAll("0", "");
 			}
 			plan.append(hours).append(" Stunden und ").append(minutes).append(" Minuten");
-		} else if (!hours.equals("0") && !minutes.equals("0")) {
+		} else if (!hours.equals("0") && minutes.equals("0")) {
 			plan.append(hours).append(" Stunden");
 		} else if (hours.equals("0")) {
 			plan.append(minutes).append(" Minuten");
