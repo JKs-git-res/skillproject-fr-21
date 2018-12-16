@@ -31,6 +31,9 @@ public class RouteCalculator {
 		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
 		JSONObject choice = getNextConnection(connections, departureTime, false);
+		if (choice == null) {
+			return null;
+		}
 		String time = choice.getJSONObject("Arr").getString("time").split("T")[1];
 		time = getTimePretty(time);
 		JSONArray sections = choice.getJSONObject("Sections").getJSONArray("Sec");
@@ -55,6 +58,9 @@ public class RouteCalculator {
 		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, arrivalTime, 1))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
 		JSONObject choice = getNextConnection(connections, arrivalTime, true);
+		if (choice == null) {
+			return null;
+		}
 		JSONArray sections = choice.getJSONObject("Sections").getJSONArray("Sec");
 		String time = choice.getJSONObject("Arr").getString("time").split("T")[1];
 		time = getTimePretty(time);
@@ -123,6 +129,9 @@ public class RouteCalculator {
 		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, new Date(), 0))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
 		JSONObject choice = getNextConnection(connections, new Date(), false);
+		if (choice == null) {
+			return null;
+		}
 		JSONArray sections = choice.getJSONObject("Sections").getJSONArray("Sec");
 		String duration = choice.getString("duration").replaceAll("PT", "");
 		String hours = duration.split("H")[0];
