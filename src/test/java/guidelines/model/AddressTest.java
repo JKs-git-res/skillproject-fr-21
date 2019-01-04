@@ -8,14 +8,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.json.JSONException;
 
-class AddressTest {
+public class AddressTest {
 
 	private AddressResolver ar = new AddressResolver();
 	
 	
 	@Test
-	void AddressTestWithAllData() throws IOException {
-		ArrayList<Address> address = ar.getAddressList("Lothstraße 64 München");
+	public void AddressTestWithAllData() throws IOException {
+		ArrayList<Address> address = ar.getAddressList("Lothstraße 64");
 		assertEquals("München", address.get(0).getCity());
 		assertEquals(64, address.get(0).gethouseNumber());
 		assertEquals("Lothstraße", address.get(0).getStreet());
@@ -24,7 +24,16 @@ class AddressTest {
 	}
 	
 	@Test
-	void AddressTestWithoutHouseNumber() throws IOException {
+	public void LeierkastenTest() throws IOException {
+		ArrayList<Address> address = ar.getAddressList("Leierkasten");
+		assertEquals(2, address.size());
+		assertEquals(address.get(0).getStreet(), "Ingolstädter Straße");
+		assertEquals(address.get(0).getCity(), "München");
+		assertEquals(address.get(0).gethouseNumber(), 38);
+	}
+	
+	@Test
+	public void AddressTestWithoutHouseNumber() throws IOException {
 		ArrayList<Address> address = ar.getAddressList("lothstraße München");
 		assertEquals("München", address.get(0).getCity());
 		assertEquals(-1, address.get(0).gethouseNumber());
@@ -34,25 +43,25 @@ class AddressTest {
 	}
 	
 	@Test(expected = JSONException.class)
-	void AddressTestWithoutStreet() throws IOException {		
+	public void AddressTestWithoutStreet() throws IOException {		
 		ar.getAddressList("München");
 	}
 	
 	@Test
-	void TestRandomLocation() throws IOException {
+	public void TestRandomLocation() throws IOException {
 		ArrayList<Address> address = ar.getAddressList("Olympiapark München");
 		assertEquals("Am Olympiapark", address.get(0).getStreet());
 	}
 	
 	@Test
-	void TestMultipleResults() throws IOException {
+	public void TestMultipleResults() throws IOException {
 		ArrayList<Address> address = ar.getAddressList("Bahnhofstraße München");
 		assertEquals(5,address.size());
 	}
 	
 	@Test
-	void TestNotValidAddress() throws IOException {
-		ArrayList<Address> address = ar.getAddressList("Irgendwo");
+	public void TestNotValidAddress() throws IOException {
+		ArrayList<Address> address = ar.getAddressList("SoEinSchwachsinn");
 		assertEquals(0,address.size());
 	}
 	

@@ -4,12 +4,12 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-class HouseNumberConverterTest {
+public class HouseNumberConverterTest {
 
 	private HouseNumberConverter hnc = new HouseNumberConverter();
 	
 	@Test
-	void BigNumbersTest() {
+	public void BigNumbersTest() {
 		String adresse1 = "Lothstraße neuntausendneunhundertneunundneunzig München";
 		String adresse2 = "Römerhang acht tausend acht hundert acht und achtzig Landsberg am Lech";
 		int result = hnc.getHouseNumber(adresse1);
@@ -19,7 +19,7 @@ class HouseNumberConverterTest {
 	}
 	
 	@Test
-	void MediumNumbersTest() {
+	public void MediumNumbersTest() {
 		String adresse1 = "Lothstraße sechshunderteinundzwanzig München";
 		String adresse2 = "Römerhang sieben hundert zweiundvierzig Landsberg am Lech";
 		int result = hnc.getHouseNumber(adresse1);
@@ -29,7 +29,7 @@ class HouseNumberConverterTest {
 	}
 	
 	@Test
-	void LowNumbersTest() {
+	public void LowNumbersTest() {
 		String adresse1 = "Lothstraße sechsunddreißig München";
 		String adresse2 = "Römerhang sieben und dreissig Landsberg am Lech";
 		int result = hnc.getHouseNumber(adresse1);
@@ -39,7 +39,7 @@ class HouseNumberConverterTest {
 	}
 	
 	@Test
-	void SmallNumbersTest() {
+	public void SmallNumbersTest() {
 		String adresse1 = "Lothstraße zwei München";
 		String adresse2 = "Römerhang null Landsberg am Lech";
 		int result = hnc.getHouseNumber(adresse1);
@@ -49,7 +49,7 @@ class HouseNumberConverterTest {
 	}
 	
 	@Test
-	void HereApiReadyAddressFormTest() {
+	public void HereApiReadyAddressFormTest() {
 		String adresse1 = "Lothstraße vierundsechzig München";
 		String result = hnc.getAdressHereAPIFormatted(adresse1);
 		assertEquals("Lothstraße  München 64", result);

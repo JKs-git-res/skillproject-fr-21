@@ -71,6 +71,10 @@ public class Address {
     
   
     
+    public void setNearestStation(Station nearestStation) {
+    	this.nearestStation = nearestStation;
+    }
+    
     public String getFullAddress(){
         return street + " " + houseNumber + " " + postCode + " " + city;
     }
