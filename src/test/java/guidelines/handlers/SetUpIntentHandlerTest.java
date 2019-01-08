@@ -50,14 +50,14 @@ public class SetUpIntentHandlerTest {
             "Untertaxetweg 150",
             "Untertaxetweg hundertfünfzig",
             "Hauptplatz zwei gauting",
-            //"Leierkasten München", //TODO geht noch nicht! -> Benni
+            "Leierkasten München",
             "Flughafen München",
             "Olympiapark München",
             "Marienplatz",
             "Oktoberfest",
             "Apple Store München",
-            //"Hofbräuhaus München", //TODO der geht auch nicht! -> Benni
-            //"Landsberger Straße hundertvierundachzig", //TODO der auch nicht
+            "Hofbräuhaus München", 
+            "Landsberger Straße hundertvierundachtzig", 
             "Lothstraße 64"
     };
 

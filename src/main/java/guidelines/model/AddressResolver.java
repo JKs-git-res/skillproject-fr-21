@@ -17,6 +17,9 @@ public class AddressResolver {
 	
 	public static final String app_id = "ZQc2T7A0egItevgCF9iE";
 	public static final String app_code = "Lu6ioGBqcHULGjLLFMiDeQ";
+	private final double munichLatitude = 48.13642;
+	private final double munichLongitude = 11.57755;
+	private final int radius = 100000; // Look for results in radius 100 km
 	
 	/**
 	 * Sends a HTTP GET request to the given URL and returns the result as a String
@@ -69,8 +72,6 @@ public class AddressResolver {
 	 * 				If there was a problem with the connection
 	 */
 	private  ArrayList<Address> searchForPlacesInMunich(String place) throws IOException {
-		final double munichLatitude = 48.13642;
-		final double munichLongitude = 11.57755;
 		String response = getResponseFromURL("https://places.cit.api.here.com/places/v1/autosuggest"
 				+ "?app_id=" + app_id
 				+ "&app_code=" + app_code
@@ -80,13 +81,24 @@ public class AddressResolver {
 		response = response.substring(1);
 		response = response.substring(0, response.length()-2);
 		JSONArray results = new JSONObject(response).getJSONArray("results");
-		JSONObject firstResult;
-		try {
-			firstResult = results.getJSONObject(0);
-		} catch (JSONException e) {
+		JSONObject firstResultWithVicinity = null;
+		String address = null;
+		for (int i=0; i<results.length(); i++) {
+			try {
+				firstResultWithVicinity = results.getJSONObject(i);
+				address = firstResultWithVicinity.getString("vicinity");
+			} catch (JSONException e) {
+				// do nothing
+			}
+			if (address != null) {
+				break;
+			}
+		}
+		
+		if (address == null || firstResultWithVicinity == null) {
 			return new ArrayList<>();
 		}
-		String address = firstResult.getString("vicinity");
+		
 		address = address.replaceAll("<br>|<\\/br>|<b>|<\\/br>|<br\\/>|<b\\/>", " ");
 		ArrayList<Address> addressList = getAddresses(address);
 		return addressList;
@@ -105,6 +117,8 @@ public class AddressResolver {
 		String encodedAddress = URLEncoder.encode(address, "UTF-8");
 		String response = getResponseFromURL("http://autocomplete.geocoder.api.here.com/6.2/suggest.json?query="
 				+ encodedAddress
+				+ "&country=DEU"
+				+ "&prox=" + munichLatitude + "%2C" + munichLongitude + "%2C" + radius
 				+ "&app_id=" + app_id
 				+ "&app_code=" + app_code);
 		JSONObject json = new JSONObject(response);
