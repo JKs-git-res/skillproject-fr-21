@@ -39,6 +39,7 @@ import guidelines.OutputStrings;
 import guidelines.StatusAttributes;
 
 public class SetUpIntentHandler implements RequestHandler {
+    public static Intent staticIntent;
 
     private Map<String, Slot> slots;
     private AttributesManager attributesManager;
@@ -279,6 +280,7 @@ public class SetUpIntentHandler implements RequestHandler {
         Session session = input.getRequestEnvelope().getSession();
         IntentRequest intReq = (IntentRequest) request;
         Intent intent = intReq.getIntent();
+        staticIntent = intent;
         slots = intent.getSlots();
         HomeAddress_Slot = slots.get("Homeaddress");
         NameHome_Slot = slots.get("NameHome");

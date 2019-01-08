@@ -1,6 +1,6 @@
 
 
-package guideLines.handlers;
+package guidelines.handlers;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
@@ -9,8 +9,8 @@ import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Session;
 
-import main.java.guideLines.OutputStrings;
-import main.java.guideLines.StatusAttributes;
+import guidelines.OutputStrings;
+import guidelines.StatusAttributes;
 
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class HelpIntentHandler implements RequestHandler {
 	
     @Override
     public Optional<Response> handle(HandlerInput input) {
-   	Intent intent = SetUpIntentHandler.intent;
+   	Intent intent = SetUpIntentHandler.staticIntent;
     	
     	Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
     	session = (String) sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString());
