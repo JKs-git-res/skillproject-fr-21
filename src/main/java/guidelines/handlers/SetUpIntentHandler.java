@@ -127,10 +127,13 @@ public class SetUpIntentHandler implements RequestHandler {
              if(addresses.size() > 0) {
                  return addresses;
              } else
+            	 	System.out.println("It was 0. Here is the input: " + hnc.getAdressHereAPIFormatted(slot.getValue()) + " Not translated: " + slot.getValue());
             	 	return null;
         } catch (IOException ex) {
+        	System.out.println("IO Exception");
             return null;
         } catch (JSONException ex) {
+        	System.out.println("JSON Exception");
             return null;
         }
     }
@@ -145,8 +148,17 @@ public class SetUpIntentHandler implements RequestHandler {
         }
         catch(IOException ex){}
     }
+    
+    
+    
+    
     private Optional<Response> setAdress(Slot addressSlot,HandlerInput input){
-        String slotName = addressSlot.getName(),slotNameName = "", addressName = "", speech = "", newStatusAttributesValue = "", speechName = "";
+        String slotName = addressSlot.getName();
+        String slotNameName = "";
+        String addressName = "";
+        String speech = "";
+        String newStatusAttributesValue = "";
+        String speechName = "";
         switch(slotName){
             case "Homeaddress":
                 addressName = "Heimatadresse";

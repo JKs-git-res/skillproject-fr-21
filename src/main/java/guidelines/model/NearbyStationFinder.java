@@ -59,9 +59,9 @@ public class NearbyStationFinder {
 			return null;
 		}
 		HashMap<String, FormOfTransport> lines = getLines(transports);
-		if (lines.size() == 0) {
-			throw new NoFormOfTransportException();
-		}
+//		if (lines.size() == 0) {
+//			throw new NoFormOfTransportException();
+//		}
 		String name = firstResult.getString("name");
 		String id = firstResult.getString("id");
 		String city = firstResult.getString("city");
@@ -87,7 +87,7 @@ public class NearbyStationFinder {
 			case 4:
 				lines.put(el.getString("name"), FormOfTransport.SBAHN);
 				break;
-			case 5:
+			case 5|12:
 				lines.put(el.getString("name"), FormOfTransport.BUS);
 				break;
 			case 7:

@@ -12,6 +12,16 @@ import guidelines.exceptions.NoFormOfTransportException;
 public class NearbyStationFinderTest {
 
 	@Test
+	public void FindNextStationFromAlex() throws IOException, NoFormOfTransportException {
+		Address alexHome = new Address("Untertaxetweg", "Gauting","NT_WoC4cezHoWBLOhJUtnIjDA_xUDM");
+		NearbyStationFinder nsf = new NearbyStationFinder();
+		Station station = nsf.findNearestStation(alexHome);
+		assertEquals("Feldstraße", station.getName());
+		assertEquals("mvv_1005614", station.getId());
+		assertEquals("Gauting", station.getCity());
+	}
+	
+	@Test
 	public void FindNearbyStationTest() throws IOException, NoFormOfTransportException {
 		NearbyStationFinder nsf = new NearbyStationFinder();
 		Address address = new Address("Bayerstraße","München","NT_IIphYQLPRrVnLxhhHePqsB_4A");

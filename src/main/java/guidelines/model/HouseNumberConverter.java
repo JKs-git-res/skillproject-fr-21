@@ -29,7 +29,13 @@ public class HouseNumberConverter {
 		copy = resolveSmallNumbers(copy);
 		
 		int returnVal = value;
-		adressWithoutNumber.append(copy).append(" ").append(value);
+		adressWithoutNumber.delete(0, adressWithoutNumber.length());
+		if (value != 0) {
+			adressWithoutNumber.append(copy).append(" ").append(value);
+		} else {
+			adressWithoutNumber.append(copy);
+		}
+		
 		value = 0;
 		
 		return returnVal;

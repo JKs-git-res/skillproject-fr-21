@@ -18,6 +18,13 @@ public class HouseNumberConverterTest {
 		assertEquals(8888, result);
 	}
 	
+	
+	@Test
+	public void LeierkastenTest() {
+		String adresse1 = "Leierkasten München";
+		System.out.println(hnc.getAdressHereAPIFormatted(adresse1));
+	}
+	
 	@Test
 	public void MediumNumbersTest() {
 		String adresse1 = "Lothstraße sechshunderteinundzwanzig München";
