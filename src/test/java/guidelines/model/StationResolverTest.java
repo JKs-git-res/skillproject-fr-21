@@ -30,7 +30,7 @@ public class StationResolverTest {
 	@Test
 	public void GetAddressTest2() throws IOException, StationNotFoundException, NoFormOfTransportException {
 		Station station = sr.getStation("Hauptbahnhof");
-		assertEquals("Hauptbahnhof Süd", station.getName());
+		assertEquals("Hauptbahnhof", station.getName());
 		assertEquals("München", station.getCity());
 	}
 }

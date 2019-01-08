@@ -1,8 +1,5 @@
 package guidelines.model;
 
 public enum FormOfTransport {
-	UBAHN, 
-        SBAHN, 
-        TRAM, 
-        BUS
+    UBAHN,SBAHN,TRAM,BUS
 }

@@ -6,7 +6,6 @@ public class Profile {
 	//private String firstName;
 	private Address homeAddress;
 	private Address[] destinationAddresses = new Address[3];
-	private FormOfTransport preferedWayOfTransport;
 	public Profile(Address home, Address destA, Address destB, Address destC) {
 		this.homeAddress = home;
 		try {
@@ -19,10 +18,7 @@ public class Profile {
 
 		}
 	}
-        
-        public FormOfTransport getPreferedWayOfTransport(){
-            return this.preferedWayOfTransport;
-        }
+
         
        /*
         *  public void setFirstName(String firstName){
@@ -51,10 +47,7 @@ public class Profile {
             else
                 return null;
         }
-        
-        public void addPreferedFormOfTransport(FormOfTransport fot){
-            this.preferedWayOfTransport = fot;
-        }
+
         public void addDestinationAddress(Address newDestination) throws FullDestinationsException{
             if(destinationsFull())
                 throw new FullDestinationsException();

@@ -18,8 +18,10 @@ import com.amazon.ask.model.LaunchRequest;
 import com.amazon.ask.model.Response;
 
 import guidelines.OutputStrings;
+import guidelines.StatusAttributes;
 
 
+import java.util.Map;
 import java.util.Optional;
 
 import static com.amazon.ask.request.Predicates.requestType;
@@ -31,10 +33,23 @@ public class LaunchRequestHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        return input.getResponseBuilder()
-                .withSimpleCard("GuideLines", OutputStrings.WELCOME_EINRICHTUNG_CARD.toString())
-                .withSpeech(OutputStrings.WELCOME_EINRICHTUNG.toString())
-                .withReprompt(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT.toString())
-                .build();
+        Map<String,Object> persistantAttributes = input.getAttributesManager().getPersistentAttributes();
+        Map<String,Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
+        if(persistantAttributes.get("Homeaddress") == null
+                &&persistantAttributes.get("DestinationA") == null)//überprüft, ob der skill bereits eingerichtet wurde.
+        {
+           sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
+            return input.getResponseBuilder()
+                    .withSimpleCard("GuideLines", OutputStrings.WELCOME_EINRICHTUNG_CARD.toString())
+                    .withSpeech(OutputStrings.WELCOME_EINRICHTUNG.toString())
+                    .withReprompt(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT.toString())
+                    .build();
+        } else {
+            sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+            return Optional.empty(); //TODO
+        }
+
+
+
     }
 }

@@ -114,7 +114,7 @@ public class PlanMyTripIntentHandler implements RequestHandler
         }
         String routeInfo = "";
         try {
-			routeInfo =  new RouteCalculator().getRouteDeparture(TripStart.getStation(), TripDestination.getStation(), new Date());
+			routeInfo =  new RouteCalculator().getRouteDeparture(TripStart.getNearestStation(), TripDestination.getNearestStation(), new Date());
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 

@@ -2,16 +2,23 @@ package guidelines.model;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.annotation.*;
+import guidelines.OutputStrings;
 import guidelines.exceptions.NoFormOfTransportException;
 
+@JsonPropertyOrder(value ={"name","street","houseNumber","postCode","city"},alphabetic = true)
 public class Address {
     private String name;
-    private final String street;
-    private final String city;
-    private final String locationId;
+    private String street;
+    private String city;
+    private String locationId;
     private int houseNumber = -1;
     private String postCode = null;
     private Station nearestStation;
+
+    public Address(){
+        super();
+    }
     
     public Address(String street, String city, String locationId) {
 	    	this.city = city;
@@ -46,11 +53,73 @@ public class Address {
 	    	this.locationId = locationId;
 	    	setStation();
     }
-    
-    public Station getStation() {
+    @JsonGetter
+    public Station getNearestStation() {
     		return this.nearestStation;
     }
-    
+
+    @JsonGetter
+    public String getName(){
+        return this.name;
+    }
+
+    @JsonGetter
+    public String getStreet(){
+        return this.street;
+    }
+
+    @JsonGetter
+    public String getCity(){
+        return this.city;
+    }
+
+    @JsonGetter
+    public String getPostCode(){
+        return this.postCode;
+    }
+
+    @JsonGetter
+    public int gethouseNumber(){
+        return houseNumber;
+    }
+
+    @JsonGetter
+    public String getLocationId(){ return this.locationId; }
+
+    @JsonSetter
+    public void setNearestStation(Station nearestStation) {this.nearestStation = nearestStation; }
+
+    @JsonSetter
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @JsonSetter
+    public void setStreet(String street){
+        this.street = street;
+    }
+
+    @JsonSetter
+    public void setCity(String city){
+        this.city = city;
+    }
+
+    @JsonSetter
+    public void setPostCode(String postCode){
+        this.postCode = postCode;
+    }
+
+    @JsonSetter
+    public void setHouseNumber(int houseNumber){
+        this.houseNumber = houseNumber;
+    }
+
+    @JsonSetter
+    public void setLocationId(String locationId){
+        this.locationId = locationId;
+    }
+
+
     private void setStation() {
     	try {
 			nearestStation = new NearbyStationFinder().findNearestStation(this);
@@ -61,42 +130,19 @@ public class Address {
       // TODO Auto-generated catch block
       
     }
-    public void setName(String name){
-        this.name = name;
+
+
+    @JsonIgnoreProperties
+    public String AddressSpeech(){
+        return street + " "+ houseNumber + OutputStrings.SPEECH_BREAK_SHORT.toString() +" "+ city;
     }
+
     
-    public String getName(){
-        return this.name;
-    }
+
     
-  
-    
-    public void setNearestStation(Station nearestStation) {
-    	this.nearestStation = nearestStation;
-    }
-    
-    public String getFullAddress(){
-        return street + " " + houseNumber + " " + postCode + " " + city;
-    }
-    
-    public String getStreet(){
-        return this.street;
-    }
-    
-    public int gethouseNumber(){
-        return houseNumber;
-    }
-    
-    public String getCity(){
-        return this.city;
-    }
-    public String getPostCode(){
-       return this.postCode;
-    }
-    
-    public String getLocationId() {
-    	return this.locationId;
-    }
+
+
+
     
 
 }
