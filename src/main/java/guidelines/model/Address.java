@@ -1,6 +1,7 @@
 package guidelines.model;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.*;
 import guidelines.OutputStrings;
@@ -137,12 +138,19 @@ public class Address {
         return street + " "+ houseNumber + OutputStrings.SPEECH_BREAK_SHORT.toString() +" "+ city;
     }
 
-    
 
-    
-
-
-
-    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+        Address address = (Address) o;
+        return houseNumber == address.houseNumber &&
+                Objects.equals(getName(), address.getName()) &&
+                Objects.equals(getStreet(), address.getStreet()) &&
+                Objects.equals(getCity(), address.getCity()) &&
+                Objects.equals(getLocationId(), address.getLocationId()) &&
+                Objects.equals(getPostCode(), address.getPostCode()) &&
+                Objects.equals(getNearestStation(), address.getNearestStation());
+    }
 
 }

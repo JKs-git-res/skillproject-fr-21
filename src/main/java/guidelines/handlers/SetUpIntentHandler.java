@@ -65,15 +65,16 @@ public class SetUpIntentHandler implements RequestHandler {
                 input.getAttributesManager().getSessionAttributes().get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString()).equals("false");
     }
 
-    private Optional<Response> confirmAdress(HandlerInput input, Address toConfirm){
+    private Optional<Response> confirmAdress(HandlerInput input, Address toConfirm, String slotName){
         Intent intent = ((IntentRequest) input.getRequestEnvelope().getRequest()).getIntent();
         String speech = "Deine Adresse lautet: "
                 +toConfirm.AddressSpeech()
                 +OutputStrings.SPEECH_BREAK_LONG.toString()
                 +". Ist das richtig?";
         return input.getResponseBuilder()
-                .addConfirmSlotDirective("Homeaddress", intent)
+                .addConfirmSlotDirective(slotName, intent)
                 .withSpeech(speech)
+                .withShouldEndSession(false)
                 .withSimpleCard("Adresse bestätigen", speech)
                 .build();
 
@@ -82,6 +83,7 @@ public class SetUpIntentHandler implements RequestHandler {
 
     private Optional<Response> invalidAddress(HandlerInput input, String slot) {
         return input.getResponseBuilder()
+                .withShouldEndSession(false)
                 .addElicitSlotDirective(slot, ((IntentRequest) input.getRequestEnvelope().getRequest()).getIntent())
                 .withSpeech(OutputStrings.EINRICHTUNG_INVALID_ADDRESS.toString())
                 .withSimpleCard("Adresse ungültig", OutputStrings.EINRICHTUNG_INVALID_ADDRESS.toString())
@@ -181,21 +183,31 @@ public class SetUpIntentHandler implements RequestHandler {
         }
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
         Intent intent = ((IntentRequest)input.getRequestEnvelope().getRequest()).getIntent();
-        if(addressSlot.getValue() == null || addressSlot.getConfirmationStatus().getValue().equals("DENIED")){
+        if(addressSlot.getValue() == null) {
             return input.getResponseBuilder()
                     .addElicitSlotDirective(slotName, intent)
                     .withShouldEndSession(false)
                     .withSpeech(speech)
-                    .withSimpleCard(addressName+ " angeben", speech)
+                    .withSimpleCard(addressName + " angeben", speech)
                     .build();
-
-        }else if(addressSlot.getConfirmationStatus().getValue().equals("NONE")){
+        }
+        else if(addressSlot.getConfirmationStatus().getValue().equals("DENIED")){
+            return input.getResponseBuilder()
+                    .addElicitSlotDirective(slotName, intent)
+                    .withShouldEndSession(false)
+                    .withSpeech("Dann wiederhole bitte die Adresse."
+                            +OutputStrings.SPEECH_BREAK_SHORT.toString()
+                            + " Versuche dabei laut und deutlich zu sprechen.")
+                    .withSimpleCard(addressName + " angeben", speech)
+                    .build();
+            }
+        else if(addressSlot.getConfirmationStatus().getValue().equals("NONE")){
             List<Address> adrList = resolveAddress(addressSlot);
             if (adrList == null) {
                 return invalidAddress(input, slotName);
             } else {
                     storeAdressToSession(adrList.get(0), slotName);
-                    return confirmAdress(input, adrList.get(0));
+                    return confirmAdress(input, adrList.get(0),slotName);
 
             }
 
@@ -299,14 +311,16 @@ public class SetUpIntentHandler implements RequestHandler {
             String process = (String)sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString());
             if(process != null){
                 int proc = Integer.parseInt(process);
-                if(proc >= 0 && sessionAttributes.get("Homeaddress") != null)
+                if(proc >= 0 && sessionAttributes.get("Homeaddress") != null) {
                     homeAddress = new ObjectMapper().readValue((String) sessionAttributes.get("Homeaddress"), Address.class);
-                if(proc >= 1 && persistentAttributes.get("DestinationA") != null)
-                    destinationA = new ObjectMapper().readValue((String) persistentAttributes.get("DestinationA"), Address.class);
-                if(proc >= 3 && persistentAttributes.get("DestinationB") != null)
-                    destinationB = new ObjectMapper().readValue((String) persistentAttributes.get("DestinationB"), Address.class);
-                if(proc >= 5 && persistentAttributes.get("DestinationC") != null)
-                    destinationC = new ObjectMapper().readValue((String) persistentAttributes.get("DestinationC"), Address.class);
+                }
+                if(proc >= 1 && sessionAttributes.get("DestinationA") != null){
+                    destinationA = new ObjectMapper().readValue((String) sessionAttributes.get("DestinationA"), Address.class);
+                }
+                if(proc >= 3 && sessionAttributes.get("DestinationB") != null)
+                    destinationB = new ObjectMapper().readValue((String) sessionAttributes.get("DestinationB"), Address.class);
+                if(proc >= 5 && sessionAttributes.get("DestinationC") != null)
+                    destinationC = new ObjectMapper().readValue((String) sessionAttributes.get("DestinationC"), Address.class);
             }
 
         } catch (JsonMappingException ex){
@@ -364,13 +378,14 @@ public class SetUpIntentHandler implements RequestHandler {
             case "001": //hier wird nach der ersten Zieladresse gefragt
                 homeAddress.setName(NameHome_Slot.getValue());
                 storeAdressToDB(homeAddress, "Homeaddress");
-                setAdress(DestinationA_Slot, input);
+                return setAdress(DestinationA_Slot, input);
 
             case "002": // hier wird gefragt, ob der User ein zweites Ziel hinzufügen will
                 destinationA.setName(DestinationA_Name_Slot.getValue());
                 storeAdressToDB(destinationA, "DestinationA");
                 sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_WANT_SECOND_DEST_SET.toString());
                 return input.getResponseBuilder()
+                        .withShouldEndSession(false)
                         .addElicitSlotDirective("YesNoSlot_wantSecondDest", intent)
                         .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST.toString())
                         .withSimpleCard("Zweites Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST.toString())
@@ -378,7 +393,7 @@ public class SetUpIntentHandler implements RequestHandler {
 
             case "003": // hier wird nach der zweiten Zieladresse gefragt
                 if (yesNo_Slot_secondDest.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName().equals("Ja")) {
-                    setAdress(DestinationB_Slot, input);
+                    return setAdress(DestinationB_Slot, input);
                 } else {
                     return setUpComplete(input);
                 }
@@ -389,6 +404,7 @@ public class SetUpIntentHandler implements RequestHandler {
                 storeAdressToDB(destinationB, "DestinationB");
                 sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_WANT_THIRD_DEST_SET.toString());
                 return input.getResponseBuilder()
+                        .withShouldEndSession(false)
                         .addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
                         .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
                         .withSimpleCard("Drittes Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
@@ -396,7 +412,7 @@ public class SetUpIntentHandler implements RequestHandler {
 
             case "005": // hier wird nach der dritten Zieladresse gefragt
                 if (yesNo_Slot_thirdDest.getResolutions().getResolutionsPerAuthority().get(0).getValues().get(0).getValue().getName().equals("Ja")) {
-                    setAdress(DestinationC_Slot, input);
+                    return setAdress(DestinationC_Slot, input);
                 } else {
                     return setUpComplete(input);
                 }

@@ -13,6 +13,7 @@ import guidelines.model.AddressResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class SetUpIntentHandlerTest {
@@ -31,6 +33,12 @@ public class SetUpIntentHandlerTest {
             "NameHome","DestinationA","NameA",
             "YesNoSlot_wantSecondDest","DestinationB","NameB",
             "YesNoSlot_wantThirdDest","DestinationC","NameC"};
+    private final String[] slotValuesList = {
+            "Nein", "Untertaxetweg 150 Gauting",
+            "Zuhause", "Lothstraße 64 München",
+            "Uni","Ja","Landsbergerstraße 184 München",
+            "Arbeit","Ja","Flughafen München","Flughafen"
+    };
 
     private final String[] profileValues = {"Untertaxetweg 150 Gauting", "Zuhause",
             "Lothstraße 64 München", "Uni",
@@ -172,8 +180,19 @@ public class SetUpIntentHandlerTest {
             sessionAttributes.putAll(sessionList);
         if(persList != null)
             persistantAttributes.putAll(persList);
+        /*
+        System.out.println("Session Attributes: ");
+        System.out.println("\t" +"Process: "+sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString()));
+        System.out.println("\t" +"Is Complete: " +sessionAttributes.get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString()));
+        for(int i= 0; i< slotsNameList.length; i++)
+            System.out.println("\t" +slotsNameList[i]+" : " + sessionAttributes.get(slotsNameList[i]));
+        */
+
         when(attributesManager.getSessionAttributes()).thenReturn(sessionAttributes);
         when(attributesManager.getPersistentAttributes()).thenReturn(persistantAttributes);
+        ArgumentCaptor<Map> arg = ArgumentCaptor.forClass(Map.class);
+        doNothing().when(attributesManager).setPersistentAttributes(arg.capture());
+        doNothing().when(attributesManager).savePersistentAttributes();
         return attributesManager;
     }
     private AttributesManager mockAttributesManager(){
@@ -181,7 +200,76 @@ public class SetUpIntentHandlerTest {
         Map<String,Object> emptyMap = new HashMap<String, Object>();
         when(attributesManager.getSessionAttributes()).thenReturn(emptyMap);
         when(attributesManager.getPersistentAttributes()).thenReturn(emptyMap);
+        ArgumentCaptor<Map> arg = ArgumentCaptor.forClass(Map.class);
+        doNothing().when(attributesManager).setPersistentAttributes(arg.capture());
+        doNothing().when(attributesManager).savePersistentAttributes();
         return attributesManager;
+    }
+
+    private Response mockResponse(int stage,StatusAttributes statusAttribute ,boolean isSetUpComplete,
+                                  SlotConfirmationStatus confirmationStatusOfNewFeature){
+        Map<String,Object> sessionAttributes = new HashMap<>();
+        Map<String,Slot> slots = new HashMap<>();
+        sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), Boolean.toString(isSetUpComplete));
+        if(statusAttribute != null)
+            sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(),statusAttribute.toString());
+        else
+            sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(),null);
+
+        for(int j = 0; j < slotsNameList.length; j++){
+            slots.put(slotsNameList[j], mockSlotWithValue(slotsNameList[j],null,SlotConfirmationStatus.NONE));
+        }
+        for(int i = 0; i <= stage; i++){
+            if(i == 1 ^ i == 3 ^ i == 6 ^ i == 9){
+                try{
+                    sessionAttributes.put(slotsNameList[i],
+                            new ObjectMapper()
+                                    .writeValueAsString(
+                                            new AddressResolver()
+                                                    .getAddressList(
+                                                            slotValuesList[i])
+                                                    .get(0)));
+
+                } catch (IOException ex) {}
+
+            } else {
+                sessionAttributes.put(slotsNameList[i],slotValuesList[i]);
+            }
+            if(i != stage)
+                slots.put(slotsNameList[i],mockSlotWithValue(slotsNameList[i],slotValuesList[i],SlotConfirmationStatus.NONE));
+            else
+                slots.put(slotsNameList[i],mockSlotWithValue(slotsNameList[i],slotValuesList[i],confirmationStatusOfNewFeature));
+
+
+        }
+
+        AttributesManager attributesManager = mockAttributesManager(sessionAttributes, null);
+        DialogState state;
+        if(stage == -1)
+            state = DialogState.STARTED;
+        else
+            state = DialogState.IN_PROGRESS;
+
+        RequestEnvelope req = RequestEnvelope
+                .builder()
+                .withRequest(
+                        IntentRequest
+                                .builder()
+                                .withDialogState(state)
+                                .withIntent(Intent
+                                        .builder()
+                                        .withConfirmationStatus(IntentConfirmationStatus.NONE)
+                                        .withSlots(slots)
+                                        .build())
+                                .build()
+                )
+                .build();
+        HandlerInput inputMock = Mockito.mock(HandlerInput.class);
+        when(inputMock.getRequestEnvelope()).thenReturn(req);
+        when(inputMock.getResponseBuilder()).thenReturn(new ResponseBuilder());
+        when(inputMock.getAttributesManager()).thenReturn(attributesManager);
+
+        return handler.handle(inputMock).get();
     }
 
 
@@ -231,8 +319,7 @@ public class SetUpIntentHandlerTest {
      */
     @Test
     public void testSetUpStart(){
-        HandlerInput inputMock = mockInputSetUpStart();
-        Response response = handler.handle(inputMock).get();
+        Response response = mockResponse(-1,null,false,SlotConfirmationStatus.NONE);
         assertFalse(response.getShouldEndSession());
         assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
         assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString()));
@@ -242,10 +329,7 @@ public class SetUpIntentHandlerTest {
 
     @Test
     public void testSetUp_notUseLocation(){
-        List slotValues = new ArrayList<>();
-        slotValues.add("Nein");
-        HandlerInput inputMock = mockInputSetUpInProcess(StatusAttributes.VALUE_YES_NO_LOCATION_SET,slotValues);
-        Response response = handler.handle(inputMock).get();
+        Response response = mockResponse(0,StatusAttributes.VALUE_YES_NO_LOCATION_SET,false,SlotConfirmationStatus.NONE);
         assertFalse(response.getShouldEndSession());
         assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
         assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_HOMEADDRESS.toString()));
@@ -260,19 +344,39 @@ public class SetUpIntentHandlerTest {
         //TODO test schreiben wenn feature mit aktuellem standort fertig ist
     }
 
-    private Response getResponse (String adr, StatusAttributes statusAttribute){
-        List<String> slotValues = new ArrayList<>();
-        slotValues.add("Nein");
-        slotValues.add(adr);
-        HandlerInput input = mockInputSetUpInProcess(statusAttribute,slotValues);
-        return handler.handle(input).get();
-    }
 
     @Test
     public void testSetUp_usePrescribedAddresses(){
         for(int i = 0; i<testAddresses.length;i++){
-            System.out.println("testing: " +testAddresses[i]);
-            Response response = getResponse(testAddresses[i],StatusAttributes.VALUE_YES_NO_LOCATION_SET);
+            Map<String, Slot> slots = new HashMap<>();
+            slots.put(slotsNameList[0],mockSlotWithValue(slotsNameList[0],"Nein", SlotConfirmationStatus.NONE));
+            slots.put(slotsNameList[1],mockSlotWithValue(slotsNameList[1],testAddresses[i], SlotConfirmationStatus.NONE));
+            HandlerInput mockInput = Mockito.mock(HandlerInput.class);
+            Map<String, Object> sessionAttributes = new HashMap<>();
+            sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(),StatusAttributes.VALUE_YES_NO_LOCATION_SET.toString());
+            sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(),"false");
+            AttributesManager attributesManager = mockAttributesManager(sessionAttributes, new HashMap<String, Object>());
+            RequestEnvelope req = RequestEnvelope
+                    .builder()
+                    .withRequest(
+                            IntentRequest
+                                    .builder()
+                                    .withIntent(
+                                            Intent
+                                                    .builder()
+                                                    .withConfirmationStatus(IntentConfirmationStatus.NONE)
+                                                    .withName("SetUpIntent")
+                                                    .withSlots(slots)
+                                                    .build())
+                                    .withDialogState(DialogState.IN_PROGRESS)
+                                    .withLocale("de-DE")
+                                    .build()
+                    )
+                    .build();
+            when(mockInput.getRequestEnvelope()).thenReturn(req);
+            when(mockInput.getResponseBuilder()).thenReturn(new ResponseBuilder());
+            when(mockInput.getAttributesManager()).thenReturn(attributesManager);
+            Response response = handler.handle(mockInput).get();
             assertEquals("Dialog.ConfirmSlot",response.getDirectives().get(0).getType());
             assertTrue(response.getCard().getType().equals("Simple"));
             assertTrue(response.getOutputSpeech().toString().contains("Deine Adresse lautet:"));
@@ -280,13 +384,116 @@ public class SetUpIntentHandlerTest {
         }
     }
 
+
+    @Test
+    public void testSetUp_confirmationOnHomeAddressConfirmed(){
+        Response response = mockResponse(1,StatusAttributes.VALUE_YES_NO_LOCATION_SET,false,SlotConfirmationStatus.CONFIRMED);
+        assertTrue(response.getOutputSpeech().toString().contains("Alles klar. Die nächste Haltestelle dieser Adresse lautet: "));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_NAMEHOME.toString()));
+        assertEquals("Dialog.ElicitSlot", response.getDirectives().get(0).getType());
+        assertFalse(response.getShouldEndSession());
+        assertTrue(response.getCard().getType().equals("Simple"));
+
+    }
+    @Test
+    public void testSetUp_confirmationOnHomeAddressDenied(){
+        Response response = mockResponse(1,StatusAttributes.VALUE_YES_NO_LOCATION_SET,false,SlotConfirmationStatus.DENIED);
+        assertTrue(response.getOutputSpeech().toString().contains("Dann wiederhole bitte die Adresse."));
+        assertTrue(response.getOutputSpeech().toString().contains(" Versuche dabei laut und deutlich zu sprechen."));
+        assertEquals("Dialog.ElicitSlot", response.getDirectives().get(0).getType());
+        assertFalse(response.getShouldEndSession());
+        assertTrue(response.getCard().getType().equals("Simple"));
+
+    }
+
+
+
+    @Test
+    public void testSetUp_setNameHomeAddress(){
+        Map<String,Slot> slots = new HashMap<>();
+        slots.put(slotsNameList[0], mockSlotWithValue(slotsNameList[0],"Nein",SlotConfirmationStatus.NONE));
+        slots.put(slotsNameList[1],mockSlotWithValue(slotsNameList[1],testAddresses[0], SlotConfirmationStatus.CONFIRMED));
+        slots.put(slotsNameList[2],mockSlotWithValue(slotsNameList[2],"Zuhause",SlotConfirmationStatus.NONE));
+        slots.put(slotsNameList[3],mockSlotWithValue(slotsNameList[3], null,SlotConfirmationStatus.NONE));
+
+        Map<String,Object> sessionAttributes = new HashMap<>();
+        sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(),StatusAttributes.VALUE_HOMEADDRESS_SET.toString());
+        try{
+            sessionAttributes.put(slotsNameList[1],
+                    new ObjectMapper()
+                            .writeValueAsString(
+                                    new AddressResolver()
+                                            .getAddressList(
+                                                    testAddresses[0])
+                                            .get(0)));
+        } catch (IOException ex) {}
+        sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
+        AttributesManager attributesManager = mockAttributesManager(sessionAttributes, null);
+        RequestEnvelope req = RequestEnvelope
+                .builder()
+                .withRequest(
+                        IntentRequest
+                                .builder()
+                                .withDialogState(DialogState.IN_PROGRESS)
+                                .withIntent(Intent
+                                        .builder()
+                                        .withConfirmationStatus(IntentConfirmationStatus.NONE)
+                                        .withSlots(slots)
+                                        .build())
+                                .build()
+                )
+                .build();
+        HandlerInput inputMock = Mockito.mock(HandlerInput.class);
+        when(inputMock.getRequestEnvelope()).thenReturn(req);
+        when(inputMock.getResponseBuilder()).thenReturn(new ResponseBuilder());
+        when(inputMock.getAttributesManager()).thenReturn(attributesManager);
+
+        Response response = handler.handle(inputMock).get();
+        try {
+            Address adr = new ObjectMapper().readValue((String)inputMock.getAttributesManager().getPersistentAttributes().get("Homeaddress"),Address.class);
+            assertEquals("Zuhause",adr.getName()); //testet, ob der Name der Addresse gespeichert wurde
+
+        } catch(IOException ex){}
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_DEST_A.toString()));
+        assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
+        assertTrue(response.getCard().getType().equals("Simple"));
+    }
+
+    @Test
+    public void testSetUp_setDestinationA(){
+        Response response = mockResponse(3,StatusAttributes.VALUE_HOMEADDRESS_SET,false,SlotConfirmationStatus.NONE);
+        assertTrue(response.getOutputSpeech().toString().contains("Deine Adresse lautet:"));
+        assertTrue(response.getOutputSpeech().toString().contains("Ist das richtig?"));
+        assertEquals("Dialog.ConfirmSlot", response.getDirectives().get(0).getType());
+        assertFalse(response.getShouldEndSession());
+        assertTrue(response.getCard().getType().equals("Simple"));
+    }
+
+    @Test
+    public void testSetUp_confirmationOnDestinationAConfirmed(){
+        Response response = mockResponse(3,StatusAttributes.VALUE_HOMEADDRESS_SET,false,SlotConfirmationStatus.CONFIRMED);
+        assertTrue(response.getOutputSpeech().toString().contains("Alles klar. Die nächste Haltestelle dieser Adresse lautet: "));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_NAME_A.toString()));
+        assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
+        assertFalse(response.getShouldEndSession());
+        assertTrue(response.getCard().getType().equals("Simple"));
+
+    }
+    @Test
+    public void testSetUp_confirmationOnDestinationADenied(){
+        Response response = mockResponse(3,StatusAttributes.VALUE_HOMEADDRESS_SET,false,SlotConfirmationStatus.DENIED);
+        assertTrue(response.getOutputSpeech().toString().contains("Dann wiederhole bitte die Adresse."));
+        assertTrue(response.getOutputSpeech().toString().contains(" Versuche dabei laut und deutlich zu sprechen."));
+        assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
+        assertFalse(response.getShouldEndSession());
+        assertTrue(response.getCard().getType().equals("Simple"));
+    }
+
+
     @Test
     public void testStoreData(){
         Map<String, Object> persistantAttributes = new HashMap<String, Object>();
-        AttributesManager attributesManager = Mockito.mock(AttributesManager.class);
-        ArgumentCaptor<Map> arg = ArgumentCaptor.forClass(Map.class);
-        doNothing().when(attributesManager).setPersistentAttributes(arg.capture());
-        when(attributesManager.getPersistentAttributes()).thenReturn(persistantAttributes);
+
         try {
             Address homeAddress = new AddressResolver().getAddressList(profileValues[0]).get(0);
             homeAddress.setName(profileValues[1]);
@@ -300,8 +507,7 @@ public class SetUpIntentHandlerTest {
             persistantAttributes.put("DestinationA",new ObjectMapper().writeValueAsString(destinationA));
             persistantAttributes.put("DestinationB",new ObjectMapper().writeValueAsString(destinationB));
             persistantAttributes.put("DestinationC",new ObjectMapper().writeValueAsString(destinationC));
-            attributesManager.setPersistentAttributes(persistantAttributes);
-
+            AttributesManager attributesManager = mockAttributesManager(null,persistantAttributes);
             Map<String,Object> persistantAttributesRestored = attributesManager.getPersistentAttributes();
             Address homeAddressRestored = new ObjectMapper().readValue((String)persistantAttributesRestored.get("HomeAddress"),Address.class);
             Address destinationARestored = new ObjectMapper().readValue((String)persistantAttributesRestored.get("DestinationA"),Address.class);
@@ -312,6 +518,7 @@ public class SetUpIntentHandlerTest {
             assertEquals(destinationA,destinationARestored);
             assertEquals(destinationB,destinationBRestored);
             assertEquals(destinationC,destinationCRestored);
+
 
         } catch(IOException ex){}
     }

@@ -1,15 +1,19 @@
 package guidelines.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Station {
 
-  private final String name;
-  private final HashMap<String, FormOfTransport> lines;
-  private final String id;
-  private final String city;
-  private final double latitude;
-  private final double longitude;
+  private String name;
+  private HashMap<String, FormOfTransport> lines;
+  private String id;
+  private String city;
+  private double latitude;
+  private double longitude;
 
   /**
    * Station object. It represents a station from Here API.
@@ -28,28 +32,62 @@ public class Station {
     this.longitude = longitude;
   }
 
+  public Station(){
+      super();
+  }
+  @JsonGetter
   public String getName() {
     return this.name;
   }
-
+  @JsonGetter
   public HashMap<String, FormOfTransport> getLines() {
     return this.lines;
   }
-
+  @JsonGetter
   public String getId() {
     return id;
   }
-
+  @JsonGetter
   public String getCity() {
     return city;
   }
-  
+
+  @JsonGetter
   public double getLatitude() {
-	  return latitude;
+	  return this.latitude;
   }
-  
+
+  @JsonGetter
   public double getLongitude() {
-	  return longitude;
+	  return this.longitude;
   }
+
+
+  @JsonSetter
+  public void setName(String name){ this.name = name;}
+  @JsonSetter
+  public void setLines(HashMap<String,FormOfTransport> lines){this.lines=lines;}
+  @JsonSetter
+  public void setId(String id){this.id = id;}
+  @JsonSetter
+  public void setCity(String city){this.city = city;}
+  @JsonSetter
+  public void setLongitude(double longitude){this.longitude = longitude;}
+  @JsonSetter
+  public void setLatitude(double latitude){this.latitude = latitude;}
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Station)) return false;
+        Station station = (Station) o;
+        return Double.compare(station.getLatitude(), getLatitude()) == 0 &&
+                Double.compare(station.getLongitude(), getLongitude()) == 0 &&
+                Objects.equals(getName(), station.getName()) &&
+                Objects.equals(getLines(), station.getLines()) &&
+                Objects.equals(getId(), station.getId()) &&
+                Objects.equals(getCity(), station.getCity());
+    }
 
 }
