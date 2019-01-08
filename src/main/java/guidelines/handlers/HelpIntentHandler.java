@@ -1,25 +1,16 @@
 
-/*
-     Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
-     Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file
-     except in compliance with the License. A copy of the License is located at
-
-         http://aws.amazon.com/apache2.0/
-
-     or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
-     the specific language governing permissions and limitations under the License.
-*/
-
-package guidelines.handlers;
+package guideLines.handlers;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
+import com.amazon.ask.model.Intent;
+import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Response;
+import com.amazon.ask.model.Session;
 
-import guidelines.OutputStrings;
-import guidelines.StatusAttributes;
+import main.java.guideLines.OutputStrings;
+import main.java.guideLines.StatusAttributes;
 
 import java.util.Map;
 import java.util.Optional;
@@ -27,10 +18,8 @@ import java.util.Optional;
 import static com.amazon.ask.request.Predicates.intentName;
 
 public class HelpIntentHandler implements RequestHandler {
- 	String speech = "";
-	String reprompt = "";
 	SetUpIntentHandler handler = new SetUpIntentHandler();
-	private String session;
+	public String session;
 	
     @Override
     public boolean canHandle(HandlerInput input) {
@@ -41,91 +30,59 @@ public class HelpIntentHandler implements RequestHandler {
 	
     @Override
     public Optional<Response> handle(HandlerInput input) {
+   	Intent intent = SetUpIntentHandler.intent;
     	
     	Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
     	session = (String) sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString());
-    	
+    	String repromptText = "Gyros";
+    	String speechText = "";
+    	String slotName = "";
     	switch(session){
     	
     	case"000":
-    		
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP0.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		slotName = "YesNoSlot_Location";
+            speechText = OutputStrings.EINRICHTUNG_HELP0.toString()+ intent.toString();
+            break;
     	case"001":
-    		
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP1.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		slotName = "Homeaddress";
+    		speechText = OutputStrings.EINRICHTUNG_HELP1.toString();
+    		break;
     	case"002":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP2.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP2.toString();
+    		break;
     	case"003":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP3.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP3.toString();
+    		break;
     	case"004":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP4.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP4.toString();
+    		break;
     	case"005":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP5.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP5.toString();
+    		break;
     	case"006":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP6.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP6.toString();
+    		break;
     	case"007":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP7.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP7.toString();
+    		break;
     	case"008":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP8.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP8.toString();
+    		break;
     	case"009":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP9.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP9.toString();
+    		break;
     	case"010":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP10.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP10.toString();
+    		break;
     	case"011":
-            return input.getResponseBuilder()
-                    .withSimpleCard("Information:", speech)
-                    .withSpeech(OutputStrings.EINRICHTUNG_HELP11.toString())
-                    .withShouldEndSession(false)
-                    .build();
+    		speechText = OutputStrings.EINRICHTUNG_HELP11.toString();
+    		break;
     	}
-    	speech = "Leider konnte keine Hilfe Option gefunden werden";
+    	repromptText = "Lückenfüller";
 		return input.getResponseBuilder()
-                .withSimpleCard("Information:", speech)
-                .withSpeech("Deine Freundinn Benis Mum wird angerufen!")
+				.withSimpleCard("Information:", speechText)
+                .withSpeech(speechText)
+                .withReprompt(repromptText)
                 .withShouldEndSession(false)
                 .build();
 
