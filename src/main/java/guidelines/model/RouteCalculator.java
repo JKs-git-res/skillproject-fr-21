@@ -8,12 +8,32 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RouteCalculator {
-	
+
+	public long getTime(Station departure, Station arrival, Date departureTime) throws IOException, ParseException {
+		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
+				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
+		JSONObject choice = getNextConnection(connections, departureTime, false);
+		if (choice == null) {
+			return -1;
+		}
+		String time = choice.getJSONObject("Dep").getString("time");
+		SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		Date date = ISO8601DATEFORMAT.parse(time);
+		Date now = new Date();
+		long diff = date.getTime() - now.getTime();
+		diff /= 1000;
+		diff /= 60;
+		return diff;
+	}
+
 	/**
 	 * Tells the exact route where and where to change and how many stops to ride the {@link FormOfTransport}.
 	 * Searches the route that has the specified departure time (or the rout with the departure time closest to it)
@@ -83,7 +103,7 @@ public class RouteCalculator {
 			String time = section.getJSONObject("Dep").getString("time").split("T")[1];
 			time = getTimePretty(time);
 			int mode = section.getInt("mode");
-			if (mode != 4 && mode != 5 && mode != 7 && mode != 8) {
+			if (mode != 4 && mode != 5 && mode != 7 && mode != 8 && mode != 12) {
 				continue;
 			}
 			String direction = section.getJSONObject("Dep").getJSONObject("Transport").getString("dir");
