@@ -46,7 +46,10 @@ public class LaunchRequestHandler implements RequestHandler {
                     .build();
         } else {
             sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
-            return Optional.empty(); //TODO
+            return input.getResponseBuilder()
+                    .withShouldEndSession(true)
+                    .withSpeech("Der Skill wurde bereits eingerichtet. Um die Einrichtung zu testen bitte die EInträge aus der DynamoDB entfernen.")
+                    .build();
         }
 
 

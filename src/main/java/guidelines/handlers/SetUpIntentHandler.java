@@ -5,11 +5,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import com.amazon.ask.model.*;
+import com.amazon.ask.model.interfaces.system.SystemState;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import guidelines.exceptions.StreetNotFoundException;
@@ -21,16 +23,9 @@ import static com.amazon.ask.request.Predicates.intentName;
 import com.amazon.ask.attributes.AttributesManager;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
-import com.amazon.ask.model.Intent;
-import com.amazon.ask.model.IntentRequest;
-import com.amazon.ask.model.Request;
-import com.amazon.ask.model.Response;
-import com.amazon.ask.model.Session;
-import com.amazon.ask.model.Slot;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -271,29 +266,34 @@ public class SetUpIntentHandler implements RequestHandler {
                 .build();
     }
 
-    private Address getAddressFromLocation(String deviceId) throws IOException, JSONException, StreetNotFoundException {
+    private Address getAddressFromLocation(String deviceId, String apiEndpoint,String apiAccessToken) throws IOException, JSONException, StreetNotFoundException {
         Address adr;
         StringBuilder result = new StringBuilder();
-        URL url = new URL("http://api.amazonalexa.com/v1/devices/" + deviceId + "/settings/address");
-        InputStream is = url.openStream();
-        try (BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")))){
-            StringBuilder sb = new StringBuilder();
-            int cp;
-            while ((cp = rd.read()) != -1) {
-                sb.append((char) cp);
-            }
-            String jsonText = sb.toString();
-            JSONObject json = new JSONObject(jsonText);
-            adr = new AddressResolver()
-                    .getAddressList(json.get("addressLine1") + " "
-                            + json.get("addressLine2") + " "
-                            + json.get("addressLine3") + " "
-                            + json.get("city")).get(0);
-            return adr;
-        } finally {
-            is.close();
-        }
+        String urlString = apiEndpoint +"/v1/devices/" + deviceId + "/settings/address";
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("Authorization", "Bearer "+apiAccessToken);
+        connection.setRequestProperty("GET", urlString);
+        connection.setRequestProperty("Host", "api.amazonalexa.com");
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while((inputLine = in.readLine()) != null)
+            response.append(inputLine);
+        in.close();
+        String jsonText = response.toString();
+        System.out.println("jsonText: "+jsonText);
+        JSONObject json = new JSONObject(jsonText);
+        adr = new AddressResolver()
+                .getAddressList(json.get("addressLine1") + " "
+                        + json.get("addressLine2") + " "
+                        + json.get("addressLine3") + " "
+                        + json.get("city")).get(0);
+        return adr;
     }
+
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
@@ -301,7 +301,6 @@ public class SetUpIntentHandler implements RequestHandler {
         List<String> permissions = new ArrayList<String>();
         permissions.add("read::alexa:device:all:address");
         Request request = input.getRequestEnvelope().getRequest();
-        Session session = input.getRequestEnvelope().getSession();
         IntentRequest intReq = (IntentRequest) request;
         Intent intent = intReq.getIntent();
         staticIntent = intent;
@@ -346,6 +345,7 @@ public class SetUpIntentHandler implements RequestHandler {
             //Anfang des Dialogs. Als erstes wird geprüft, ob der aktuelle Standort verwendet werden soll
             sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_LOCATION_SET.toString());
             return input.getResponseBuilder()
+                   // .withAskForPermissionsConsentCard(permissions)
                     .addElicitSlotDirective("YesNoSlot_Location", intent)
                     .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
                     .withShouldEndSession(false)
@@ -360,30 +360,57 @@ public class SetUpIntentHandler implements RequestHandler {
                         return setAdress(HomeAddress_Slot, input);
                     }
                     else {
-                //TODO Falls der aktuelle Standort verwendet werden soll
-                        /*
-                                            Optional<Object> ctxObj = input.getContext();
+                        Optional<Object> ctxObj = input.getContext();
+                        Context ctx;
+                        try{
+                            ctx = (Context) ctxObj.get();
+                            SystemState sys = ctx.getSystem();
+                            String deviceId = sys.getDevice().getDeviceId();
+                            String apiAccessToken = sys.getApiAccessToken();
+                            String apiEndpoint = sys.getApiEndpoint();
+                            try {
+                                homeAddress = getAddressFromLocation(deviceId,apiEndpoint,apiAccessToken);
+                                Station station = homeAddress.getNearestStation();
+                                sessionAttributes.put("Homeaddress", new ObjectMapper().writeValueAsString(homeAddress));
+                                String speech = "Deine Adresse lautet: "
+                                        + homeAddress.getStreet()+ " "
+                                        +homeAddress.gethouseNumber()+" "
+                                        +homeAddress.getCity()+ OutputStrings.SPEECH_BREAK_LONG.toString()
+                                        +" Die nächste Haltestelle ist: "
+                                        +station.getName() + OutputStrings.SPEECH_BREAK_LONG.toString()
+                                        + OutputStrings.EINRICHTUNG_NAMEHOME.toString();
+                                return input.getResponseBuilder()
+                                        .withSpeech(speech)
+                                        .withSimpleCard("Adresse gefunden", speech)
+                                        .withShouldEndSession(false)
+                                        .addElicitSlotDirective("NameHome",intent)
+                                        .build();
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            } catch (StreetNotFoundException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
 
-                                            Context ctx;
-                                            ctx = (Context) ctxObj.get();
-                                            SystemState sys = ctx.getSystem();
-                                            String deviceId = sys.getDevice().getDeviceId();
-                                            String apiAccessToken = sys.getApiAccessToken();
-                                            //User will aktuellen Standort verwenden
-                                            try {
-                                                adr = getAddressFromLocation(deviceId);
-                                                slots.put(adr.getFullAddress(), HomeAddress_Slot);
-                                            } catch (JSONException e) {
-                                                // TODO Auto-generated catch block
-                                                e.printStackTrace();
-                                            } catch (IOException e) {
-                                                // TODO Auto-generated catch block
-                                                e.printStackTrace();
-                                            } catch (StreetNotFoundException e) {
-                                                // TODO Auto-generated catch block
-                                                e.printStackTrace();
-                                            }
-                         */
+
+                        } catch(NoSuchElementException ex){
+                            return input
+                                    .getResponseBuilder()
+                                    .withAskForPermissionsConsentCard(permissions)
+                                    .withShouldEndSession(false)
+                                    .withSpeech("Bitte erteile Amazon-Alexa die dafür benötigten Berechtigungen in deinen Alexa-Einstellungen für diesen Skill")
+                                    .build();
+                        }
+
+
+
+
+
+
             }
 
 
