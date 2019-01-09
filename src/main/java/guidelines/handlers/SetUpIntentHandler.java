@@ -80,8 +80,8 @@ public class SetUpIntentHandler implements RequestHandler {
         return input.getResponseBuilder()
                 .withShouldEndSession(false)
                 .addElicitSlotDirective(slot, ((IntentRequest) input.getRequestEnvelope().getRequest()).getIntent())
-                .withSpeech(OutputStrings.EINRICHTUNG_INVALID_ADDRESS.toString())
-                .withSimpleCard("Adresse ungültig", OutputStrings.EINRICHTUNG_INVALID_ADDRESS.toString())
+                .withSpeech(OutputStrings.EINRICHTUNG_INVALID_ADDRESS_SPEECH.toString())
+                .withSimpleCard("Adresse ungültig", OutputStrings.EINRICHTUNG_INVALID_ADDRESS_CARD.toString())
                 .build();
     }
 
@@ -143,7 +143,9 @@ public class SetUpIntentHandler implements RequestHandler {
         } catch (JsonMappingException ex){
             Logger.getLogger(SetUpIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch(IOException ex){}
+        catch(IOException ex){
+            ex.printStackTrace();
+        }
     }
     
     
@@ -154,35 +156,60 @@ public class SetUpIntentHandler implements RequestHandler {
         String slotNameName = "";
         String addressName = "";
         String speech = "";
+        String card = "";
+        String reprompt = "";
         String newStatusAttributesValue = "";
         String speechName = "";
+        String cardName = "";
+        String repromptName = "";
         switch(slotName){
             case "Homeaddress":
                 addressName = "Heimatadresse";
-                speech = OutputStrings.EINRICHTUNG_HOMEADDRESS.toString();
                 slotNameName = "NameHome";
-                speechName = OutputStrings.EINRICHTUNG_NAMEHOME.toString();
+                speech = OutputStrings.EINRICHTUNG_HOMEADDRESS_SPEECH.toString();
+                card = OutputStrings.EINRICHTUNG_HOMEADDRESS_CARD.toString();
+                reprompt = OutputStrings.EINRICHTUNG_HOMEADDRESS_REPROMPT.toString();
+                speechName = OutputStrings.EINRICHTUNG_NAMEHOME_SPEECH.toString();
+                cardName = OutputStrings.EINRICHTUNG_NAMEHOME_CARD.toString();
+                repromptName = OutputStrings.EINRICHTUNG_NAMEHOME_REPROMPT.toString();
                 newStatusAttributesValue = StatusAttributes.VALUE_HOMEADDRESS_SET.toString();
                 break;
             case "DestinationA":
                 addressName = "Erste Zieladresse";
-                speech = OutputStrings.EINRICHTUNG_DEST_A.toString();
                 slotNameName = "NameA";
-                speechName = OutputStrings.EINRICHTUNG_NAME_A.toString();
+                speech = OutputStrings.EINRICHTUNG_DEST_A_SPEECH_1.toString()
+                        + homeAddress.getName()
+                        + OutputStrings.EINRICHTUNG_DEST_A_SPEECH_2.toString();
+
+                card = OutputStrings.EINRICHTUNG_DEST_A_CARD_1.toString()
+                        + homeAddress.getName()
+                        + OutputStrings.EINRICHTUNG_DEST_A_CARD_2.toString();
+                reprompt = OutputStrings.EINRICHTUNG_DEST_A_REPROMPT.toString();
+                speechName = OutputStrings.EINRICHTUNG_NAME_A_SPEECH.toString();
+                cardName = OutputStrings.EINRICHTUNG_NAME_A_CARD.toString();
+                repromptName = OutputStrings.EINRICHTUNG_NAME_A_REPROMPT.toString();
                 newStatusAttributesValue = StatusAttributes.VALUE_DESTINATION_A_SET.toString();
                 break;
             case "DestinationB":
                 addressName = "Zweite Zieladresse";
-                speech = OutputStrings.EINRICHTUNG_DEST_B.toString();
                 slotNameName = "NameB";
-                speechName = OutputStrings.EINRICHTUNG_NAME_B.toString();
+                speech = OutputStrings.EINRICHTUNG_DEST_B_SPEECH.toString();
+                card = OutputStrings.EINRICHTUNG_DEST_B_CARD.toString();
+                reprompt = OutputStrings.EINRICHTUNG_DEST_B_REPROMPT.toString();
+                speechName = OutputStrings.EINRICHTUNG_NAME_B_SPEECH.toString();
+                cardName = OutputStrings.EINRICHTUNG_NAME_B_CARD.toString();
+                repromptName = OutputStrings.EINRICHTUNG_NAME_B_REPROMPT.toString();
                 newStatusAttributesValue = StatusAttributes.VALUE_DESTINATION_B_SET.toString();
                 break;
             case "DestinationC":
                 addressName = "Dritte Zieladresse";
-                speech = OutputStrings.EINRICHTUNG_DEST_C.toString();
                 slotNameName = "NameC";
-                speechName = OutputStrings.EINRICHTUNG_NAME_C.toString();
+                speech = OutputStrings.EINRICHTUNG_DEST_C_SPEECH.toString();
+                card = OutputStrings.EINRICHTUNG_DEST_C_CARD.toString();
+                reprompt = OutputStrings.EINRICHTUNG_DEST_C_REPROMPT.toString();
+                speechName = OutputStrings.EINRICHTUNG_NAME_C_SPEECH.toString();
+                cardName = OutputStrings.EINRICHTUNG_NAME_C_CARD.toString();
+                repromptName = OutputStrings.EINRICHTUNG_NAME_C_REPROMPT.toString();                slotNameName = "NameC";
                 newStatusAttributesValue = StatusAttributes.VALUE_DESTINATION_C_SET.toString();
                 break;
             default:
@@ -195,17 +222,16 @@ public class SetUpIntentHandler implements RequestHandler {
                     .addElicitSlotDirective(slotName, intent)
                     .withShouldEndSession(false)
                     .withSpeech(speech)
-                    .withSimpleCard(addressName + " angeben", speech)
+                    .withReprompt(reprompt)
+                    .withSimpleCard(addressName + " angeben", card)
                     .build();
         }
         else if(addressSlot.getConfirmationStatus().getValue().equals("DENIED")){
             return input.getResponseBuilder()
                     .addElicitSlotDirective(slotName, intent)
                     .withShouldEndSession(false)
-                    .withSpeech("Dann wiederhole bitte die Adresse."
-                            +OutputStrings.SPEECH_BREAK_SHORT.toString()
-                            + " Versuche dabei laut und deutlich zu sprechen.")
-                    .withSimpleCard(addressName + " angeben", speech)
+                    .withSpeech(OutputStrings.EINRICHTUNG_ADDRESS_CONFIRMATION_DENIED_SPEECH.toString())
+                    .withSimpleCard(addressName + " angeben", OutputStrings.EINRICHTUNG_ADDRESS_CONFIRMATION_DENIED_CARD.toString())
                     .build();
             }
         else if(addressSlot.getConfirmationStatus().getValue().equals("NONE")){
@@ -224,26 +250,29 @@ public class SetUpIntentHandler implements RequestHandler {
             String stationName = "";
             switch (slotName){
                 case "Homeaddress":
-                    stationName = homeAddress.getNearestStation() != null? homeAddress.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
+                    stationName = homeAddress.getNearestStation() != null? homeAddress.getNearestStation().getName():OutputStrings.EINRICHTUNG_NO_STATION_FOUND.toString();
                     break;
                 case "DestinationA":
-                    stationName = destinationA.getNearestStation() != null? destinationA.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
+                    stationName = destinationA.getNearestStation() != null? destinationA.getNearestStation().getName():OutputStrings.EINRICHTUNG_NO_STATION_FOUND.toString();
                     break;
                 case "DestinationB":
-                    stationName = destinationB.getNearestStation() != null? destinationB.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
+                    stationName = destinationB.getNearestStation() != null? destinationB.getNearestStation().getName():OutputStrings.EINRICHTUNG_NO_STATION_FOUND.toString();
                     break;
                 case "DestinationC":
-                    stationName = destinationC.getNearestStation() != null? destinationC.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
+                    stationName = destinationC.getNearestStation() != null? destinationC.getNearestStation().getName():OutputStrings.EINRICHTUNG_NO_STATION_FOUND.toString();
                     break;
             }
-            String finalSpeech = "Alles klar. Die nächste Haltestelle dieser Adresse lautet: " + stationName
+            String finalSpeech = OutputStrings.EINRICHTUNG_STATION_FOUND.toString() + stationName
                     + OutputStrings.SPEECH_BREAK_SHORT.toString() +" "
                     + speechName;
+            String finalCard = OutputStrings.EINRICHTUNG_STATION_FOUND.toString() + stationName +" "
+                    + cardName;
             return input.getResponseBuilder()
                     .withShouldEndSession(false)
                     .addElicitSlotDirective(slotNameName, intent)
                     .withSpeech(finalSpeech)
-                    .withSimpleCard(addressName +" benennen", finalSpeech)
+                    .withReprompt(repromptName)
+                    .withSimpleCard(addressName +" benennen", finalCard)
                     .build();
         }
     }
@@ -260,8 +289,9 @@ public class SetUpIntentHandler implements RequestHandler {
     private Optional<Response> setUpComplete(HandlerInput input) {
         input.getAttributesManager().getSessionAttributes().put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
         return input.getResponseBuilder()
-                .withSpeech(OutputStrings.EINRICHTUNG_END.toString())
-                .withSimpleCard("Einrichtung abgeschlossen", OutputStrings.EINRICHTUNG_END.toString())
+                .withSpeech(OutputStrings.EINRICHTUNG_END_SPEECH.toString())
+                .withSimpleCard("Einrichtung abgeschlossen", OutputStrings.EINRICHTUNG_END_CARD.toString())
+                .withReprompt(OutputStrings.EINRICHTUNG_END_REPROMPT.toString())
                 .withShouldEndSession(false)
                 .build();
     }
@@ -347,9 +377,10 @@ public class SetUpIntentHandler implements RequestHandler {
             return input.getResponseBuilder()
                    // .withAskForPermissionsConsentCard(permissions)
                     .addElicitSlotDirective("YesNoSlot_Location", intent)
-                    .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
+                    .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION_SPEECH.toString())
                     .withShouldEndSession(false)
-                    .withSimpleCard("Aktuellen Standort verwenden?", OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString())
+                    .withReprompt(OutputStrings.EINRICHTUNG_YES_NO_LOCATION_REPROMPT.toString())
+                    .withSimpleCard("Aktuellen Standort verwenden?", OutputStrings.EINRICHTUNG_YES_NO_LOCATION_CARD.toString())
                     .build();
 
         } else {
@@ -378,10 +409,17 @@ public class SetUpIntentHandler implements RequestHandler {
                                         +homeAddress.getCity()+ OutputStrings.SPEECH_BREAK_LONG.toString()
                                         +" Die nächste Haltestelle ist: "
                                         +station.getName() + OutputStrings.SPEECH_BREAK_LONG.toString()
-                                        + OutputStrings.EINRICHTUNG_NAMEHOME.toString();
+                                        + OutputStrings.EINRICHTUNG_NAMEHOME_SPEECH.toString();
+                                String card = "Deine Adresse lautet: "
+                                        + homeAddress.getStreet()+ " "
+                                        +homeAddress.gethouseNumber()+" "
+                                        +homeAddress.getCity()
+                                        +" Die nächste Haltestelle ist: "
+                                        +station.getName()
+                                        + OutputStrings.EINRICHTUNG_NAMEHOME_SPEECH.toString();
                                 return input.getResponseBuilder()
                                         .withSpeech(speech)
-                                        .withSimpleCard("Adresse gefunden", speech)
+                                        .withSimpleCard("Adresse gefunden", card)
                                         .withShouldEndSession(false)
                                         .addElicitSlotDirective("NameHome",intent)
                                         .build();
@@ -426,8 +464,9 @@ public class SetUpIntentHandler implements RequestHandler {
                 return input.getResponseBuilder()
                         .withShouldEndSession(false)
                         .addElicitSlotDirective("YesNoSlot_wantSecondDest", intent)
-                        .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST.toString())
-                        .withSimpleCard("Zweites Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST.toString())
+                        .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST_SPEECH.toString())
+                        .withReprompt(OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST_REPROMPT.toString())
+                        .withSimpleCard("Zweites Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_SECOND_DEST_CARD.toString())
                         .build();
 
             case "003": // hier wird nach der zweiten Zieladresse gefragt
@@ -445,8 +484,9 @@ public class SetUpIntentHandler implements RequestHandler {
                 return input.getResponseBuilder()
                         .withShouldEndSession(false)
                         .addElicitSlotDirective("YesNoSlot_wantThirdDest", intent)
-                        .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
-                        .withSimpleCard("Drittes Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST.toString())
+                        .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST_SPEECH.toString())
+                        .withSimpleCard("Drittes Ziel hinzufügen?", OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST_CARD.toString())
+                        .withReprompt(OutputStrings.EINRICHTUNG_YES_NO_WANT_THIRD_DEST_REPROMPT.toString())
                         .build();
 
             case "005": // hier wird nach der dritten Zieladresse gefragt
