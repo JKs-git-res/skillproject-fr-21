@@ -1,7 +1,7 @@
-## Willkommen bei GuideLines
+# Willkommen bei GuideLines
 Hier findest du alle Infos, die du brauchst
 
-﻿#  Gruppe FR-21 Praktikum Software Engineering der Hochschule für angewandte Wissenschaften München
+##  Gruppe FR-21 Praktikum Software Engineering der Hochschule für angewandte Wissenschaften München
 ###  Die Gruppe besteht aus:
 * Teng Fung Lam
 * Beniamin Bratulescu
