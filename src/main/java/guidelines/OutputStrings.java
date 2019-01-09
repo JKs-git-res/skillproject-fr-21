@@ -29,6 +29,7 @@ public enum OutputStrings {
     EINRICHTUNG_END("Vielen Dank. Die Einrichtung ist erfolgreich abgeschlossen."),
 	WRONG_ADDRESS_PROMPT("Die Adresse ist leider falsch. Kannst du sie mir bitte nochmal sagen?"),
 	NO_STREET_PROMPT("Ich brauche von dir die komplette Adresse. Ich brauche mindestens die Stadt und die Straße. Bitte sag mir nochmal deine Adresse."),
+	NO_STATION_FOUND("In der Nähe dieser Adresse wurde leider keine Haltestelle gefunden."),
 	EINRICHTUNG_HELP0("Möchtest du mir die Erlaubnis geben deinen Aktuellen Standort zu ermitteln?"),
 	EINRICHTUNG_HELP1("Bitte gebe mir deine Heimatdresse im format: Straße, Hausnummer dann die Stadt an."),
 	EINRICHTUNG_HELP2("Bitte geben sie einen Namen für ihre Heimatadresse an um das Aufrufen dieser Heimatadresse zu vereinfachen."),

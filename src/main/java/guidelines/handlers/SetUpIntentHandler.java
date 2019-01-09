@@ -229,20 +229,20 @@ public class SetUpIntentHandler implements RequestHandler {
             String stationName = "";
             switch (slotName){
                 case "Homeaddress":
-                    stationName = homeAddress.getNearestStation() != null? homeAddress.getNearestStation().getName():"NearestStationFinder funktioniert noch nicht";
+                    stationName = homeAddress.getNearestStation() != null? homeAddress.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
                     break;
                 case "DestinationA":
-                    stationName = destinationA.getNearestStation() != null? destinationA.getNearestStation().getName():"NearestStationFinder funktioniert noch nicht";
+                    stationName = destinationA.getNearestStation() != null? destinationA.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
                     break;
                 case "DestinationB":
-                    stationName = destinationB.getNearestStation() != null? destinationB.getNearestStation().getName():"NearestStationFinder funktioniert noch nicht";
+                    stationName = destinationB.getNearestStation() != null? destinationB.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
                     break;
                 case "DestinationC":
-                    stationName = destinationC.getNearestStation() != null? destinationC.getNearestStation().getName():"NearestStationFinder funktioniert noch nicht";
+                    stationName = destinationC.getNearestStation() != null? destinationC.getNearestStation().getName():OutputStrings.NO_STATION_FOUND.toString();
                     break;
             }
             String finalSpeech = "Alles klar. Die nächste Haltestelle dieser Adresse lautet: " + stationName
-                    + OutputStrings.SPEECH_BREAK_SHORT.toString()
+                    + OutputStrings.SPEECH_BREAK_SHORT.toString() +" "
                     + speechName;
             return input.getResponseBuilder()
                     .withShouldEndSession(false)
