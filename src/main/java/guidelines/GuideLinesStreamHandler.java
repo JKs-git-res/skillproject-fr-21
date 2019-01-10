@@ -26,7 +26,8 @@ public class GuideLinesStreamHandler extends SkillStreamHandler {
                     new PlanMyTripIntentHandler(),
                     new LaunchRequestHandler(),
                     new HelpIntentHandler(),
-                    new FallbackIntentHandler())
+                    new FallbackIntentHandler(),
+                    new DeleteSetUpIntentHandler())
             // Add your skill id below
             .withTableName("guideLinesData")
             .withSkillId("amzn1.ask.skill.eef26807-1da3-43a9-868c-9cd15183b4dd")

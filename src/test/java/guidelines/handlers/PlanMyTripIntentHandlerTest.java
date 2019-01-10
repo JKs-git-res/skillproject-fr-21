@@ -102,9 +102,12 @@ public class PlanMyTripIntentHandlerTest {
     public void testCanHandle(){
         final HandlerInput inputMock = Mockito.mock(HandlerInput.class);
         Map<String, Object> sessionAttributes = new HashMap<>();
+        Map<String, Object> persistantAttributes = new HashMap<>();
+        persistantAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(),"true");
         sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(),"true");
         AttributesManager attributesManager = Mockito.mock(AttributesManager.class);
         when(attributesManager.getSessionAttributes()).thenReturn(sessionAttributes);
+        when(attributesManager.getPersistentAttributes()).thenReturn(persistantAttributes);
         when(inputMock.getAttributesManager()).thenReturn(attributesManager);
         when(inputMock.matches(any())).thenReturn(true);
         assertTrue(planMyTripIntentHandler.canHandle(inputMock));
@@ -122,8 +125,7 @@ public class PlanMyTripIntentHandlerTest {
             when(input.getRequestEnvelope()).thenReturn(requestEnvelope);
             Response response = planMyTripIntentHandler.handle(input).get();
             assertTrue(response.getShouldEndSession());
-            System.out.println(response.getOutputSpeech().toString());
-            assertTrue(response.getOutputSpeech().toString().contains(" Minuten losgehen, um pünktlich zu sein."));
+            assertTrue(response.getOutputSpeech().toString().contains(" an deiner Haltestelle sein, um pünktlich anzukommen."));
         } catch (IOException ex){
             ex.printStackTrace();
         }

@@ -36,15 +36,12 @@ public class PlanMyTripIntentHandler implements RequestHandler
 		return input.matches(intentName("PlanMyTripIntent") )
                 && input
                 .getAttributesManager()
-                .getSessionAttributes()
+                .getPersistentAttributes()
                 .get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString())
                 .equals("true");
 
 	}
 
-	private boolean isEmpty(Slot s){
-	    return s.getValue() == null;
-    }
 
     /**
      *
@@ -57,7 +54,6 @@ public class PlanMyTripIntentHandler implements RequestHandler
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
 
-	    DateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
             switch (timeString) {
                 case ("MO"): //Morning
                     cal.set(Calendar.HOUR_OF_DAY,8);
@@ -143,10 +139,18 @@ public class PlanMyTripIntentHandler implements RequestHandler
                 ex.printStackTrace();
             }
             try{
+                int hours = 0;
                 long minutesRemaining = new RouteCalculator().getTime(start.getNearestStation(),realDestination.getNearestStation(),arrivalTime);
                 String speech;
-                if(minutesRemaining != -1)
-                    speech = "Du musst in "+minutesRemaining +" Minuten losgehen, um pünktlich zu sein.";
+                if(minutesRemaining > 60){
+                    hours =(int) minutesRemaining/60;
+                    minutesRemaining %= 60;
+                    if(minutesRemaining == 0)
+                        speech = "Du musst in "+hours+ " Stunden an deiner Haltestelle sein um pünktlich anzukommen.";
+                    else
+                        speech = "Du musst in "+hours+ " Stunden und "+minutesRemaining + " Minuten an deiner Haltestelle sein, um pünktlich anzukommen.";
+                }else if(minutesRemaining != -1)
+                    speech = "Du musst in "+minutesRemaining +" Minuten an deiner Haltestelle sein, um pünktlich anzukommen.";
                 else
                     speech = "Tut mir Leid. Es gibt keine Verbindung (mehr).";
                 return input.getResponseBuilder()
@@ -160,6 +164,8 @@ public class PlanMyTripIntentHandler implements RequestHandler
 
 
 
+        } else {
+            return input.getResponseBuilder().addDelegateDirective(intent).build();
         }
         return Optional.empty();
     }

@@ -25,11 +25,9 @@ public class RouteCalculator {
 			cal.setTimeInMillis(departureTime.getTime() +86400000);
 			departureTime = cal.getTime();
 		}
-		System.out.println(departureTime.toString());
 		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
 		JSONObject choice = getNextConnection(connections, departureTime, true);
-		System.out.println(choice.toString());
 		if (choice == null) {
 			return -1;
 		}

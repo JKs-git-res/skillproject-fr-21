@@ -312,7 +312,6 @@ public class SetUpIntentHandler implements RequestHandler {
             response.append(inputLine);
         in.close();
         String jsonText = response.toString();
-        System.out.println("jsonText: "+jsonText);
         JSONObject json = new JSONObject(jsonText);
         adr = new AddressResolver()
                 .getAddressList(json.get("addressLine1") + " "

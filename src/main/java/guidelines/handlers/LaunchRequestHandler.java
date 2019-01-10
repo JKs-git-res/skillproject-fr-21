@@ -69,6 +69,9 @@ public class LaunchRequestHandler implements RequestHandler {
             permissions.add("alexa::profile:given_name:read");
 
            sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
+           persistantAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
+            attributesManager.setPersistentAttributes(persistantAttributes);
+            attributesManager.savePersistentAttributes();
             String speech, card;
            if(!userName.equals("")) {
                speech = "Hallo" + userName + ". " + OutputStrings.SPEECH_BREAK_LONG + OutputStrings.WELCOME_EINRICHTUNG_SPEECH.toString();
@@ -86,6 +89,10 @@ public class LaunchRequestHandler implements RequestHandler {
                     .build();
         } else {
             sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+            persistantAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+            attributesManager.setPersistentAttributes(persistantAttributes);
+            attributesManager.savePersistentAttributes();
+
             String speech, card;
             if(!userName.equals("")){
                 speech = "Hallo " + userName +OutputStrings.WELCOME_BEREITS_EINGERICHTET_SPEECH.toString();

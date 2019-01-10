@@ -97,6 +97,7 @@ EINRICHTUNG_DEST_B_CARD("Wie lautet die Adresse deines zweiten Ziels?"),
 			"Wenn du noch ein bisschen Zeit hast kann ich dir gerne Informationen zu den weiteren Schritten geben. " +
 			"Wie sieht's aus, hast du noch ein wenig Zeit?"),
 	EINRICHTUNG_HELP_HOME_OR_DEST("Möchtest du Information zur Heimadresse oder zu den Zieladressen?"),
+	EINRICHTUNG_HELP_ENDE_2("Alles klar. Möchtest du mit der EInrichtung beginnen? Dann sage 'Einrichtung starten'."),
 	EINRICHTUNG_HELP_ENDE("GuideLines ist dein persönlicher Assistent für deinen Weg zu deinen Zielen. " +
 			"Ich kann dir mit wenigen Angaben deine kürzeste Strecke zum Ziel in Echtzeit berechnen. " +
 			"Nach der Einrichtung wird GuideLines jederzeit Einsatzbereit sein. Möchtest du mit der Einrichtung beginnen?"),
