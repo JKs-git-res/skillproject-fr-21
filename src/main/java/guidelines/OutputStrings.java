@@ -82,11 +82,11 @@ EINRICHTUNG_DEST_B_CARD("Wie lautet die Adresse deines zweiten Ziels?"),
 
 	EINRICHTUNG_END_SPEECH("Vielen Dank für deine Zeit, <break time=\"0.05s\" /> " +
 			"ich habe die Einrichtung abgeschlossen. <break time=\"0.1s\" />" +
-			"GuideLines kann jetzt verwendet werde. <break time=\"0.1s\" /> " +
+			"GuideLines kann jetzt verwendet werden. <break time=\"0.1s\" /> " +
 			"Um die Anwendung zu starten sage: <break time=\"0.05s\" /> Navigation."),
 	EINRICHTUNG_END_CARD("Vielen Dank für deine Zeit, " +
 			"ich habe die Einrichtung abgeschlossen." +
-			"GuideLines kann jetzt verwendet werde. " +
+			"GuideLines kann jetzt verwendet werden. " +
 			"Um die Anwendung zu starten sage: Navigation."),
 	EINRICHTUNG_END_REPROMPT("Die Einrichtung ist abgeschlossen. Sage <break time=\"0.05s\" /> 'Navigation' um die Anwendung zu starten."),
 
