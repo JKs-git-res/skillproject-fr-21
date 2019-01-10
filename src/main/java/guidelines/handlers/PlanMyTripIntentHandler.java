@@ -80,7 +80,11 @@ public class PlanMyTripIntentHandler implements RequestHandler
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
         attributesManager = input.getAttributesManager();
         persistentAttributes = attributesManager.getPersistentAttributes();
-        Address start, destination;
+        Address start = null,
+                destinationA = null,
+                destinationB = null,
+                destinationC = null,
+                realDestination = null;
         Request request = input.getRequestEnvelope().getRequest();
         IntentRequest intReq = (IntentRequest) request;
         Intent intent = intReq.getIntent();
@@ -90,27 +94,53 @@ public class PlanMyTripIntentHandler implements RequestHandler
                 gespeichertesZiel_slot = slots.get("GespeichertesZiel");
         if (ankunftszeit_slot.getValue() != null && gespeichertesZiel_slot.getValue() != null) {
             Date arrivalTime = resolveTime(ankunftszeit_slot.getValue());
+
             try {
                 start = new ObjectMapper().readValue((String) persistentAttributes.get("Homeaddress"), Address.class);
-                destination = new ObjectMapper().readValue((String) persistentAttributes.get(gespeichertesZiel_slot.getValue()), Address.class);
-                long minutesRemaining = new RouteCalculator().getTime(start.getNearestStation(),destination.getNearestStation(),arrivalTime);
+                destinationA = new ObjectMapper().readValue((String)persistentAttributes.get("DestinationA"),Address.class);
+                if(persistentAttributes.get("DestinationB") != null)
+                    destinationB = new ObjectMapper().readValue((String)persistentAttributes.get("DestinationB"),Address.class);
+                if(persistentAttributes.get("DestinationC") != null)
+                    destinationC = new ObjectMapper().readValue((String)persistentAttributes.get("DestinationC"),Address.class);
+
+                if(destinationA.getName().equals(gespeichertesZiel_slot.getValue()))
+                    realDestination = destinationA;
+                else if(destinationB != null && destinationB.getName().equals(gespeichertesZiel_slot.getValue()))
+                    realDestination = destinationB;
+                else if(destinationC != null && destinationC.getName().equals(gespeichertesZiel_slot.getValue()))
+                    realDestination = destinationC;
+                else {
+                    return input.getResponseBuilder()
+                            .withSpeech(OutputStrings.PLANMYTRIP_DESTINATION_NOT_FOUND_SPEECH.toString())
+                            .withSimpleCard("Ziel nicht gespeichert", OutputStrings.PLANMYTRIP_DESTINATION_NOT_FOUND_CARD.toString())
+                            .withShouldEndSession(false)
+                            .build();
+                }
+
+
+
+
+
+
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            try{
+                long minutesRemaining = new RouteCalculator().getTime(start.getNearestStation(),realDestination.getNearestStation(),arrivalTime);
                 String speech;
                 if(minutesRemaining != -1)
-                   speech = "Du musst in "+minutesRemaining +" Minuten losgehen, um pünktlich zu sein.";
+                    speech = "Du musst in "+minutesRemaining +" Minuten losgehen, um pünktlich zu sein.";
                 else
                     speech = "Tut mir Leid. Es gibt keine Verbindung (mehr).";
                 return input.getResponseBuilder()
                         .withSpeech(speech)
+                        .withSimpleCard("In "+minutesRemaining+" losgehen",speech)
                         .build();
-
-            } catch (Exception ex) {
-                return input.getResponseBuilder()
-                        .withSpeech(OutputStrings.PLANMYTRIP_DESTINATION_NOT_FOUND_SPEECH.toString())
-                        .withSimpleCard("Ziel nicht gespeichert", OutputStrings.PLANMYTRIP_DESTINATION_NOT_FOUND_CARD.toString())
-                        .withShouldEndSession(false)
-                        .build();
-
+            } catch (Exception ex){
+                ex.printStackTrace();
             }
+
 
 
         }

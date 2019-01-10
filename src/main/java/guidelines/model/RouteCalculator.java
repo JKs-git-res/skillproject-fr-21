@@ -20,7 +20,7 @@ public class RouteCalculator {
 	public long getTime(Station departure, Station arrival, Date departureTime) throws IOException, ParseException {
 		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
-		JSONObject choice = getNextConnection(connections, departureTime, false);
+		JSONObject choice = getNextConnection(connections, departureTime, true);
 		if (choice == null) {
 			return -1;
 		}
