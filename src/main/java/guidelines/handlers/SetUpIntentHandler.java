@@ -145,6 +145,7 @@ public class SetUpIntentHandler implements RequestHandler {
         }
         catch(IOException ex){
             ex.printStackTrace();
+
         }
     }
     
@@ -298,15 +299,12 @@ public class SetUpIntentHandler implements RequestHandler {
 
     private Address getAddressFromLocation(String deviceId, String apiEndpoint,String apiAccessToken) throws IOException, JSONException, StreetNotFoundException {
         Address adr;
-        StringBuilder result = new StringBuilder();
         String urlString = apiEndpoint +"/v1/devices/" + deviceId + "/settings/address";
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", "application/json");
         connection.setRequestProperty("Authorization", "Bearer "+apiAccessToken);
-        connection.setRequestProperty("GET", urlString);
-        connection.setRequestProperty("Host", "api.amazonalexa.com");
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
@@ -328,8 +326,6 @@ public class SetUpIntentHandler implements RequestHandler {
     @Override
     public Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
-        List<String> permissions = new ArrayList<String>();
-        permissions.add("read::alexa:device:all:address");
         Request request = input.getRequestEnvelope().getRequest();
         IntentRequest intReq = (IntentRequest) request;
         Intent intent = intReq.getIntent();
@@ -375,7 +371,6 @@ public class SetUpIntentHandler implements RequestHandler {
             //Anfang des Dialogs. Als erstes wird geprüft, ob der aktuelle Standort verwendet werden soll
             sessionAttributes.put(StatusAttributes.KEY_PROCESS.toString(), StatusAttributes.VALUE_YES_NO_LOCATION_SET.toString());
             return input.getResponseBuilder()
-                   // .withAskForPermissionsConsentCard(permissions)
                     .addElicitSlotDirective("YesNoSlot_Location", intent)
                     .withSpeech(OutputStrings.EINRICHTUNG_YES_NO_LOCATION_SPEECH.toString())
                     .withShouldEndSession(false)
@@ -438,9 +433,9 @@ public class SetUpIntentHandler implements RequestHandler {
                         } catch(NoSuchElementException ex){
                             return input
                                     .getResponseBuilder()
-                                    .withAskForPermissionsConsentCard(permissions)
                                     .withShouldEndSession(false)
-                                    .withSpeech("Bitte erteile Amazon-Alexa die dafür benötigten Berechtigungen in deinen Alexa-Einstellungen für diesen Skill")
+                                    .withSpeech(OutputStrings.EINRICHTUNG_ADDRESS_LOCATION_DENIED_SPEECH.toString())
+                                    .withSimpleCard("Fehlende Berechtigungen",OutputStrings.EINRICHTUNG_ADDRESS_LOCATION_DENIED_CARD.toString())
                                     .build();
                         }
 

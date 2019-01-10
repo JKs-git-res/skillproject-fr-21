@@ -2,6 +2,7 @@ package guidelines.handlers;
 
 import com.amazon.ask.attributes.AttributesManager;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
+import com.amazon.ask.model.Context;
 import com.amazon.ask.model.LaunchRequest;
 import com.amazon.ask.model.RequestEnvelope;
 import com.amazon.ask.model.Response;
@@ -18,12 +19,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LaunchRequestHandlerTest {
 
+    private final String userName = "Alex";
     private LaunchRequestHandler launchRequestHandler;
 
     @Before
@@ -54,12 +57,37 @@ public class LaunchRequestHandlerTest {
                         )
                         .build());
         when(mockInput.getResponseBuilder()).thenReturn(new ResponseBuilder());
-        AttributesManager attributesManager = mockAttributesManager();
+        Map<String, Object> persistantAttributes = new HashMap<>();
+        persistantAttributes.put("UserName", userName);
+        AttributesManager attributesManager = mockAttributesManager(null,persistantAttributes);
         when(mockInput.getAttributesManager()).thenReturn(attributesManager);
         return mockInput;
     }
 
-    private AttributesManager mockAttributesManager(Map<String, Object> sessionList, Map<String, Object> persList){
+    private HandlerInput mockInput_LaunchRequest_alreadySetUp() {
+        HandlerInput mockInput = Mockito.mock(HandlerInput.class);
+        Map<String, Object> persistantAttributes = new HashMap<>();
+        persistantAttributes.put("Homeaddress", "placeholder");
+        persistantAttributes.put("DestinationA", "placeholder");
+        persistantAttributes.put("UserName", "Alex");
+        AttributesManager attributesManager = mockAttributesManager(null, persistantAttributes);
+        when(mockInput.getAttributesManager()).thenReturn(attributesManager);
+        when(mockInput.getResponseBuilder()).thenReturn(new ResponseBuilder());
+        when(mockInput.getRequestEnvelope()).thenReturn(
+                RequestEnvelope
+                        .builder()
+
+                        .withRequest(
+                                LaunchRequest
+                                        .builder()
+                                        .withLocale("de-DE")
+                                        .build()
+                        )
+                        .build());
+        return mockInput;
+    }
+
+        private AttributesManager mockAttributesManager(Map<String, Object> sessionList, Map<String, Object> persList){
         AttributesManager attributesManager = Mockito.mock(AttributesManager.class);
         Map<String, Object> sessionAttributes = new HashMap<>();
         Map<String, Object> persistantAttributes = new HashMap<>();
@@ -87,7 +115,7 @@ public class LaunchRequestHandlerTest {
     public void test_launchRequest_notSetUp(){
         HandlerInput inputMock = mockInput_LaunchRequest();
         Response response = launchRequestHandler.handle(inputMock).get();
-        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.WELCOME_EINRICHTUNG.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.WELCOME_EINRICHTUNG_SPEECH.toString()));
         assertFalse(response.getShouldEndSession());
         assertTrue(response.getReprompt().getOutputSpeech().toString().contains(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT.toString()));
     }
@@ -95,18 +123,19 @@ public class LaunchRequestHandlerTest {
     /**
      * dieser Test überprüft den LaunchRequest, falls dieser bereits eingerichtet ist.
      */
-    //@Test
+    @Test
     public void test_launchRequest_IsSetUp(){
-        final HandlerInput inputMock = mockInput_LaunchRequest();
-        Map<String, Object> storedAddresses = new HashMap<>();
-        storedAddresses.put("Homeaddress", "placeholder");
-        storedAddresses.put("DestinationA", "placeholder");
-        AttributesManager attributesManager = mockAttributesManager(new HashMap<String,Object>(), storedAddresses);
-        when(inputMock.getAttributesManager()).thenReturn(attributesManager);
+        HandlerInput inputMock = mockInput_LaunchRequest_alreadySetUp();
         Response response = launchRequestHandler.handle(inputMock).get();
-        //assertTrue(response.getOutputSpeech().toString().contains(/*hier kommt noch die Ausgabe hin, wenn der Skill bereits eingerichtet ist*/));
-        //assertFalse(response.getShouldEndSession());
-        //assertTrue(response.getReprompt().getOutputSpeech().toString().contains(/*hier kommt noch die Ausgabe hin, wenn der Skill bereits eingerichtet ist*/));
+        assertTrue(response.getOutputSpeech().toString().contains("Hallo " +userName));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.WELCOME_BEREITS_EINGERICHTET_SPEECH.toString()));
+        assertTrue(inputMock.getAttributesManager()
+                .getSessionAttributes()
+                .get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString())
+                .equals("true"));
+        assertFalse(response.getShouldEndSession());
+        assertTrue(response.getReprompt().getOutputSpeech().toString().contains(OutputStrings.WELCOME_BEREITS_EINGERICHTET_REPROMPT.toString()));
     }
+
 
 }
