@@ -245,14 +245,12 @@ public class RouteCalculator {
 	 * 					The next available connection
 	 */
 	private JSONObject getNextConnection(JSONArray connections, Date time, boolean isArrivalTime) {
-		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		JSONObject choice;
 		for (int j=0; j<connections.length(); j++) {
 			choice = connections.getJSONObject(j);
-			String arr = choice.getJSONObject("Arr").getString("time").split("T")[1];
-			arr = arr.substring(0, arr.length()-3);
-			String dep = choice.getJSONObject("Dep").getString("time").split("T")[1];
-			dep = dep.substring(0, dep.length()-3);
+			String arr = choice.getJSONObject("Arr").getString("time");
+			String dep = choice.getJSONObject("Dep").getString("time");
 			Date now;
 			Date departure;
 			Date arrival;
