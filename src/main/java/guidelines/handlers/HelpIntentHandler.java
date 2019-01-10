@@ -12,82 +12,68 @@ import com.amazon.ask.model.Session;
 import guidelines.OutputStrings;
 import guidelines.StatusAttributes;
 
+
 import java.util.Map;
 import java.util.Optional;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
 public class HelpIntentHandler implements RequestHandler {
-	SetUpIntentHandler handler = new SetUpIntentHandler();
-	public String session;
 	
     @Override
     public boolean canHandle(HandlerInput input) {
-    	     return input.matches(intentName("AMAZON.HelpIntent"));
+    	     return input.matches(intentName("HelpIntent"));
     }
 	
 
 	
     @Override
     public Optional<Response> handle(HandlerInput input) {
-   	Intent intent = SetUpIntentHandler.staticIntent;
-    	
     	Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
-    	session = (String) sessionAttributes.get(StatusAttributes.KEY_PROCESS.toString());
-    	String repromptText = "Gyros";
-    	String speechText = "";
-    	String slotName = "";
-    	switch(session){
-    	
-    	case"000":
-    		slotName = "YesNoSlot_Location";
-            speechText = OutputStrings.EINRICHTUNG_HELP0.toString()+ intent.toString();
-            break;
-    	case"001":
-    		slotName = "Homeaddress";
-    		speechText = OutputStrings.EINRICHTUNG_HELP1.toString();
-    		break;
-    	case"002":
-    		speechText = OutputStrings.EINRICHTUNG_HELP2.toString();
-    		break;
-    	case"003":
-    		speechText = OutputStrings.EINRICHTUNG_HELP3.toString();
-    		break;
-    	case"004":
-    		speechText = OutputStrings.EINRICHTUNG_HELP4.toString();
-    		break;
-    	case"005":
-    		speechText = OutputStrings.EINRICHTUNG_HELP5.toString();
-    		break;
-    	case"006":
-    		speechText = OutputStrings.EINRICHTUNG_HELP6.toString();
-    		break;
-    	case"007":
-    		speechText = OutputStrings.EINRICHTUNG_HELP7.toString();
-    		break;
-    	case"008":
-    		speechText = OutputStrings.EINRICHTUNG_HELP8.toString();
-    		break;
-    	case"009":
-    		speechText = OutputStrings.EINRICHTUNG_HELP9.toString();
-    		break;
-    	case"010":
-    		speechText = OutputStrings.EINRICHTUNG_HELP10.toString();
-    		break;
-    	case"011":
-    		speechText = OutputStrings.EINRICHTUNG_HELP11.toString();
-    		break;
-    	}
-    	repromptText = "Lückenfüller";
-		return input.getResponseBuilder()
-				.withSimpleCard("Information:", speechText)
-                .withSpeech(speechText)
-                .withReprompt(repromptText)
-                .withShouldEndSession(false)
-                .build();
+    	Intent intent = ((IntentRequest)input.getRequestEnvelope().getRequest()).getIntent();
+    	if(sessionAttributes.get("HelpProcess") == null){
+			sessionAttributes.put("HelpProcess", "1");
+			return input
+					.getResponseBuilder()
+					.addElicitSlotDirective("YesNoSlot",intent)
+					.withSpeech(OutputStrings.EINRICHTUNG_HELP_START.toString())
+					.build();
+
+		} else if(intent.getSlots().get("YesNoSlot")
+				.getResolutions()
+				.getResolutionsPerAuthority()
+				.get(0).getValues().get(0)
+				.getValue().equals("Ja")){
 
 
+		}
+    	else{
+    		String helpSpeech;
+    		switch((String)sessionAttributes.get("HelpProcess")) {
+				case "1":
+					helpSpeech = OutputStrings.EINRICHTUNG_HELP_HOME_OR_DEST.toString();
+					break;
+				case "2":
+					helpSpeech = OutputStrings.EINRICHTUNG_HELP_HOME.toString();
+					break;
+				case "3":
+					helpSpeech = OutputStrings.EINRICHTUNG_HELP_DESTINATION.toString();
+					break;
+				case "4":
+					helpSpeech = OutputStrings.EINRICHTUNG_HELP_ENDE.toString();
+					break;
+				default:
+					break;
+
+
+    		}
+		}
+	return Optional.empty();
     }
+
+    private void setHelpProcessToSession(HandlerInput input, String processId){
+    	input.getAttributesManager().getSessionAttributes().put("HelpProcess", processId);
+	}
 }
 
 

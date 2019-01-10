@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -18,9 +19,17 @@ import org.json.JSONObject;
 public class RouteCalculator {
 
 	public long getTime(Station departure, Station arrival, Date departureTime) throws IOException, ParseException {
+		if(departureTime.getTime() < new Date().getTime()){
+			//falls der Zeitpunkt in der Vergangenheit liegt wird ein Tag dazugerechnet (=86,4 Mio Millisekunden)
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(departureTime.getTime() +86400000);
+			departureTime = cal.getTime();
+		}
+		System.out.println(departureTime.toString());
 		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
 		JSONObject choice = getNextConnection(connections, departureTime, true);
+		System.out.println(choice.toString());
 		if (choice == null) {
 			return -1;
 		}
@@ -237,7 +246,7 @@ public class RouteCalculator {
 	 */
 	private JSONObject getNextConnection(JSONArray connections, Date time, boolean isArrivalTime) {
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
-		JSONObject choice = connections.getJSONObject(0);
+		JSONObject choice;
 		for (int j=0; j<connections.length(); j++) {
 			choice = connections.getJSONObject(j);
 			String arr = choice.getJSONObject("Arr").getString("time").split("T")[1];

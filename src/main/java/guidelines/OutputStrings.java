@@ -90,20 +90,22 @@ EINRICHTUNG_DEST_B_CARD("Wie lautet die Adresse deines zweiten Ziels?"),
 			"Um die Anwendung zu starten sage: Navigation."),
 	EINRICHTUNG_END_REPROMPT("Die Einrichtung ist abgeschlossen. Sage <break time=\"0.05s\" /> 'Navigation' um die Anwendung zu starten."),
 
-
-	EINRICHTUNG_HELP0("Möchtest du mir die Erlaubnis geben deinen Aktuellen Standort zu ermitteln?"),
-	EINRICHTUNG_HELP1("Bitte gebe mir deine Heimatdresse im format: Straße, Hausnummer dann die Stadt an."),
-	EINRICHTUNG_HELP2("Bitte geben sie einen Namen für ihre Heimatadresse an um das Aufrufen dieser Heimatadresse zu vereinfachen."),
-	EINRICHTUNG_HELP3("Bitte geben sie ihre erste Zieladresse an die sie speichern möchten."),
-	EINRICHTUNG_HELP4("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen"),
-	EINRICHTUNG_HELP5("Wählen sie bitte einen der zu verfügung stehenende Öffentlichenverkehrsmittel:Bus,Tram,UBahn,Sbahn."),
-	EINRICHTUNG_HELP6("Möchten sie eine zweite Zieladresse einrichten?"),
-	EINRICHTUNG_HELP7("Bitte geben sie ihre zweite Zieladresse an die sie speichern möchten."),
-	EINRICHTUNG_HELP8("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen"),
-	EINRICHTUNG_HELP9("Möchten sie eine zweite Zieladresse einrichten?"),
-	EINRICHTUNG_HELP10("Bitte geben sie ihre dritte Zieladresse an die sie speichern möchten."),
-	EINRICHTUNG_HELP11("Bitte geben sie einen Namen für diese Zieladresse an um das Aufrufen dieser Zieladresse zu vereinfachen"),
-
+	EINRICHTUNG_HELP_START("Alles klar, der Einrichtungsassistent besteht aus drei grundlegenden Schritten. " +
+			"Du startest mit der Einrichtung deiner Heimadresse. " +
+			"Anschließend kannst du bis zu 3 Ziele definieren und diese benennen. " +
+			"GuideLines kann dir so schnell helfen, deine schnellste und pünktlichste Verbindung zu finden. " +
+			"Wenn du noch ein bisschen Zeit hast kann ich dir gerne Informationen zu den weiteren Schritten geben. " +
+			"Wie sieht's aus, hast du noch ein wenig Zeit?"),
+	EINRICHTUNG_HELP_HOME_OR_DEST("Möchtest du Information zur Heimadresse oder zu den Zieladressen?"),
+	EINRICHTUNG_HELP_ENDE("GuideLines ist dein persönlicher Assistent für deinen Weg zu deinen Zielen. " +
+			"Ich kann dir mit wenigen Angaben deine kürzeste Strecke zum Ziel in Echtzeit berechnen. " +
+			"Nach der Einrichtung wird GuideLines jederzeit Einsatzbereit sein. Möchtest du mit der Einrichtung beginnen?"),
+	EINRICHTUNG_HELP_HOME("Bitte gebe mir deine Heimatdresse im format Straße, Hausnummer, Stadt an. Deine Heimadresse benötigt GuideLines, " +
+			"um einen Startpunkt im System festzulegen. Neben deiner Adresse,<break time=\"0.05s\" /> deiner Haltestelle und einem bevorzugten Verkehrsmittel kannst du " +
+			"deinen Startpunkt selbst benennen. Vorschlagen würde ich dir hier die Benennung <break time=\"0.05s\" /> Zuhause. Willst du weitere Infos zu den Zieladressen?"),
+	EINRICHTUNG_HELP_DESTINATION("Deine Zieladressen stellen häufig von dir im Alltag verwendete Ziele dar. " +
+			"Viele Leute haben hier Ziele wie ihren Arbeitsplatz, Universitätscampus oder ihre Schule hinterlegt." +
+			" <break time=\"0.05s\" /> Auch hier brauche ich die Adresse und einen Namen für dein Ziel. Ich kann dir noch weitere Informationen zur Anwendung geben, möchtest du das ?"),
 	PLANMYTRIP_DESTINATION_NOT_FOUND_SPEECH("Dieses Ziel ist nicht gepeichert. <break time=\"0.05s\" Bitte versuche es erneut."),
 	PLANMYTRIP_DESTINATION_NOT_FOUND_CARD("Dieses Ziel ist nicht gepeichert. Bitte versuche es erneut.");
 

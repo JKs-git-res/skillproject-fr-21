@@ -121,7 +121,7 @@ public class PlanMyTripIntentHandlerTest {
             when(input.getResponseBuilder()).thenReturn(new ResponseBuilder());
             when(input.getRequestEnvelope()).thenReturn(requestEnvelope);
             Response response = planMyTripIntentHandler.handle(input).get();
-            assertFalse(response.getShouldEndSession());
+            assertTrue(response.getShouldEndSession());
             System.out.println(response.getOutputSpeech().toString());
             assertTrue(response.getOutputSpeech().toString().contains(" Minuten losgehen, um pünktlich zu sein."));
         } catch (IOException ex){

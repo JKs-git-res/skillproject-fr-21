@@ -54,23 +54,39 @@ public class PlanMyTripIntentHandler implements RequestHandler
      */
     private Date resolveTime(String timeString){
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+
 	    DateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
-        try {
             switch (timeString) {
                 case ("MO"): //Morning
-                    return format.parse("08:00");
+                    cal.set(Calendar.HOUR_OF_DAY,8);
+                    cal.set(Calendar.MINUTE,0);
+                    break;
                 case ("AF"): //Afternoon
-                    return format.parse("14:00");
+                    cal.set(Calendar.HOUR_OF_DAY,14);
+                    cal.set(Calendar.MINUTE,0);
+                    break;
                 case ("EV"): //Evening
-                    return format.parse("19:00");
+                    cal.set(Calendar.HOUR_OF_DAY,19);
+                    cal.set(Calendar.MINUTE,0);
+                    break;
                 case ("NI"): //Night
-                    return format.parse("23:59");
+                    cal.set(Calendar.HOUR_OF_DAY,23);
+                    cal.set(Calendar.MINUTE,59);
+                    break;
                 default:
-                    return format.parse(timeString);
+                    String hours = timeString.split(":")[0];
+                    String minutes = timeString.split(":")[1];
+                    if(hours.startsWith("0"))
+                        hours = hours.substring(1);
+                    if(minutes.startsWith("0"))
+                        minutes = minutes.substring(1);
+                    cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(hours));
+                    cal.set(Calendar.MINUTE,Integer.parseInt(minutes));
+                    break;
             }
-        } catch (ParseException e) {
-                return null;
-            }
+            return cal.getTime();
 
 
     }
@@ -135,6 +151,7 @@ public class PlanMyTripIntentHandler implements RequestHandler
                     speech = "Tut mir Leid. Es gibt keine Verbindung (mehr).";
                 return input.getResponseBuilder()
                         .withSpeech(speech)
+                        .withShouldEndSession(true)
                         .withSimpleCard("In "+minutesRemaining+" losgehen",speech)
                         .build();
             } catch (Exception ex){
