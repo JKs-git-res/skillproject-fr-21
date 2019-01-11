@@ -245,7 +245,7 @@ public class RouteCalculator {
 	private JSONObject getNextConnection(JSONArray connections, Date time, boolean isArrivalTime) {
         SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		JSONObject choice;
-		JSONObject result;
+		JSONObject result = null;
 		for (int j=0; j<connections.length(); j++) {
 			choice = connections.getJSONObject(j);
 			String arr = choice.getJSONObject("Arr").getString("time");
