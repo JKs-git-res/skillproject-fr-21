@@ -140,8 +140,6 @@ public class SetUpIntentHandler implements RequestHandler {
             Logger.getLogger(SetUpIntentHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         catch(IOException ex){
-            ex.printStackTrace();
-
         }
     }
     
