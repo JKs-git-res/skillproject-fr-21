@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -13,14 +14,20 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONObject; 
 
 public class RouteCalculator {
 
 	public long getTime(Station departure, Station arrival, Date departureTime) throws IOException, ParseException {
-		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
+		if(departureTime.getTime() < new Date().getTime()){
+			//falls der Zeitpunkt in der Vergangenheit liegt wird ein Tag dazugerechnet (=86,4 Mio Millisekunden)
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(departureTime.getTime() +86400000);
+			departureTime = cal.getTime();
+		}
+		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 1))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
-		JSONObject choice = getNextConnection(connections, departureTime, false);
+		JSONObject choice = getNextConnection(connections, departureTime, true);
 		if (choice == null) {
 			return -1;
 		}
@@ -60,7 +67,7 @@ public class RouteCalculator {
 		String indications = getIndications(sections) + "Ankunftzeit: " + time;
 		return indications;
 	}
-	
+
 	/**
 	 * Tells the exact route where and where to change and how many stops to ride the {@link FormOfTransport}.
 	 * Searches the route that has the specified arrival time (or the rout with the arrival time closest to it)
@@ -87,8 +94,8 @@ public class RouteCalculator {
 		String indications = getIndications(sections) + "Ankunftzeit: " + time;
 		return indications;
 	}
-	
-	
+
+
 	/**
 	 * Returns inications what {@link FormOfTransport} to take, when and where to change
 	 * @param sections
@@ -128,8 +135,8 @@ public class RouteCalculator {
 		}
 		return plan.toString();
 	}
-	
-	
+
+
 	/**
 	 * Tells the plan how to get from start to destination station.
 	 * But doesn't tell when is the next one. It tells just how to get there and the time of the trip.
@@ -200,7 +207,7 @@ public class RouteCalculator {
 		}
 		return plan.toString();
 	}
-	
+
 	/**
 	 * Returns time in german for Alexa to say
 	 * @param time
@@ -220,7 +227,7 @@ public class RouteCalculator {
 		}
 		return hour + " Uhr " + minute;
 	}
-	
+
 	/**
 	 * Some connection are in the past (the bus already left).
 	 * This method gives back the next available connection.
@@ -236,26 +243,29 @@ public class RouteCalculator {
 	 * 					The next available connection
 	 */
 	private JSONObject getNextConnection(JSONArray connections, Date time, boolean isArrivalTime) {
-		SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
-		JSONObject choice = connections.getJSONObject(0);
+        //System.out.print(connections);
+	    SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		JSONObject choice;
 		for (int j=0; j<connections.length(); j++) {
 			choice = connections.getJSONObject(j);
-			String arr = choice.getJSONObject("Arr").getString("time").split("T")[1];
-			arr = arr.substring(0, arr.length()-3);
-			String dep = choice.getJSONObject("Dep").getString("time").split("T")[1];
-			dep = dep.substring(0, dep.length()-3);
+			String arr = choice.getJSONObject("Arr").getString("time");
+			String dep = choice.getJSONObject("Dep").getString("time");
 			Date now;
 			Date departure;
 			Date arrival;
-			String givenTime = parser.format(time);
+			//String givenTime = parser.format(time);
 			try {
 				departure = parser.parse(dep);
 				arrival = parser.parse(arr);
 				now = parser.parse(parser.format(new Date()));
-				time = parser.parse(givenTime);
+				//time = parser.parse(givenTime);
 				if (now.before(departure) && now.before(arrival)) {
+				    //System.out.println("Time from now ok");
 					if (isArrivalTime) {
+                        //System.out.println("Was arrival time");
 						if (time.before(arrival)) {
+                            //System.out.println("found departure: " + departure.toString());
+                            //System.out.println("found arrival: " + arrival.toString());
 							return choice;
 						}
 					} else if (time.before(departure)) {
@@ -268,7 +278,7 @@ public class RouteCalculator {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the JSON response from the Here API
 	 * @param departure
@@ -295,20 +305,20 @@ public class RouteCalculator {
 				+ "&arrival=" + arrParam);
 		return response;
 	}
-	
+
 	/**
 	 * Returns time in the format: yyyy-MM-ddTHH:mm:ss URL encoded.
 	 * @return
 	 * 			Time in the format: yyyy-MM-ddTHH:mm:ss URL encoded.
 	 * @throws UnsupportedEncodingException
-	 * 			If the encoding is not supported 
+	 * 			If the encoding is not supported
 	 */
 	private String getTimeFormatted(Date date) throws UnsupportedEncodingException {
-	    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	    DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
-	    String formattedDate = dateFormat.format(date);
-	    String formattedDate2 = dateFormat2.format(date);
-	    return URLEncoder.encode(formattedDate2 + "T" + formattedDate, "UTF-8");
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedDate = dateFormat.format(date);
+		String formattedDate2 = dateFormat2.format(date);
+		return URLEncoder.encode(formattedDate2 + "T" + formattedDate, "UTF-8");
 	}
 
 }

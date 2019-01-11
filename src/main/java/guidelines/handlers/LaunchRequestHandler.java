@@ -12,20 +12,30 @@
 */
 
 package guidelines.handlers;
+import com.amazon.ask.attributes.AttributesManager;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
+import com.amazon.ask.model.Context;
 import com.amazon.ask.model.LaunchRequest;
 import com.amazon.ask.model.Response;
 
+import com.amazon.ask.model.interfaces.system.SystemState;
 import guidelines.OutputStrings;
 import guidelines.StatusAttributes;
+import org.json.JSONObject;
 
 
-import java.util.Map;
-import java.util.Optional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
 
 import static com.amazon.ask.request.Predicates.requestType;
 public class LaunchRequestHandler implements RequestHandler {
+    private Map<String,Object> persistantAttributes;
+    private AttributesManager attributesManager;
     @Override
     public boolean canHandle(HandlerInput input) {
         return input.matches(requestType(LaunchRequest.class));
@@ -33,26 +43,97 @@ public class LaunchRequestHandler implements RequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-        Map<String,Object> persistantAttributes = input.getAttributesManager().getPersistentAttributes();
-        Map<String,Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
+        attributesManager = input.getAttributesManager();
+        persistantAttributes = attributesManager.getPersistentAttributes();
+        Map<String,Object> sessionAttributes = attributesManager.getSessionAttributes();
+        String userName = "";
+        if(persistantAttributes.get("UserName") == null){
+            try{
+                userName = getUsersFirstName((Context)input.getContext().get());
+            } catch (NoSuchElementException nseEx){
+                nseEx.printStackTrace();
+            }
+            catch(IOException ioEx) {
+                ioEx.printStackTrace();
+            }
+        } else {
+            userName = (String)persistantAttributes.get("UserName");
+        }
+
+
         if(persistantAttributes.get("Homeaddress") == null
                 &&persistantAttributes.get("DestinationA") == null)//überprüft, ob der skill bereits eingerichtet wurde.
         {
+            List<String> permissions = new ArrayList<String>();
+            permissions.add("read::alexa:device:all:address");
+            permissions.add("alexa::profile:given_name:read");
+
            sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
+           persistantAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
+            attributesManager.setPersistentAttributes(persistantAttributes);
+            attributesManager.savePersistentAttributes();
+            String speech, card;
+           if(!userName.equals("")) {
+               speech = "Hallo" + userName + ". " + OutputStrings.SPEECH_BREAK_LONG + OutputStrings.WELCOME_EINRICHTUNG_SPEECH.toString();
+               card = "Hallo" + userName + ". "+ OutputStrings.WELCOME_EINRICHTUNG_CARD.toString();
+           }
+            else {
+               speech = OutputStrings.WELCOME_EINRICHTUNG_SPEECH.toString();
+               card =  OutputStrings.WELCOME_EINRICHTUNG_CARD.toString();
+           }
             return input.getResponseBuilder()
-                    .withSimpleCard("GuideLines", OutputStrings.WELCOME_EINRICHTUNG_CARD.toString())
-                    .withSpeech(OutputStrings.WELCOME_EINRICHTUNG.toString())
+                    .withAskForPermissionsConsentCard(permissions)
+                    .withSpeech(speech)
+                    .withSimpleCard("Einrichtung",card)
                     .withReprompt(OutputStrings.WELCOME_EINRICHTUNG_REPROMPT.toString())
                     .build();
         } else {
             sessionAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+            persistantAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+            attributesManager.setPersistentAttributes(persistantAttributes);
+            attributesManager.savePersistentAttributes();
+
+            String speech, card;
+            if(!userName.equals("")){
+                speech = "Hallo " + userName +OutputStrings.WELCOME_BEREITS_EINGERICHTET_SPEECH.toString();
+                card = "Hallo " + userName +OutputStrings.WELCOME_BEREITS_EINGERICHTET_CARD.toString();
+            }
+            else {
+                speech = "Hallo "+OutputStrings.SPEECH_BREAK_LONG+". Wo möchtest du heute hinfahren?";
+                card = "Hallo."+ OutputStrings.WELCOME_BEREITS_EINGERICHTET_CARD.toString();
+            }
+
             return input.getResponseBuilder()
-                    .withShouldEndSession(true)
-                    .withSpeech("Der Skill wurde bereits eingerichtet. Um die Einrichtung zu testen bitte die EInträge aus der DynamoDB entfernen.")
+                    .withShouldEndSession(false)
+                    .withSpeech(speech)
+                    .withReprompt(OutputStrings.WELCOME_BEREITS_EINGERICHTET_REPROMPT.toString())
+                    .withSimpleCard("Navigation", card)
                     .build();
         }
 
 
 
+    }
+
+    private String getUsersFirstName(Context ctx) throws IOException {
+        SystemState sys = ctx.getSystem();
+        String urlString = sys.getApiEndpoint() + "/v2/accounts/~current/settings/Profile.givenName";
+        URL url = new URL(urlString);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.setRequestProperty("Accept","application/json");
+        httpURLConnection.setRequestProperty("Authorization", "Bearer " +sys.getApiAccessToken());
+        BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while((inputLine = in.readLine()) != null)
+            response.append(inputLine);
+        in.close();
+        String jsonText = response.toString();
+        String userName = (String) new JSONObject(jsonText).get("givenName");
+        persistantAttributes.put("UserName", userName);
+        attributesManager.setPersistentAttributes(persistantAttributes);
+        attributesManager.savePersistentAttributes();
+        return userName;
     }
 }

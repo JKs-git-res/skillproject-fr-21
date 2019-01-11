@@ -286,8 +286,10 @@ public class SetUpIntentHandlerTest {
     public void testCanHandle(){
         final HandlerInput inputMock = Mockito.mock(HandlerInput.class);
         Map<String,Object> sessionList = new HashMap<>();
+        Map<String,Object> persistantList = new HashMap<>();
+        persistantList.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
         sessionList.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
-        AttributesManager attributesManager = mockAttributesManager(sessionList, null);
+        AttributesManager attributesManager = mockAttributesManager(sessionList, persistantList);
         when(inputMock.getAttributesManager()).thenReturn(attributesManager);
         when(inputMock.matches(any())).thenReturn(true);
         assertTrue(handler.canHandle(inputMock));
@@ -324,9 +326,9 @@ public class SetUpIntentHandlerTest {
         Response response = mockResponse(-1,null,false,SlotConfirmationStatus.NONE);
         assertFalse(response.getShouldEndSession());
         assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
-        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_YES_NO_LOCATION_SPEECH.toString()));
         assertTrue(response.getCard().getType().equals("Simple"));
-        assertTrue(response.getCard().toString().contains(OutputStrings.EINRICHTUNG_YES_NO_LOCATION.toString()));
+        assertTrue(response.getCard().toString().contains(OutputStrings.EINRICHTUNG_YES_NO_LOCATION_CARD.toString()));
     }
 
     @Test
@@ -334,9 +336,9 @@ public class SetUpIntentHandlerTest {
         Response response = mockResponse(0,StatusAttributes.VALUE_YES_NO_LOCATION_SET,false,SlotConfirmationStatus.NONE);
         assertFalse(response.getShouldEndSession());
         assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
-        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_HOMEADDRESS.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(/*OutputStrings.EINRICHTUNG_HOMEADDRESS_SPEECH.toString()*/"Ok.<break time=\"0.05s\" /> Dann nenne mir bitte deine Privatadresse."));
         assertTrue(response.getCard().getType().equals("Simple"));
-        assertTrue(response.getCard().toString().contains(OutputStrings.EINRICHTUNG_HOMEADDRESS.toString()));
+        assertTrue(response.getCard().toString().contains(OutputStrings.EINRICHTUNG_HOMEADDRESS_CARD.toString()));
     }
     //@Test
     public void testSetUp_doUseLocation(){
@@ -349,7 +351,7 @@ public class SetUpIntentHandlerTest {
                 .builder()
                 .withSystem(SystemState
                         .builder()
-                        .withApiAccessToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJhdWQiOiJodHRwczovL2FwaS5hbWF6b25hbGV4YS5jb20iLCJpc3MiOiJBbGV4YVNraWxsS2l0Iiwic3ViIjoiYW16bjEuYXNrLnNraWxsLmVlZjI2ODA3LTFkYTMtNDNhOS04NjhjLTljZDE1MTgzYjRkZCIsImV4cCI6MTU0NzAwMjc2NiwiaWF0IjoxNTQ2OTk5MTY2LCJuYmYiOjE1NDY5OTkxNjYsInByaXZhdGVDbGFpbXMiOnsiY29uc2VudFRva2VuIjoiQXR6YXxJd0VCSVBSbDllbm84MFVYc2tsNG05SG1FS0ttSzJUU2F5ZEZuNmo0WU5OaURKbnJWZjdUam5CUGtzU05OX3hYVTMwSlJianhEYTVUOWlvUVlGUXAzS2kyNk9WZXZTcnplMUg4TFgxV0tKMVNuRElVUC1OVHpfWW52TnpzYnB1TXBKTnZ5TExVZTlqcHIzRW53aFdKbnB2ZC05VTNLYVlJNHNYazA1NXI1dlN6aFRMTTB1TjNrVTl5cVNjS3YtYjF1RVZ2TnROb3gzSXFqallfdnh1ZWs3WjNEX21SdEJaMFREVXU0UDNZRk9qbUNXV1NHZWV0UFN0dmdXWlF3bnVIZjF3enZsbzV5MGV5UUdiX3o3dllVaFI4a28yc0pzMEladkVSVjZyWVU0RTlrMVVoOTZpeC1CT1BUVHpKN3g1eDJiNHEzbTBwbGZrX01NeV9iNG9qVHJiY19yZ1F4XzJZdU5FcTJ6cUV1QTNzeHp6aWh3VXdpYmF6bVVHd1NxWFQyY2xSb1JQQWRFaVIxWGVPSDJuYlR6NVlFQmNJU3JrcHFhVnZ0S0FDSWljOHZPWEZVRDlHSEtldmp0anlILW4zWFg4M3pTQzdqWjNzNnlQcDktQ01VQlhRdTFjbzgtaEdkVERhOHFPUE5RZDFMTVpVUFFNV3dFbEhxSzZPTVoyRlRHc2N3Z2xmZWIyZUpKUDJtSVM5ejRoWE54WVlETFh5YXY5djctYUhLa1pfejBrckljZG1RUkMwWG1FWndTV0E1UUVMcG9rIiwiZGV2aWNlSWQiOiJhbXpuMS5hc2suZGV2aWNlLkFIM0ZKSElXR0hEM0xKRVNISko0TkQ3N0NNN0pZQUlMSkROUFdYWUpURzVINEJEVE1BR1lMTUQ0TkRaQjdGRk5QQzZFMkxLTDNNSkhNNkxJRTRNNUwyRUxJSVZZQ1ZKTVROQzRWNU5WWkxYSlJBUEFRQ0VGWjdQWUhaRFBUWE9aMzVNSE5ETEZaMzRLWVNLNldFTjNSQ1BWS1EzQVNQRFBEUkVXVVpYVEhLSFBJM1pQTUFPSjIiLCJ1c2VySWQiOiJhbXpuMS5hc2suYWNjb3VudC5BSE9IVkFESUs1RzRZVkRMTVRRUVI2M0JOVVY1NkZBS0FQN0NMM1MzSEY0T0RaNlZUM0RVTzZKTFRXWDVVMzI1M1dRM0RLMzJNWDMzM0k0SFc3R1hOVDZVQjRYTkRWR09PMzVCWE5FR1ZLMkxTMktXM1NSVlJEWDZIWEI2S1RUWVRJNkpQSk5ZWElYWFhFTVdXRzVHTkdNSU1NM01JRDRGUkxGN1JYSzdTR0dVVEJVRVRLTEZHNTVDQkhCQ05PSTRDR0syVVJaRFpBQTZJWkEifX0.F-WbKWFxb3_YJZSq_rN1J3eJRFquhkdAjvJMLzI0ieL2bN-Auux4BZk8oaJ1F3-3ELuYSDEOM1eKkhNeEESTVTpyqFBsxs5fSf3K4CLVRm1h28KtkhOfHmFlGyspDWixzOJMhUOSCs2qeVAlcJF7Tl15Ga-tpCIB58HNc5bzEITJkbfHuXjYYHL-amWCejsti2464yWg05jflNhVQ5Q-aZcP5cV3g0qMveeyf6x8wQclw9xNxTCbt5IloqaDdmI6mqdwhzUABYUy_-iTJmXn4pOLXHSgydqEmRQdnx0spWzmC7614fvMs16kuvcKIx6SweGhzv_1MzzMYfAOjKYPng")
+                        .withApiAccessToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJhdWQiOiJodHRwczovL2FwaS5hbWF6b25hbGV4YS5jb20iLCJpc3MiOiJBbGV4YVNraWxsS2l0Iiwic3ViIjoiYW16bjEuYXNrLnNraWxsLmVlZjI2ODA3LTFkYTMtNDNhOS04NjhjLTljZDE1MTgzYjRkZCIsImV4cCI6MTU0NzA3NDA2NiwiaWF0IjoxNTQ3MDcwNDY2LCJuYmYiOjE1NDcwNzA0NjYsInByaXZhdGVDbGFpbXMiOnsiY29uc2VudFRva2VuIjoiQXR6YXxJd0VCSUVTa0tQalBldTNkZFpqQk9qZGs4bGNSZFhqelIwU2h4bm9pUktZdWlXQUROVTdrMEtpUHhGZXRKLVZ2UmlYa3E1V3M2dmpJeVBKYmgzenZSYW5LSTNTNjBJb0FxZFZHNXJKb2JMenlSeTM0bXdrR1VLbEV3X05ZNnFRcjJVNVRhdFViejZVY3lnNGN6Y0x0YnJjT0w2eVBfb2dHZjQxcDlRc2FKRnl4SzVsbEluV1NCcVlyenJ2bWliQ2ItZ0pXRTkwaVJiQ3ByYTkxNzAyRlo0a3owNndnV0N5alVCbmFSd0FLaVlKWFJST0o4WTRFRkdkYnc0dGt1Y1FUenhqQ3hPb0gyUlBZcWpZN2pfREJmZFFZeVh3T2JJb1RqM3paeWhoSS1FNEY1b2hlREcxS0o5WGstZTctdzliRTB4V09taFROZk12LVlQam12MzVYS3ZKcGhlRFZrR1M1Yk9wbDM4TGRkWVI1Z0UtME8wZTFzcERwV0d0VG8xdkx1UEVsVFFiSFJNY0dCLURkX3lhdHNrRllIbVl0WHlkVjRkQldVWWotZU1uSF85aGlPZTdPWW9nanpLZ2pWUThsaVAwZjlra2o1TklJQ181cGY1ZWtLNGlLRFk0SU9iSjhBYjBjSmVlM3IySm1PLTZnbW1DbkExUlZwUEExRkJjZzNaZmlmUWpjTEE1ck1iR1RIalBCZzVvY3U0WGFKWFZsX3ppTFFZUmZqSlJhN3d2MkNGVklSU2wxR3JuSDZUd0ZVMVNDbXRnIiwiZGV2aWNlSWQiOiJhbXpuMS5hc2suZGV2aWNlLkFIM0ZKSElXR0hEM0xKRVNISko0TkQ3N0NNN0pZQUlMSkROUFdYWUpURzVINEJEVE1BR1lMTUQ0TkRaQjdGRk5QQzZFMkxLTDNNSkhNNkxJRTRNNUwyRUxJSVZZQ1ZKTVROQzRWNU5WWkxYSlJBUEFRQ0VGWjdQWUhaRFBUWE9aMzVNSE5ETEZaMzRLWVNLNldFTjNSQ1BWS1EzQVNQRFBEUkVXVVpYVEhLSFBJM1pQTUFPSjIiLCJ1c2VySWQiOiJhbXpuMS5hc2suYWNjb3VudC5BSE9IVkFESUs1RzRZVkRMTVRRUVI2M0JOVVY1NkZBS0FQN0NMM1MzSEY0T0RaNlZUM0RVTzZKTFRXWDVVMzI1M1dRM0RLMzJNWDMzM0k0SFc3R1hOVDZVQjRYTkRWR09PMzVCWE5FR1ZLMkxTMktXM1NSVlJEWDZIWEI2S1RUWVRJNkpQSk5ZWElYWFhFTVdXRzVHTkdNSU1NM01JRDRGUkxGN1JYSzdTR0dVVEJVRVRLTEZHNTVDQkhCQ05PSTRDR0syVVJaRFpBQTZJWkEifX0.E9DfiRAoZyAG3VDEWloIO2SswYUSFkUv1Z6x0DVRClfScMT4qvbQLkvOorVH6XiNVRp36beTv8cQBiOlQ--BVev6pSZiFto1bbdJIdZfLhJ3gb2f2HmJLgkdSK5nf_iq3-2TtNMPc5InT_xuazvktrTsZfpG-2-EteU4b1PFgpB8UIOzJ_1cpxYdK0OmroI-x87kQOzEc5p7LbkIW_IqRNKFn4KdQFJDaStOWpgK352dO-M03vyvEpiiWjFp7z5Z53CSRAmSlZwiiQrBrMD5CNMxKvg_e_MsV07oMtcGTJZmOk057LhLmEAegL1EmywAE0JARh2yItpLLzHcG-9hLw")
                         .withApiEndpoint("https://api.eu.amazonalexa.com")
                         .withUser(User
                                 .builder()
@@ -435,7 +437,7 @@ public class SetUpIntentHandlerTest {
     public void testSetUp_confirmationOnHomeAddressConfirmed(){
         Response response = mockResponse(1,StatusAttributes.VALUE_YES_NO_LOCATION_SET,false,SlotConfirmationStatus.CONFIRMED);
         assertTrue(response.getOutputSpeech().toString().contains("Alles klar. Die nächste Haltestelle dieser Adresse lautet: "));
-        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_NAMEHOME.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_NAMEHOME_SPEECH.toString()));
         assertEquals("Dialog.ElicitSlot", response.getDirectives().get(0).getType());
         assertFalse(response.getShouldEndSession());
         assertTrue(response.getCard().getType().equals("Simple"));
@@ -444,7 +446,7 @@ public class SetUpIntentHandlerTest {
     @Test
     public void testSetUp_confirmationOnHomeAddressDenied(){
         Response response = mockResponse(1,StatusAttributes.VALUE_YES_NO_LOCATION_SET,false,SlotConfirmationStatus.DENIED);
-        assertTrue(response.getOutputSpeech().toString().contains("Dann wiederhole bitte die Adresse."));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_ADDRESS_CONFIRMATION_DENIED_SPEECH.toString()));
         assertTrue(response.getOutputSpeech().toString().contains(" Versuche dabei laut und deutlich zu sprechen."));
         assertEquals("Dialog.ElicitSlot", response.getDirectives().get(0).getType());
         assertFalse(response.getShouldEndSession());
@@ -500,7 +502,8 @@ public class SetUpIntentHandlerTest {
             assertEquals("Zuhause",adr.getName()); //testet, ob der Name der Addresse gespeichert wurde
 
         } catch(IOException ex){}
-        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_DEST_A.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_DEST_A_SPEECH_1.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_DEST_A_SPEECH_2.toString()));
         assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
         assertTrue(response.getCard().getType().equals("Simple"));
     }
@@ -519,7 +522,7 @@ public class SetUpIntentHandlerTest {
     public void testSetUp_confirmationOnDestinationAConfirmed(){
         Response response = mockResponse(3,StatusAttributes.VALUE_HOMEADDRESS_SET,false,SlotConfirmationStatus.CONFIRMED);
         assertTrue(response.getOutputSpeech().toString().contains("Alles klar. Die nächste Haltestelle dieser Adresse lautet: "));
-        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_NAME_A.toString()));
+        assertTrue(response.getOutputSpeech().toString().contains(OutputStrings.EINRICHTUNG_NAME_A_SPEECH.toString()));
         assertEquals("Dialog.ElicitSlot",response.getDirectives().get(0).getType());
         assertFalse(response.getShouldEndSession());
         assertTrue(response.getCard().getType().equals("Simple"));

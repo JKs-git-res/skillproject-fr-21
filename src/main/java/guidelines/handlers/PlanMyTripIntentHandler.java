@@ -13,6 +13,8 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guidelines.OutputStrings;
+import guidelines.StatusAttributes;
 import guidelines.model.RouteCalculator;
 import guidelines.model.Address;
 import guidelines.model.AddressResolver;
@@ -31,12 +33,15 @@ public class PlanMyTripIntentHandler implements RequestHandler
     private Date Abfahrtszeit;
 	@Override
 	public boolean canHandle(HandlerInput input) {
-		return input.matches(intentName("PlanMyTripIntent"));	
+		return input.matches(intentName("PlanMyTripIntent") )
+                && input
+                .getAttributesManager()
+                .getPersistentAttributes()
+                .get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString())
+                .equals("true");
+
 	}
 
-	private boolean isEmpty(Slot s){
-	    return s.getValue() == null;
-    }
 
     /**
      *
@@ -46,23 +51,38 @@ public class PlanMyTripIntentHandler implements RequestHandler
      */
     private Date resolveTime(String timeString){
 
-	    DateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
-        try {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+
             switch (timeString) {
                 case ("MO"): //Morning
-                    return format.parse("08:00");
+                    cal.set(Calendar.HOUR_OF_DAY,8);
+                    cal.set(Calendar.MINUTE,0);
+                    break;
                 case ("AF"): //Afternoon
-                    return format.parse("14:00");
+                    cal.set(Calendar.HOUR_OF_DAY,14);
+                    cal.set(Calendar.MINUTE,0);
+                    break;
                 case ("EV"): //Evening
-                    return format.parse("19:00");
+                    cal.set(Calendar.HOUR_OF_DAY,19);
+                    cal.set(Calendar.MINUTE,0);
+                    break;
                 case ("NI"): //Night
-                    return format.parse("24:00");
+                    cal.set(Calendar.HOUR_OF_DAY,23);
+                    cal.set(Calendar.MINUTE,59);
+                    break;
                 default:
-                    return format.parse(timeString);
+                    String hours = timeString.split(":")[0];
+                    String minutes = timeString.split(":")[1];
+                    if(hours.startsWith("0"))
+                        hours = hours.substring(1);
+                    if(minutes.startsWith("0"))
+                        minutes = minutes.substring(1);
+                    cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(hours));
+                    cal.set(Calendar.MINUTE,Integer.parseInt(minutes));
+                    break;
             }
-        } catch (ParseException e) {
-                return null;
-            }
+            return cal.getTime();
 
 
     }
@@ -72,70 +92,82 @@ public class PlanMyTripIntentHandler implements RequestHandler
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
         attributesManager = input.getAttributesManager();
         persistentAttributes = attributesManager.getPersistentAttributes();
-        Address adr = null, destA = null, destB = null, destC = null;
+        Address start = null,
+                destinationA = null,
+                destinationB = null,
+                destinationC = null,
+                realDestination = null;
         Request request = input.getRequestEnvelope().getRequest();
-        Session session = input.getRequestEnvelope().getSession();
         IntentRequest intReq = (IntentRequest) request;
         Intent intent = intReq.getIntent();
         slots = intent.getSlots();
 
-        Slot start_slot = slots.get("Start"),
-                ziel_slot = slots.get("Ziel"),
-                ankunftszeit_slot = slots.get("Ankunftszeit"),
-                abfahrtszeit_slot = slots.get("Abfahrszeit"),
-                gespeichertesZiel_slot = slots.get("GespeichertesZiel"),
-                fragewort_slot = slots.get("Fragewort");
+        Slot ankunftszeit_slot = slots.get("Ankunftszeit"),
+                gespeichertesZiel_slot = slots.get("GespeichertesZiel");
+        if (ankunftszeit_slot.getValue() != null && gespeichertesZiel_slot.getValue() != null) {
+            Date arrivalTime = resolveTime(ankunftszeit_slot.getValue());
 
-        try {
-        	String JSONStringProfile = (String)persistentAttributes.get("UserProfile");
-            userProfile = new ObjectMapper().readValue(JSONStringProfile,Profile.class);
-        } catch (IOException e) {
-        }
-
-        if(isEmpty(start_slot)){
-		    TripStart = userProfile.getHomeAddress();
-        }
-        if(isEmpty(ziel_slot)){
-		    TripDestination = userProfile.findByName(gespeichertesZiel_slot.getValue());
-        }
-        if(isEmpty(gespeichertesZiel_slot)){
             try {
-                TripDestination = new AddressResolver().getAddressList(ziel_slot.getValue()).get(0);
-            } catch (IOException e) {
-            }
-        }
-        if(!isEmpty(ankunftszeit_slot)){
-		    Ankuftszeit = resolveTime(ankunftszeit_slot.getValue());
+                start = new ObjectMapper().readValue((String) persistentAttributes.get("Homeaddress"), Address.class);
+                destinationA = new ObjectMapper().readValue((String)persistentAttributes.get("DestinationA"),Address.class);
+                if(persistentAttributes.get("DestinationB") != null)
+                    destinationB = new ObjectMapper().readValue((String)persistentAttributes.get("DestinationB"),Address.class);
+                if(persistentAttributes.get("DestinationC") != null)
+                    destinationC = new ObjectMapper().readValue((String)persistentAttributes.get("DestinationC"),Address.class);
 
-        } else if(!isEmpty(abfahrtszeit_slot)){
-		    Abfahrtszeit = resolveTime(abfahrtszeit_slot.getValue());
+                if(destinationA.getName().equals(gespeichertesZiel_slot.getValue()))
+                    realDestination = destinationA;
+                else if(destinationB != null && destinationB.getName().equals(gespeichertesZiel_slot.getValue()))
+                    realDestination = destinationB;
+                else if(destinationC != null && destinationC.getName().equals(gespeichertesZiel_slot.getValue()))
+                    realDestination = destinationC;
+                else {
+                    return input.getResponseBuilder()
+                            .withSpeech(OutputStrings.PLANMYTRIP_DESTINATION_NOT_FOUND_SPEECH.toString())
+                            .withSimpleCard("Ziel nicht gespeichert", OutputStrings.PLANMYTRIP_DESTINATION_NOT_FOUND_CARD.toString())
+                            .withShouldEndSession(false)
+                            .build();
+                }
+
+
+
+
+
+
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            try{
+                int hours = 0;
+                long minutesRemaining = new RouteCalculator().getTime(start.getNearestStation(),realDestination.getNearestStation(),arrivalTime);
+                String speech;
+                if(minutesRemaining > 60){
+                    hours =(int) minutesRemaining/60;
+                    minutesRemaining %= 60;
+                    if(minutesRemaining == 0)
+                        speech = "Du musst in "+hours+ " Stunden an deiner Haltestelle sein um pünktlich anzukommen.";
+                    else
+                        speech = "Du musst in "+hours+ " Stunden und "+minutesRemaining + " Minuten an deiner Haltestelle sein, um pünktlich anzukommen.";
+                }else if(minutesRemaining != -1)
+                    speech = "Du musst in "+minutesRemaining +" Minuten an deiner Haltestelle sein, um pünktlich anzukommen.";
+                else
+                    speech = "Tut mir Leid. Es gibt keine Verbindung (mehr).";
+                return input.getResponseBuilder()
+                        .withSpeech(speech)
+                        .withShouldEndSession(true)
+                        .withSimpleCard("In "+minutesRemaining+" losgehen",speech)
+                        .build();
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+
+
         } else {
-        		Abfahrtszeit = new Date();
+            return input.getResponseBuilder().addDelegateDirective(intent).build();
         }
-        String routeInfo = "";
-        try {
-			routeInfo =  new RouteCalculator().getRouteDeparture(TripStart.getNearestStation(), TripDestination.getNearestStation(), new Date());
-		} catch (IOException e) {
-          // TODO Auto-generated catch block
-
-		}
-        
-        if(!isEmpty(fragewort_slot)){
-            if(fragewort_slot.getValue().equals("Wie")){
-           
-            }
-            else if(fragewort_slot.getValue().equals("Wann")) {}
-
-
-        }
-
-
-        return input.getResponseBuilder()
-        		.withSpeech(routeInfo)
-        		.withSimpleCard("Routeninformation", routeInfo)
-        		.withShouldEndSession(true)
-        		.build();
-	}
-
+        return Optional.empty();
+    }
 
 }
