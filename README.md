@@ -19,7 +19,7 @@ zu finden.
 ![](https://user-images.githubusercontent.com/32867958/49249404-4e9d6680-f41c-11e8-9421-c276c374d2ff.png)
 
 ## Anwendungsfalldiagramm
-![Anwendungsfalldiagramm](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/GuideLines/anwendungsfalldiagramm.png)
+![Anwendungsfalldiagramm](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Anwendungsfall.png)
 
 
 ## Fachklassenmodell (Analyseklassenmodell)
