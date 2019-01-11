@@ -17,4 +17,4 @@ Die Storyline als grobes "Gerüst" dieser Anwendung ist [hier](https://getstoryl
 zu finden.
 
 ## Fachklassenmodell (Analyseklassenmodell)
-![FachklassenmodellV3](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/fachklassenmodel.png)
+![FachklassenmodellV3](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Fachklassenmodell.png)
