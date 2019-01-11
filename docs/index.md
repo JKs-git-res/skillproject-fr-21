@@ -17,7 +17,7 @@ Die Storyline als grobes "Gerüst" dieser Anwendung ist [hier](https://getstoryl
 zu finden.
 
 ## Finales Aktivitätsdiagramm
-![Aktivitätsdiagramm](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Akrivitätsdiagramm.png)
+![Aktivitätsdiagramm](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Akrivitätsdiagramm.PNG)
 
 ## Anwendungsfalldiagramm
 ![Anwendungsfalldiagramm](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Anwendungsfall.png)
