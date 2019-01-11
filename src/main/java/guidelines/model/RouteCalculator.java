@@ -258,7 +258,7 @@ public class RouteCalculator {
 				arrival = parser.parse(arr);
 				now = parser.parse(parser.format(new Date()));
 				time = parser.parse(givenTime);
-				if (now.before(departure) && now.before(arrival)) {
+				//if (now.before(departure) && now.before(arrival)) {
 					if (isArrivalTime) {
 						if (time.before(arrival)) {
 							return choice;
@@ -266,7 +266,7 @@ public class RouteCalculator {
 					} else if (time.before(departure)) {
 						return choice;
 					}
-				}
+				//}
 			} catch (ParseException e) {
 				throw new RuntimeException();
 			}
