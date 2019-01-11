@@ -49,12 +49,11 @@ public class LaunchRequestHandler implements RequestHandler {
         String userName = "";
         if(persistantAttributes.get("UserName") == null){
             try{
+              Optional<Object> ctx = input.getContext();
+              if (ctx.isPresent()){
                 userName = getUsersFirstName((Context)input.getContext().get());
-            } catch (NoSuchElementException nseEx){
-                nseEx.printStackTrace();
-            }
-            catch(IOException ioEx) {
-                ioEx.printStackTrace();
+              }
+            } catch (NoSuchElementException | IOException nseEx){
             }
         } else {
             userName = (String)persistantAttributes.get("UserName");
@@ -64,7 +63,7 @@ public class LaunchRequestHandler implements RequestHandler {
         if(persistantAttributes.get("Homeaddress") == null
                 &&persistantAttributes.get("DestinationA") == null)//überprüft, ob der skill bereits eingerichtet wurde.
         {
-            List<String> permissions = new ArrayList<String>();
+            List<String> permissions = new ArrayList<>();
             permissions.add("read::alexa:device:all:address");
             permissions.add("alexa::profile:given_name:read");
 
@@ -123,12 +122,13 @@ public class LaunchRequestHandler implements RequestHandler {
         httpURLConnection.setRequestMethod("GET");
         httpURLConnection.setRequestProperty("Accept","application/json");
         httpURLConnection.setRequestProperty("Authorization", "Bearer " +sys.getApiAccessToken());
-        BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        StringBuilder response;
+      try (BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        response = new StringBuilder();
         while((inputLine = in.readLine()) != null)
-            response.append(inputLine);
-        in.close();
+          response.append(inputLine);
+      }
         String jsonText = response.toString();
         String userName = (String) new JSONObject(jsonText).get("givenName");
         persistantAttributes.put("UserName", userName);
