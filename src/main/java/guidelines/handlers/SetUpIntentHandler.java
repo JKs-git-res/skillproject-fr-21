@@ -3,16 +3,13 @@ package guidelines.handlers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.*;
 
 import com.amazon.ask.model.*;
 import com.amazon.ask.model.interfaces.system.SystemState;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import guidelines.exceptions.StreetNotFoundException;
 import org.json.JSONException;
@@ -277,12 +274,13 @@ public class SetUpIntentHandler implements RequestHandler {
         connection.setRequestProperty("Authorization", "Bearer "+apiAccessToken);
         connection.setRequestProperty("GET", urlString);
         connection.setRequestProperty("Host", "api.amazonalexa.com");
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuffer response;
+      try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        response = new StringBuffer();
         while((inputLine = in.readLine()) != null)
-            response.append(inputLine);
-        in.close();
+          response.append(inputLine);
+      }
         String jsonText = response.toString();
         System.out.println("jsonText: "+jsonText);
         JSONObject json = new JSONObject(jsonText);
@@ -298,7 +296,7 @@ public class SetUpIntentHandler implements RequestHandler {
     @Override
     public Optional<Response> handle(HandlerInput input) {
         Map<String, Object> sessionAttributes = input.getAttributesManager().getSessionAttributes();
-        List<String> permissions = new ArrayList<String>();
+        List<String> permissions = new ArrayList<>();
         permissions.add("read::alexa:device:all:address");
         Request request = input.getRequestEnvelope().getRequest();
         IntentRequest intReq = (IntentRequest) request;
@@ -363,7 +361,7 @@ public class SetUpIntentHandler implements RequestHandler {
                         Optional<Object> ctxObj = input.getContext();
                         Context ctx;
                         try{
-                            ctx = (Context) ctxObj.get();
+                            ctx = (Context) ctxObj.orElse(null);
                             SystemState sys = ctx.getSystem();
                             String deviceId = sys.getDevice().getDeviceId();
                             String apiAccessToken = sys.getApiAccessToken();
@@ -385,16 +383,13 @@ public class SetUpIntentHandler implements RequestHandler {
                                         .withShouldEndSession(false)
                                         .addElicitSlotDirective("NameHome",intent)
                                         .build();
-                            } catch (JSONException e) {
+                            } catch (JSONException | IOException | StreetNotFoundException e) {
                                 // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            } catch (StreetNotFoundException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
+                                //e.printStackTrace(); Das stellt ein sicherheitsrisiko dar
                             }
+                          // TODO Auto-generated catch block
+                          // TODO Auto-generated catch block
+                          
 
 
                         } catch(NoSuchElementException ex){
