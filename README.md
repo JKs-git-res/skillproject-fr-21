@@ -17,4 +17,12 @@ Die Storyline als grobes "Gerüst" dieser Anwendung ist [hier](https://getstoryl
 zu finden.
 
 ## Fachklassenmodell (Analyseklassenmodell)
-![FachklassenmodellV3](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Fachklassenmodell.png)
+![FachklassenmodellV3](https://user-images.githubusercontent.com/35468278/48474074-1120c280-e7fa-11e8-937d-9a1174bf9a71.png)
+
+## Klassendiagramm
+![Klassendiagramm](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Bildschirmfoto%202019-01-10%20um%2017.01.51.png)
+
+## Fachklassenmodell (Analyseklassenmodell)![FachklassenmodellV3](https://github.com/sweIhm-ws2018-19/skillproject-fr-21/blob/master/Diagramms/Fachklassenmodell.png)
+
+## Wie funktioniert's?
+GuideLines ist ein Alexa Skill in Java impleentiert und benutzt HereAPI für die Adressübersetzung (String text zu Adresse [HereAPI autocomplete](https://developer.here.com/documentation/geocoder-autocomplete/topics/what-is.html). Wenn die Adresse nicht gefunden wird, schickt GuideLines eine weitere Anfrage an [HereAPI Places](https://developer.here.com/documentation/places/topics/what-is.html). GuideLines sucht nach Stationen via [HereAPI Geocoder](https://developer.here.com/documentation/geocoder/topics/what-is.html). Wir ermitteln den Fahrplan mit dem [Public Transit API](https://developer.here.com/documentation/transit/topics/quick-start-routing.html) von Here. Zusätzlich "übersetzt" die App die vom User eingegebene Hausnummer in einen Integer Wert.
