@@ -26,8 +26,9 @@ public class RouteCalculatorTest {
 		Station departure = new Station("","","", new HashMap<String, FormOfTransport>(), 48.15427, 11.55383); // Lothstraße
 		Station arrival = new Station("","","", new HashMap<String, FormOfTransport>(), 48.17871, 11.55667); // Olympiapark
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = format.parse ( "2019-01-10 07:00:00" );
+		Date date = format.parse ( "2019-01-11 15:00:00" );
 		long route = rc.getTime(departure, arrival, date);
+		System.out.print(route);
 	}
 
 	@Test

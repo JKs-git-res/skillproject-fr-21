@@ -25,7 +25,7 @@ public class RouteCalculator {
 			cal.setTimeInMillis(departureTime.getTime() +86400000);
 			departureTime = cal.getTime();
 		}
-		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 0))
+		JSONArray connections = new JSONObject(getJSONresponse(departure, arrival, departureTime, 1))
 				.getJSONObject("Res").getJSONObject("Connections").getJSONArray("Connection");
 		JSONObject choice = getNextConnection(connections, departureTime, true);
 		if (choice == null) {
@@ -243,9 +243,9 @@ public class RouteCalculator {
 	 * 					The next available connection
 	 */
 	private JSONObject getNextConnection(JSONArray connections, Date time, boolean isArrivalTime) {
-        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        //System.out.print(connections);
+	    SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		JSONObject choice;
-		JSONObject result = null;
 		for (int j=0; j<connections.length(); j++) {
 			choice = connections.getJSONObject(j);
 			String arr = choice.getJSONObject("Arr").getString("time");
@@ -253,30 +253,29 @@ public class RouteCalculator {
 			Date now;
 			Date departure;
 			Date arrival;
-			String givenTime = parser.format(time);
+			//String givenTime = parser.format(time);
 			try {
 				departure = parser.parse(dep);
 				arrival = parser.parse(arr);
 				now = parser.parse(parser.format(new Date()));
-				time = parser.parse(givenTime);
+				//time = parser.parse(givenTime);
 				if (now.before(departure) && now.before(arrival)) {
+				    //System.out.println("Time from now ok");
 					if (isArrivalTime) {
+                        //System.out.println("Was arrival time");
 						if (time.before(arrival)) {
-							result =  choice;
-						} else {
-							break;
+                            //System.out.println("Time from now ok");
+							return choice;
 						}
 					} else if (time.before(departure)) {
-						result =  choice;
-					} else {
-						break;
+						return choice;
 					}
 				}
 			} catch (ParseException e) {
 				throw new RuntimeException();
 			}
 		}
-		return result;
+		return null;
 	}
 
 	/**
