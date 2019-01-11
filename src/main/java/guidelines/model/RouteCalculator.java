@@ -243,10 +243,10 @@ public class RouteCalculator {
 	 * 					The next available connection
 	 */
 	private JSONObject getNextConnection(JSONArray connections, Date time, boolean isArrivalTime) {
-        //System.out.print(connections);
-	    SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		JSONObject choice;
-		for (int j=0; j<connections.length(); j++) {
+        //System.out.println(connections);
+	    //SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		JSONObject choice = connections.getJSONObject(0);
+		/*for (int j=0; j<connections.length(); j++) {
 			choice = connections.getJSONObject(j);
 			String arr = choice.getJSONObject("Arr").getString("time");
 			String dep = choice.getJSONObject("Dep").getString("time");
@@ -264,8 +264,8 @@ public class RouteCalculator {
 					if (isArrivalTime) {
                         //System.out.println("Was arrival time");
 						if (time.before(arrival)) {
-                            //System.out.println("found departure: " + departure.toString());
-                            //System.out.println("found arrival: " + arrival.toString());
+                            System.out.println("found departure: " + departure.toString());
+                            System.out.println("found arrival: " + arrival.toString());
 							return choice;
 						}
 					} else if (time.before(departure)) {
@@ -275,8 +275,8 @@ public class RouteCalculator {
 			} catch (ParseException e) {
 				throw new RuntimeException();
 			}
-		}
-		return null;
+		}*/
+		return choice;
 	}
 
 	/**
