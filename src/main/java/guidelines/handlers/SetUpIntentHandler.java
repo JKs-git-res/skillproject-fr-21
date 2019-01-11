@@ -57,7 +57,7 @@ public class SetUpIntentHandler implements RequestHandler {
     @Override
     public boolean canHandle(HandlerInput input) {
         return input.matches(intentName("SetUpIntent")) &&
-                input.getAttributesManager().getSessionAttributes().get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString()).equals("false");
+                input.getAttributesManager().getPersistentAttributes().get(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString()).equals("false");
     }
 
     private Optional<Response> confirmAdress(HandlerInput input, Address toConfirm, String slotName){
@@ -289,6 +289,9 @@ public class SetUpIntentHandler implements RequestHandler {
 
     private Optional<Response> setUpComplete(HandlerInput input) {
         input.getAttributesManager().getSessionAttributes().put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+        persistentAttributes.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "true");
+        attributesManager.setPersistentAttributes(persistentAttributes);
+        attributesManager.savePersistentAttributes();
         return input.getResponseBuilder()
                 .withSpeech(OutputStrings.EINRICHTUNG_END_SPEECH.toString())
                 .withSimpleCard("Einrichtung abgeschlossen", OutputStrings.EINRICHTUNG_END_CARD.toString())

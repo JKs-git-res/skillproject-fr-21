@@ -286,8 +286,10 @@ public class SetUpIntentHandlerTest {
     public void testCanHandle(){
         final HandlerInput inputMock = Mockito.mock(HandlerInput.class);
         Map<String,Object> sessionList = new HashMap<>();
+        Map<String,Object> persistantList = new HashMap<>();
+        persistantList.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
         sessionList.put(StatusAttributes.KEY_SETUP_IS_COMPLETE.toString(), "false");
-        AttributesManager attributesManager = mockAttributesManager(sessionList, null);
+        AttributesManager attributesManager = mockAttributesManager(sessionList, persistantList);
         when(inputMock.getAttributesManager()).thenReturn(attributesManager);
         when(inputMock.matches(any())).thenReturn(true);
         assertTrue(handler.canHandle(inputMock));
