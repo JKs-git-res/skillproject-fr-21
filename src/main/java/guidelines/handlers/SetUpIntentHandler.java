@@ -361,11 +361,16 @@ public class SetUpIntentHandler implements RequestHandler {
                         Optional<Object> ctxObj = input.getContext();
                         Context ctx;
                         try{
-                            ctx = (Context) ctxObj.orElse(null);
-                            SystemState sys = ctx.getSystem();
+                          if(ctxObj.isPresent()){
+                            ctx = (Context) ctxObj.get();
+                          } else {
+                            throw new NoSuchElementException();
+                          }
+                          SystemState sys = ctx.getSystem();
                             String deviceId = sys.getDevice().getDeviceId();
                             String apiAccessToken = sys.getApiAccessToken();
                             String apiEndpoint = sys.getApiEndpoint();
+                            
                             try {
                                 homeAddress = getAddressFromLocation(deviceId,apiEndpoint,apiAccessToken);
                                 Station station = homeAddress.getNearestStation();

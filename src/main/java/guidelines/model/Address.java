@@ -153,4 +153,16 @@ public class Address {
                 Objects.equals(getNearestStation(), address.getNearestStation());
     }
 
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 17 * hash + Objects.hashCode(this.name);
+    hash = 17 * hash + Objects.hashCode(this.city);
+    hash = 17 * hash + Objects.hashCode(this.locationId);
+    hash = 17 * hash + this.houseNumber;
+    hash = 17 * hash + Objects.hashCode(this.postCode);
+    hash = 17 * hash + Objects.hashCode(this.nearestStation);
+    return hash;
+  }
+
 }
