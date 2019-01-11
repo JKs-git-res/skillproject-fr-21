@@ -51,7 +51,7 @@ public class LaunchRequestHandler implements RequestHandler {
             try{
               Optional<Object> ctx = input.getContext();
               if (ctx.isPresent()){
-                userName = getUsersFirstName((Context)input.getContext().get());
+                userName = getUsersFirstName((Context)ctx.get());
               }
             } catch (NoSuchElementException | IOException nseEx){
             }
