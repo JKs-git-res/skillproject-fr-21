@@ -2,10 +2,6 @@ package guidelines.handlers;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.amazon.ask.attributes.AttributesManager;
@@ -17,8 +13,9 @@ import guidelines.OutputStrings;
 import guidelines.StatusAttributes;
 import guidelines.model.RouteCalculator;
 import guidelines.model.Address;
-import guidelines.model.AddressResolver;
 import guidelines.model.Profile;
+import java.io.IOException;
+import java.text.ParseException;
 
 public class PlanMyTripIntentHandler implements RequestHandler
 {
@@ -135,12 +132,16 @@ public class PlanMyTripIntentHandler implements RequestHandler
 
 
             }
-            catch (Exception ex) {
-                ex.printStackTrace();
+            catch (IOException ex) {
             }
             try{
-                int hours = 0;
-                long minutesRemaining = new RouteCalculator().getTime(start.getNearestStation(),realDestination.getNearestStation(),arrivalTime);
+                int hours;
+                long minutesRemaining;
+                if(start != null && realDestination != null){
+                  minutesRemaining = new RouteCalculator().getTime(start.getNearestStation(),realDestination.getNearestStation(),arrivalTime);
+                } else{
+                  throw new IOException();
+                }
                 String speech;
                 if(minutesRemaining > 60){
                     hours =(int) minutesRemaining/60;
@@ -158,8 +159,7 @@ public class PlanMyTripIntentHandler implements RequestHandler
                         .withShouldEndSession(true)
                         .withSimpleCard("In "+minutesRemaining+" losgehen",speech)
                         .build();
-            } catch (Exception ex){
-                ex.printStackTrace();
+            } catch (IOException | ParseException ex){
             }
 
 
