@@ -264,7 +264,8 @@ public class RouteCalculator {
 					if (isArrivalTime) {
                         //System.out.println("Was arrival time");
 						if (time.before(arrival)) {
-                            //System.out.println("Time from now ok");
+                            //System.out.println("found departure: " + departure.toString());
+                            //System.out.println("found arrival: " + arrival.toString());
 							return choice;
 						}
 					} else if (time.before(departure)) {
